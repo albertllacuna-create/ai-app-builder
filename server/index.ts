@@ -382,8 +382,8 @@ const __dirname = path.dirname(__filename);
 // Servir la web estática una vez construida (npm run build)
 app.use(express.static(path.join(__dirname, '../dist')));
 
-// Redirigir cualquier ruta de React al iIndexHTML
-app.get('*', (req, res) => {
+// Redirigir cualquier ruta de React al IndexHTML
+app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
