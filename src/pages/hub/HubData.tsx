@@ -126,25 +126,25 @@ export function HubData() {
     };
 
     return (
-        <div className="p-8 max-w-6xl mx-auto flex gap-8">
+        <div className="p-8 max-w-6xl mx-auto flex gap-8 text-[var(--text-primary)]">
             {/* Sidebar de Colecciones */}
             <div className="w-64 flex-shrink-0">
-                <div className="flex items-center gap-2 font-bold text-lg mb-6">
+                <div className="flex items-center gap-2 font-bold text-lg mb-6 text-[var(--text-primary)]">
                     <Database className="text-primary" /> Colecciones
                 </div>
                 <div className="space-y-2">
                     {loading && collections.length === 0 ? (
-                        <p className="text-neutral-500 text-sm">Buscando datos...</p>
+                        <p className="text-[var(--text-muted)] text-sm">Buscando datos...</p>
                     ) : collections.length === 0 ? (
-                        <p className="text-neutral-500 text-sm">No hay datos guardados aún.</p>
+                        <p className="text-[var(--text-muted)] text-sm">No hay datos guardados aún.</p>
                     ) : (
                         collections.map((col: string) => (
                             <button
                                 key={col}
                                 onClick={() => setSelectedCollection(col)}
-                                className={`w-full text-left px-4 py-2 rounded-md flex items-center gap-2 transition-colors ${selectedCollection === col
-                                    ? 'bg-primary text-white'
-                                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800'
+                                className={`w-full text-left px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${selectedCollection === col
+                                    ? 'bg-primary text-white shadow-md'
+                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
                                     }`}
                             >
                                 <Layers size={16} />
@@ -159,17 +159,17 @@ export function HubData() {
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold flex items-center gap-2">
+                        <h1 className="text-2xl font-bold flex items-center gap-2 text-[var(--text-primary)]">
                             <TableIcon className="text-primary" />
                             {selectedCollection || 'Visor de Datos'}
                         </h1>
-                        <p className="text-neutral-400 mt-1">Explora y gestiona los registros de la base de datos.</p>
+                        <p className="text-[var(--text-muted)] mt-1">Explora y gestiona los registros de la base de datos.</p>
                     </div>
                     <div className="flex items-center gap-2">
                         {selectedCollection && columns.length > 0 && (
                             <button
                                 onClick={initNewRecord}
-                                className="btn btn-primary flex items-center gap-2 text-sm"
+                                className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-medium transition-all"
                             >
                                 <Plus size={16} />
                                 Nuevo registro
@@ -177,7 +177,7 @@ export function HubData() {
                         )}
                         <button
                             onClick={loadData}
-                            className="btn btn-outline flex items-center gap-2"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--surface-border)] hover:bg-[var(--surface-hover)] transition-colors text-[var(--text-secondary)]"
                             disabled={loading}
                         >
                             <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
@@ -186,28 +186,28 @@ export function HubData() {
                     </div>
                 </div>
 
-                <div className="glass-panel rounded-lg border border-neutral-800 overflow-x-auto">
+                <div className="glass-panel rounded-xl border border-[var(--surface-border)] overflow-x-auto bg-[var(--surface)] shadow-sm">
                     {!selectedCollection ? (
-                        <div className="p-12 text-center text-neutral-500">
-                            <Database size={48} className="mx-auto text-neutral-700 mb-4" />
-                            <p>Selecciona una colección en el menú lateral para ver sus datos.</p>
+                        <div className="p-12 text-center text-[var(--text-muted)]">
+                            <Database size={48} className="mx-auto text-[var(--surface-border)] mb-4" />
+                            <p>Visualiza y gestiona los datos que tu aplicación Bulbia está recolectando. Selecciona una colección en el menú lateral para ver sus datos.</p>
                         </div>
                     ) : (
                         <table className="w-full text-left border-collapse min-w-max">
                             <thead>
-                                <tr className="bg-neutral-800/50 border-b border-neutral-800">
-                                    <th className="p-4 font-medium text-neutral-300 w-16">ID</th>
+                                <tr className="bg-[var(--surface-hover)] border-b border-[var(--surface-border)]">
+                                    <th className="p-4 font-medium text-[var(--text-muted)] w-16">ID</th>
                                     {columns.map((col: string) => (
-                                        <th key={col} className="p-4 font-medium text-neutral-300 capitalize">{col}</th>
+                                        <th key={col} className="p-4 font-medium text-[var(--text-muted)] capitalize">{col}</th>
                                     ))}
-                                    <th className="p-4 font-medium text-neutral-300 text-right">Acciones</th>
+                                    <th className="p-4 font-medium text-[var(--text-muted)] text-right">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {/* New record row */}
                                 {showNewForm && (
                                     <tr className="border-b border-primary/30 bg-primary/5">
-                                        <td className="p-4 text-xs text-neutral-500">nuevo</td>
+                                        <td className="p-4 text-xs text-[var(--text-muted)]">nuevo</td>
                                         {columns.map((col: string) => (
                                             <td key={col} className="p-2">
                                                 <input
@@ -215,7 +215,7 @@ export function HubData() {
                                                     value={newRecord[col] || ''}
                                                     onChange={(e) => setNewRecord({ ...newRecord, [col]: e.target.value })}
                                                     placeholder={col}
-                                                    className="w-full bg-neutral-800 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-primary outline-none"
+                                                    className="w-full bg-[var(--background)] border border-[var(--surface-border)] rounded px-2 py-1 text-sm text-[var(--text-primary)] focus:border-primary outline-none"
                                                 />
                                             </td>
                                         ))}
@@ -239,13 +239,13 @@ export function HubData() {
                                 )}
 
                                 {loading && records.length === 0 ? (
-                                    <tr><td colSpan={columns.length + 2} className="p-8 text-center text-neutral-500">Cargando registros...</td></tr>
+                                    <tr><td colSpan={columns.length + 2} className="p-8 text-center text-[var(--text-muted)]">Cargando registros...</td></tr>
                                 ) : records.length === 0 ? (
-                                    <tr><td colSpan={columns.length + 2} className="p-8 text-center text-neutral-500">Colección vacía.</td></tr>
+                                    <tr><td colSpan={columns.length + 2} className="p-8 text-center text-[var(--text-muted)]">Colección vacía.</td></tr>
                                 ) : (
                                     records.map((record: any) => (
-                                        <tr key={record.id} className="border-b border-neutral-800 hover:bg-neutral-800/30 transition-colors">
-                                            <td className="p-4 text-xs font-mono text-neutral-500 truncate max-w-[80px]" title={record.id}>
+                                        <tr key={record.id} className="border-b border-[var(--surface-border)] hover:bg-[var(--surface-hover)]/50 transition-colors">
+                                            <td className="p-4 text-xs font-mono text-[var(--text-muted)] truncate max-w-[80px]" title={record.id}>
                                                 ...{record.id.substring(0, 5)}
                                             </td>
                                             {columns.map((col: string) => {
@@ -260,10 +260,10 @@ export function HubData() {
                                                                 type="text"
                                                                 value={editData[col] ?? ''}
                                                                 onChange={(e) => setEditData({ ...editData, [col]: e.target.value })}
-                                                                className="w-full bg-neutral-800 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-primary outline-none"
+                                                                className="w-full bg-[var(--background)] border border-[var(--surface-border)] rounded px-2 py-1 text-sm text-[var(--text-primary)] focus:border-primary outline-none"
                                                             />
                                                         ) : (
-                                                            <span className="text-sm text-neutral-300 truncate block max-w-xs px-2" title={displayVal}>
+                                                            <span className="text-sm text-[var(--text-secondary)] truncate block max-w-xs px-2" title={displayVal}>
                                                                 {displayVal || '-'}
                                                             </span>
                                                         )}
@@ -293,14 +293,14 @@ export function HubData() {
                                                         <>
                                                             <button
                                                                 onClick={() => handleStartEdit(record)}
-                                                                className="p-1.5 rounded text-neutral-400 hover:bg-white/10 hover:text-white transition-colors"
+                                                                className="p-1.5 rounded text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
                                                                 title="Editar"
                                                             >
                                                                 <Pencil size={14} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDeleteRecord(record.id)}
-                                                                className="p-1.5 rounded text-neutral-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                                                                className="p-1.5 rounded text-[var(--text-muted)] hover:bg-red-500/10 hover:text-red-400 transition-colors"
                                                                 title="Eliminar"
                                                             >
                                                                 <Trash2 size={14} />

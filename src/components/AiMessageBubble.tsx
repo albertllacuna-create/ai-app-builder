@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Undo2, Code2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Undo2, FileCode2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 interface AiMessageBubbleProps {
@@ -11,33 +11,17 @@ interface AiMessageBubbleProps {
     onSelectOption: (text: string) => void;
 }
 
-const getFileLabel = (fp: string) => {
-    const name = fp.split('/').pop() || fp;
-    if (name === 'App.tsx') return { label: 'Enrutador', color: 'bg-sky-400', name };
-    if (fp.includes('/pages/')) return { label: 'Página', color: 'bg-emerald-400', name };
-    if (fp.includes('/layouts/')) return { label: 'Layout', color: 'bg-amber-400', name };
-    if (fp.includes('/lib/') || fp.includes('/services/')) return { label: 'Datos/Servicio', color: 'bg-violet-400', name };
-    if (fp.includes('/components/')) return { label: 'Componente', color: 'bg-rose-400', name };
-    return { label: 'Archivo', color: 'bg-neutral-400', name };
-};
-
 export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo, handleUndo, onSelectOption }: AiMessageBubbleProps) => {
-    const [showCode, setShowCode] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
     let chatContent = msg.content || '';
-    let codeContent = '';
-    let hasCode = false;
+    
+    // Process tags cleanly on-the-fly during streaming so Markdown doesn't break
+    chatContent = chatContent.replace(/<\/?chat>/gi, '');
+    chatContent = chatContent.replace(/<\/?code_changes>/gi, '');
 
-    chatContent = chatContent.trim();
-
-    const codeMatch = chatContent.match(/<code_changes>([\s\S]*?)(<\/code_changes>|$)/);
-
-    if (codeMatch) {
-        hasCode = true;
-        chatContent = chatContent.substring(0, codeMatch.index).trim();
-        codeContent = codeMatch[1].trim();
-    }
+    // Upgrade legacy code_change format (/ruta \n ```tsx) to the new filepath format so pills render correctly
+    chatContent = chatContent.replace(/(?:^|\n)\/([a-zA-Z0-9_./-]+)\s*\n+```[a-zA-Z0-9]*\n/g, '\n```tsx\n// filepath: /$1\n');
 
     // Extract plan options
     let planOptions: string[] = [];
@@ -48,18 +32,6 @@ export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo,
             .map((o: string) => o.replace(/^[-*]\s*/, '').trim())
             .filter((o: string) => o.length > 0);
         chatContent = chatContent.substring(0, optionsMatch.index).trim();
-    }
-
-    // Clean up <chat> tags from the visible text
-    chatContent = chatContent.replace(/<\/?chat>/g, '').trim();
-
-    // Extract ALL file paths from the code block
-    const filePaths: string[] = [];
-    const pathRegex = /^\/?src\/[^\s`]+/gm;
-    let pathM;
-    while ((pathM = pathRegex.exec(codeContent)) !== null) {
-        const fp = pathM[0].replace(/^\//, '');
-        if (!filePaths.includes(fp)) filePaths.push(fp);
     }
 
     const toggleOption = (opt: string) => {
@@ -78,7 +50,58 @@ export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo,
     return (
         <div className="w-full">
             <div className="markdown-body">
-                <ReactMarkdown>{chatContent}</ReactMarkdown>
+                <ReactMarkdown
+                    components={{
+                        pre({ children, ...props }: any) {
+                            // Detect if this <pre> wraps a custom file creation <code> block
+                            const childArray = React.Children.toArray(children);
+                            if (childArray.length > 0) {
+                                const firstChild = childArray[0] as any;
+                                if (firstChild?.props?.className?.includes('language-')) {
+                                    const codeStr = String(firstChild.props.children);
+                                    if (codeStr.match(/^\/\/\s*filepath:\s*(\/?\S+)/m)) {
+                                        // It's a file pill, skip the <pre> block styling completely
+                                        return <div className="my-1.5">{children}</div>;
+                                    }
+                                }
+                            }
+                            return <pre style={{ background: 'var(--code-bg)', border: '1px solid var(--surface-border)' }} className="p-4 rounded-xl overflow-x-auto shadow-sm my-3" {...props}>{children}</pre>;
+                        },
+                        code({ node, inline, className, children, ...props }: any) {
+                            const match = /language-(\w+)/.exec(className || '');
+                            if (!inline && match) {
+                                const codeStr = String(children).replace(/\n$/, '');
+                                const fpMatch = codeStr.match(/^\/\/\s*filepath:\s*(\/?\S+)/m);
+                                
+                                if (fpMatch) {
+                                    const fp = fpMatch[1];
+                                    const fileName = fp.split('/').pop() || fp;
+
+                                    return (
+                                        <div className="flex items-center gap-1.5 py-0.5">
+                                            <FileCode2 size={14} style={{ color: 'var(--text-muted)' }} className="shrink-0" />
+                                            <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>Escrito</span>
+                                            <span className="text-[12px] font-medium" style={{ color: 'var(--text-primary)' }}>{fileName}</span>
+                                        </div>
+                                    );
+                                }
+                                
+                                // Standard code blocks that aren't file creations
+                                return (
+                                    <div className="relative mt-0 mb-0">
+                                        <div className="absolute top-0 right-0 px-3 py-1 rounded-bl-lg z-10" style={{ background: 'var(--surface-hover)', borderBottom: '1px solid var(--surface-border)', borderLeft: '1px solid var(--surface-border)' }}>
+                                            <span className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>{match[1]}</span>
+                                        </div>
+                                        <code className={`${className} text-[12px] leading-relaxed block`} {...props}>{children}</code>
+                                    </div>
+                                );
+                            }
+                            return <code className="px-1.5 py-0.5 rounded text-[12px]" style={{ background: 'var(--primary-light)', color: 'var(--primary)' }} {...props}>{children}</code>;
+                        }
+                    }}
+                >
+                    {chatContent}
+                </ReactMarkdown>
             </div>
 
             {planOptions.length > 0 && (
@@ -115,48 +138,15 @@ export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo,
                 </div>
             )}
 
-            {hasCode && (
-                <div className="mt-3 bg-black/30 rounded-lg border border-white/5 overflow-hidden">
-                    {filePaths.length > 0 && (
-                        <div className="divide-y divide-white/5">
-                            {filePaths.map((fp, i) => {
-                                const info = getFileLabel(fp);
-                                return (
-                                    <div key={i} className="px-3 py-2 bg-white/5 text-[11px] text-white/80 flex items-center gap-2">
-                                        <span className={`w-1.5 h-1.5 rounded-full ${info.color}`}></span>
-                                        <span className="text-neutral-400 uppercase tracking-wider font-medium w-24">{info.label}</span>
-                                        <span className="text-primary-light font-semibold">{info.name}</span>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                    <button
-                        onClick={() => setShowCode(!showCode)}
-                        className="w-full flex items-center justify-between px-3 py-2 text-[11px] text-neutral-400 hover:text-white hover:bg-white/5 transition-colors uppercase tracking-wider font-medium border-t border-white/5"
-                    >
-                        <span className="flex items-center gap-1.5">
-                            <Code2 size={12} />
-                            {showCode ? 'Ocultar código técnico' : 'Ver detalle del código'}
-                        </span>
-                    </button>
-                    {showCode && (
-                        <div className="p-3 border-t border-white/5 bg-black/50 overflow-x-auto text-[11px] markdown-body">
-                            <ReactMarkdown>{`\`\`\`tsx\n${codeContent.replace(/```[a-z]*|```/g, '').trim()}\n\`\`\``}</ReactMarkdown>
-                        </div>
-                    )}
-                </div>
-            )}
-
             {isAiAndUndoable && !isAiTyping && (
-                <div className="mt-3 flex justify-end">
+                <div className="mt-4 flex justify-end">
                     <button
                         onClick={() => handleUndo(stepsToUndo)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/20 hover:bg-primary text-primary hover:text-white rounded-md text-xs font-medium transition-colors"
-                        title={`Deshacer hasta este punto (${stepsToUndo} paso${stepsToUndo > 1 ? 's' : ''} atrás)`}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800/50 hover:bg-red-500/20 text-neutral-400 hover:text-red-400 border border-neutral-700/50 hover:border-red-500/30 rounded-lg text-[11px] font-medium transition-all shadow-sm"
+                        title={`Deshacer hasta este punto`}
                     >
                         <Undo2 size={14} />
-                        Deshacer cambios
+                        Deshacer cambios ({stepsToUndo})
                     </button>
                 </div>
             )}

@@ -6,17 +6,39 @@ export interface ParsedAIResponse {
 }
 
 /**
- * Parses code blocks from AI-generated text, extracting file paths and their content.
+ * Parses pure markdown code blocks from AI-generated text, extracting file paths and their content.
  */
 export function parseCodeBlocks(text: string): Record<string, string> {
   const result: Record<string, string> = {};
   const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const regex = /(?:^|\n)[^\/\n]*(\/[a-zA-Z0-9_./-]+)[^\n]*\n+```[a-zA-Z0-9]*\n([\s\S]*?)\n```/g;
-  let match;
-  while ((match = regex.exec(normalized)) !== null) {
-    const filePath = match[1].trim();
-    result[filePath] = match[2].trimEnd();
+  
+  // Nuevo formato robusto: Extraemos todos los bloques de código y buscamos la ruta dentro
+  const blockRegex = /```[a-zA-Z0-9_\-+]*[^\n]*\n([\s\S]*?(?=```))/g;
+  let blockMatch;
+  while ((blockMatch = blockRegex.exec(normalized)) !== null) {
+    const blockContent = blockMatch[1];
+    const pathRegex = /(?:^|\n)\s*(?:\/\/|\/\*|<!--|#)\s*filepath:\s*([^\s\n*]+)[^\n]*\n/i;
+    const pathMatch = pathRegex.exec(blockContent);
+    
+    if (pathMatch) {
+      let filePath = pathMatch[1].trim();
+      if (!filePath.startsWith('/')) filePath = '/' + filePath;
+      
+      result[filePath] = blockContent.replace(pathMatch[0], '\n').trim();
+    }
   }
+
+  // Soporte Legacy: Antiguos <code_changes>
+  const legacyRegex = /(?:^|\n)[^\/\n]*(\/[a-zA-Z0-9_./-]+)[^\n]*\n+```[a-zA-Z0-9]*\n([\s\S]*?)\n```/g;
+  const legacyMatchContent = normalized.match(/<code_changes>([\s\S]*?)<\/code_changes>/i);
+  if (legacyMatchContent) {
+      let lMatch;
+      while ((lMatch = legacyRegex.exec(legacyMatchContent[1])) !== null) {
+          const filePath = lMatch[1].trim();
+          if (!result[filePath]) result[filePath] = lMatch[2].trimEnd();
+      }
+  }
+
   return result;
 }
 
@@ -26,40 +48,19 @@ export function parseCodeBlocks(text: string): Record<string, string> {
  */
 export function parseAIResponse(responseText: string, projectId: string): ParsedAIResponse {
   let chatMessage = responseText;
-  let codeChangesText = "";
+  const files = parseCodeBlocks(responseText);
 
-  const chatMatch = responseText.match(/<chat>([\s\S]*?)<\/chat>/i);
-  if (chatMatch) {
-    chatMessage = chatMatch[1].trim();
-  }
-
-  const codeMatch = responseText.match(/<code_changes>([\s\S]*?)<\/code_changes>/i);
-  if (codeMatch) {
-    codeChangesText = codeMatch[1].trim();
-  }
-
-  const files: Record<string, string> = {};
-
-  if (codeChangesText) {
-    Object.assign(files, parseCodeBlocks(codeChangesText));
-  } else {
-    const parsedFiles = parseCodeBlocks(responseText);
-    Object.assign(files, parsedFiles);
-    Object.keys(parsedFiles).forEach(f => {
-      chatMessage = chatMessage.replace(f, '');
-    });
-    chatMessage = chatMessage.replace(/```[\s\S]*?```/g, '').trim();
-    chatMessage = chatMessage.replace(/<code_changes>|<\/code_changes>|<chat>|<\/chat>/gi, '').trim();
-  }
+  // Limpiar etiquetas legacy en caso de aparecer
+  chatMessage = chatMessage.replace(/<chat>([\s\S]*?)<\/chat>/i, '$1');
+  chatMessage = chatMessage.replace(/<code_changes>[\s\S]*?<\/code_changes>/i, '');
+  chatMessage = chatMessage.trim();
 
   if (Object.keys(files).length > 0) {
     db.updateProjectFiles(projectId, files);
-    const filesList = Object.keys(files).map(f => `- \`${f}\``).join('\n');
-    chatMessage += `\n\n**Archivos generados/modificados:**\n${filesList}`;
   }
 
   return {
-    chatMessage: chatMessage || "He actualizado los archivos tal y como solicitaste.",
+    chatMessage: chatMessage || "He actualizado los archivos solicitados.",
     files
   };
 }

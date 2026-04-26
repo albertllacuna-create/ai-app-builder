@@ -55,13 +55,13 @@ export function HubOverview() {
     if (!project) return <div className="p-8">Cargando proyecto...</div>;
 
     return (
-        <div className="p-8 max-w-5xl mx-auto">
+        <div className="p-8 max-w-5xl mx-auto text-[var(--text-primary)]">
             <div className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
+                <div className="flex flex-col">
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-muted)]">
                         Resumen del Proyecto
                     </h1>
-                    <p className="text-neutral-400 mt-1">Configura la información pública y los accesos de tu aplicación.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Configura la información pública y los accesos de tu aplicación bulbia.</p>
                 </div>
                 <button
                     onClick={handleSave}
@@ -77,17 +77,17 @@ export function HubOverview() {
 
                 {/* Columna Izquierda: Detalles Principales */}
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="glass-panel p-6 border border-neutral-800/50 rounded-xl">
+                    <div className="glass-panel p-6 border border-[var(--surface-border)] rounded-xl bg-[var(--surface)]">
                         <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
                             <Info size={20} className="text-primary" /> Detalles de la Aplicación
                         </h3>
 
                         <div className="space-y-5">
                             <div>
-                                <label className="block text-sm font-medium text-neutral-300 mb-1.5">Nombre de la Aplicación</label>
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Nombre de la Aplicación</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-neutral-900/50 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                                    className="w-full bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Ej: Mi CRM Increíble"
@@ -95,41 +95,41 @@ export function HubOverview() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-neutral-300 mb-1.5">Descripción (SEO & Meta)</label>
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">Descripción (SEO & Meta)</label>
                                 <textarea
-                                    className="w-full bg-neutral-900/50 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all h-28 resize-none"
+                                    className="w-full bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all h-28 resize-none"
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Describe brevemente qué hace tu aplicación y para qué sirve..."
+                                    placeholder="Visualiza y gestiona los datos que tu aplicación bulbia está recolectando."
                                 />
-                                <p className="text-xs text-neutral-500 mt-1.5">Esta descripción se utilizará cuando compartas tu aplicación en redes sociales o en los motores de búsqueda.</p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1.5">Esta descripción se utilizará cuando compartas tu aplicación en redes sociales o en los motores de búsqueda.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass-panel p-6 border border-neutral-800/50 rounded-xl">
+                    <div className="glass-panel p-6 border border-[var(--surface-border)] rounded-xl bg-[var(--surface)]">
                         <h3 className="text-xl font-semibold mb-6 flex items-center gap-2">
                             <ImageIcon size={20} className="text-primary" /> Branding
                         </h3>
 
                         <div className="flex gap-6 items-start">
-                            <div className="w-24 h-24 rounded-2xl bg-neutral-800 border border-neutral-700 flex items-center justify-center overflow-hidden shrink-0">
+                            <div className="w-24 h-24 rounded-2xl bg-[var(--surface-hover)] border border-[var(--surface-border)] flex items-center justify-center overflow-hidden shrink-0">
                                 {logoUrl ? (
                                     <img src={logoUrl} alt="App Logo" className="w-full h-full object-cover" />
                                 ) : (
-                                    <ImageIcon size={32} className="text-neutral-600" />
+                                    <ImageIcon size={32} className="text-[var(--text-muted)]" />
                                 )}
                             </div>
                             <div className="flex-1">
-                                <label className="block text-sm font-medium text-neutral-300 mb-1.5">URL del Logo</label>
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1.5">URL del Logo</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-neutral-900/50 border border-neutral-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all mb-2"
+                                    className="w-full bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-lg px-4 py-2.5 text-[var(--text-primary)] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all mb-2"
                                     value={logoUrl}
                                     onChange={(e) => setLogoUrl(e.target.value)}
                                     placeholder="https://ejemplo.com/logo.png"
                                 />
-                                <p className="text-xs text-neutral-500">Pega la URL directa de la imagen de tu logo. Se recomienda PNG o SVG cuadrado transparente.</p>
+                                <p className="text-xs text-[var(--text-muted)]">Pega la URL directa de la imagen de tu logo. Se recomienda PNG o SVG cuadrado transparente.</p>
                             </div>
                         </div>
                     </div>
@@ -137,7 +137,7 @@ export function HubOverview() {
 
                 {/* Columna Derecha: Configuración Técnica */}
                 <div className="space-y-6">
-                    <div className="glass-panel p-6 border border-neutral-800/50 rounded-xl">
+                    <div className="glass-panel p-6 border border-[var(--surface-border)] rounded-xl bg-[var(--surface)]">
                         <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                             <Lock size={18} className="text-primary" /> Control de Acceso
                         </h3>
@@ -145,34 +145,34 @@ export function HubOverview() {
                         <div className="space-y-6">
                             {/* Visibility Toggle */}
                             <div>
-                                <label className="block text-sm font-medium text-neutral-300 mb-3">Visibilidad del Proyecto</label>
-                                <div className="flex bg-neutral-900/50 rounded-lg p-1 border border-neutral-800">
+                                <label className="block text-sm font-medium text-[var(--text-secondary)] mb-3">Visibilidad del Proyecto</label>
+                                <div className="flex bg-[var(--surface-hover)] rounded-lg p-1 border border-[var(--surface-border)] text-[var(--text-primary)]">
                                     <button
-                                        className={`flex-1 py-2 text-sm font-medium rounded-md flex items-center justify-center gap-2 transition-all ${visibility === 'public' ? 'bg-primary text-white shadow-md' : 'text-neutral-400 hover:text-white'}`}
+                                        className={`flex-1 py-2 text-sm font-medium rounded-md flex items-center justify-center gap-2 transition-all ${visibility === 'public' ? 'bg-primary text-white shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                                         onClick={() => setVisibility('public')}
                                     >
                                         <Globe size={16} /> Público
                                     </button>
                                     <button
-                                        className={`flex-1 py-2 text-sm font-medium rounded-md flex items-center justify-center gap-2 transition-all ${visibility === 'private' ? 'bg-neutral-800 text-white shadow-md' : 'text-neutral-400 hover:text-white'}`}
+                                        className={`flex-1 py-2 text-sm font-medium rounded-md flex items-center justify-center gap-2 transition-all ${visibility === 'private' ? 'bg-[var(--surface-elevated)] text-[var(--text-primary)] shadow-md' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
                                         onClick={() => setVisibility('private')}
                                     >
                                         <Lock size={16} /> Privado
                                     </button>
                                 </div>
-                                <p className="text-xs text-neutral-500 mt-2">
+                                <p className="text-xs text-[var(--text-muted)] mt-2">
                                     {visibility === 'public'
-                                        ? 'Cualquiera con el enlace puede acceder y usar la aplicación.'
+                                        ? 'Controla quién tiene acceso a los recursos de tu app bulbia.'
                                         : 'Solo tú y los miembros invitados pueden acceder a la aplicación.'}
                                 </p>
                             </div>
 
-                            <hr className="border-neutral-800" />
+                            <hr className="border-[var(--surface-border)]" />
 
                             {/* Require Login Toggle */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
+                                    <label className="text-sm font-medium text-[var(--text-secondary)] flex items-center gap-2">
                                         <ShieldCheck size={16} className="text-green-500" /> Requiere Autenticación
                                     </label>
 
@@ -184,7 +184,7 @@ export function HubOverview() {
                                         <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${requireLogin ? 'translate-x-6' : 'translate-x-1'}`} />
                                     </button>
                                 </div>
-                                <p className="text-xs text-neutral-500">
+                                <p className="text-xs text-[var(--text-muted)]">
                                     Activa el sistema de Login/Registro para los usuarios finales. Ideal para aplicaciones SaaS o intranets.
                                 </p>
                             </div>
@@ -192,20 +192,20 @@ export function HubOverview() {
                     </div>
 
                     {/* Mini Stats Card (Antiguo Overview) */}
-                    <div className="glass-panel p-6 border border-neutral-800/50 rounded-xl bg-gradient-to-br from-neutral-900/80 to-neutral-900/40">
-                        <h3 className="text-sm font-medium text-neutral-400 uppercase tracking-wider mb-4">Métricas Rápidas</h3>
+                    <div className="glass-panel p-6 border border-[var(--surface-border)] rounded-xl bg-[var(--surface-hover)] shadow-sm">
+                        <h3 className="text-sm font-medium text-[var(--text-muted)] uppercase tracking-wider mb-4">Métricas Rápidas</h3>
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
-                                <span className="text-neutral-300 text-sm">Visitas Hoy</span>
-                                <span className="font-semibold text-white">0</span>
+                                <span className="text-[var(--text-secondary)] text-sm">Visitas Hoy</span>
+                                <span className="font-semibold text-[var(--text-primary)]">0</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-neutral-300 text-sm">Usuarios Activos</span>
-                                <span className="font-semibold text-white">0</span>
+                                <span className="text-[var(--text-secondary)] text-sm">Usuarios Activos</span>
+                                <span className="font-semibold text-[var(--text-primary)]">0</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-neutral-300 text-sm">Uso BBDD</span>
-                                <span className="font-semibold text-white">0 MB</span>
+                                <span className="text-[var(--text-secondary)] text-sm">Uso BBDD</span>
+                                <span className="font-semibold text-[var(--text-primary)]">0 MB</span>
                             </div>
                         </div>
                     </div>

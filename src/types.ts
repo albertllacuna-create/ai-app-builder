@@ -1,21 +1,13 @@
 // types.ts
 
-export type AIModel =
-    | 'gemini-1.5-flash'
-    | 'gemini-1.5-pro'
-    | 'gemini-2.5-flash'
-    | 'gemini-2.5-pro'
-    | 'gpt-4o'
-    | 'gpt-4o-mini'
-    | 'claude-3-5-sonnet-latest'
-    | 'claude-3-haiku-20240307';
+export type AIModel = 'gemini-1.5-flash' | 'claude-3-5-sonnet' | 'gpt-4o-mini';
 
-export type MaysonPlan = 'Free' | 'Pro' | 'Expert' | 'Enterprise';
+export type bulbiaPlan = 'Free' | 'Starter' | 'Builder' | 'Expert';
 
 export interface User {
     id: string;
     email: string;
-    plan: MaysonPlan;
+    plan: bulbiaPlan;
     tokens: number;
 }
 

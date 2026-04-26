@@ -1,10 +1,10 @@
 import { Project } from '../types';
 
-export const MAYSON_AUTH_FILE = `import React, { useState, useEffect } from 'react';
+export const BULBIA_AUTH_FILE = `import React, { useState, useEffect } from 'react';
 import { dbHelper } from './supabase';
 import { Lock, Mail, Key, Loader2, ArrowRight } from 'lucide-react';
 
-export function MaysonAuth({ children }: { children: React.ReactNode }) {
+export function bulbiaAuth({ children }: { children: React.ReactNode }) {
     const [session, setSession] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isLogin, setIsLogin] = useState(true);
@@ -159,19 +159,55 @@ export function getInjectedProjectFiles(project: Project, supabaseContent: strin
 
     // 2. If the project requires login, automatically inject the runtime Auth Wrapper
     if (project.requireLogin) {
-        files['/src/_mayson_auth.tsx'] = MAYSON_AUTH_FILE;
+        files['/src/_bulbia_auth.tsx'] = BULBIA_AUTH_FILE;
 
         let indexContent = files['/src/index.tsx'] || '';
 
         // Safety check to ensure we don't wrap it twice if re-rendering
-        if (indexContent && !indexContent.includes('MaysonAuth')) {
-            indexContent = `import { MaysonAuth } from './_mayson_auth';\n` + indexContent;
+        if (indexContent && !indexContent.includes('bulbiaAuth')) {
+            indexContent = `import { bulbiaAuth } from './_bulbia_auth';\n` + indexContent;
 
-            // Reemplazamos <App /> con <MaysonAuth><App /></MaysonAuth>
-            indexContent = indexContent.replace(/<App \/>/g, '<MaysonAuth><App /></MaysonAuth>');
+            // Reemplazamos <App /> con <bulbiaAuth><App /></bulbiaAuth>
+            indexContent = indexContent.replace(/<App \/>/g, '<bulbiaAuth><App /></bulbiaAuth>');
             files['/src/index.tsx'] = indexContent;
         }
     }
 
     return files;
+}
+
+/**
+ * Generates the supabase runtime content string for a given project.
+ * Used by Preview.tsx to pass to the remote bundler.
+ */
+export function getSupabaseContent(projectId: string): string {
+    const supabaseUrl = (import.meta as any).env?.VITE_SUPABASE_URL || '';
+    const supabaseAnonKey = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY || '';
+
+    return `import { createClient } from '@supabase/supabase-js';
+const PROJECT_ID = '${projectId}';
+let supabase: any = null;
+try {
+    const supabaseUrl = '${supabaseUrl}';
+    const supabaseAnonKey = '${supabaseAnonKey}';
+    if (supabaseUrl && supabaseAnonKey && supabaseUrl !== 'undefined' && supabaseUrl !== '') {
+        supabase = createClient(supabaseUrl, supabaseAnonKey);
+    }
+} catch (e) { console.warn('Supabase no disponible, usando almacenamiento local.'); }
+function localGet(collection: string) { try { return JSON.parse(localStorage.getItem('bulbia_' + PROJECT_ID + '_' + collection) || '[]'); } catch { return []; } }
+function localSave(collection: string, data: any) { const key = 'bulbia_' + PROJECT_ID + '_' + collection; const existing = localGet(collection); const newItem = { ...data, _id: 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) }; existing.push(newItem); localStorage.setItem(key, JSON.stringify(existing)); return newItem; }
+function localDelete(collection: string, id: string) { const key = 'bulbia_' + PROJECT_ID + '_' + collection; const existing = localGet(collection); localStorage.setItem(key, JSON.stringify(existing.filter((i: any) => i._id !== id))); }
+export { supabase };
+export const dbHelper = {
+    auth: {
+        async signUp(email: string, password: string) { if (!supabase) { const users = localGet('__local_users'); if (users.find((u: any) => u.email === email)) return { data: null, error: { message: 'El usuario ya existe' } }; const newUser = { email, password, id: 'user_' + Date.now() }; localStorage.setItem('bulbia_' + PROJECT_ID + '___local_users', JSON.stringify([...users, newUser])); localStorage.setItem('bulbia_session_' + PROJECT_ID, JSON.stringify({ user: newUser })); return { data: { user: newUser }, error: null }; } return await supabase.auth.signUp({ email, password }); },
+        async signIn(email: string, password: string) { if (!supabase) { const users = localGet('__local_users'); const user = users.find((u: any) => u.email === email && u.password === password); if (!user) return { data: null, error: { message: 'Credenciales incorrectas' } }; localStorage.setItem('bulbia_session_' + PROJECT_ID, JSON.stringify({ user })); return { data: { user }, error: null }; } return await supabase.auth.signInWithPassword({ email, password }); },
+        async signOut() { if (!supabase) { localStorage.removeItem('bulbia_session_' + PROJECT_ID); window.location.reload(); return {}; } return await supabase.auth.signOut(); },
+        async getUser() { if (!supabase) { try { const session = JSON.parse(localStorage.getItem('bulbia_session_' + PROJECT_ID) || 'null'); return { data: { user: session?.user || null } }; } catch { return { data: { user: null } }; } } return await supabase.auth.getUser(); },
+        onAuthStateChange(callback: (event: any, session: any) => void) { if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } }; return supabase.auth.onAuthStateChange(callback); }
+    },
+    async save(collectionName: string, data: any) { if (!supabase) return localSave(collectionName, data); return await supabase.from('app_collections').insert([{ project_id: PROJECT_ID, collection_name: collectionName, data }]); },
+    async get(collectionName: string) { if (!supabase) return localGet(collectionName); const { data, error } = await supabase.from('app_collections').select('*').eq('project_id', PROJECT_ID).eq('collection_name', collectionName); if (error) throw error; return data.map((item: any) => ({ _id: item.id, ...item.data })); },
+    async delete(id: string) { if (!supabase) { const keys = Object.keys(localStorage).filter(k => k.startsWith('bulbia_' + PROJECT_ID + '_')); keys.forEach(key => { const collection = key.replace('bulbia_' + PROJECT_ID + '_', ''); localDelete(collection, id); }); return; } return await supabase.from('app_collections').delete().eq('id', id); }
+};`;
 }

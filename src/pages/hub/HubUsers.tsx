@@ -42,17 +42,17 @@ export function HubUsers() {
     };
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
+        <div className="p-8 max-w-6xl mx-auto text-[var(--text-primary)]">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2">
+                    <h1 className="text-2xl font-bold flex items-center gap-2 text-[var(--text-primary)]">
                         <User className="text-primary" /> Gestión de Usuarios
                     </h1>
-                    <p className="text-neutral-400 mt-1">Cuentas registradas en esta aplicación.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Controla quién tiene acceso a los recursos de tu app Bolbia.</p>
                 </div>
                 <button
                     onClick={loadUsers}
-                    className="btn btn-outline flex items-center gap-2"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--surface-border)] hover:bg-[var(--surface-hover)] transition-colors text-[var(--text-secondary)]"
                     disabled={loading}
                 >
                     <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
@@ -60,53 +60,55 @@ export function HubUsers() {
                 </button>
             </div>
 
-            <div className="glass-panel rounded-lg border border-neutral-800 overflow-hidden">
+            <div className="glass-panel rounded-xl border border-[var(--surface-border)] overflow-hidden bg-[var(--surface)] shadow-sm">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="bg-neutral-800/50 border-b border-neutral-800">
-                            <th className="p-4 font-medium text-neutral-300">Usuario</th>
-                            <th className="p-4 font-medium text-neutral-300">Rol</th>
-                            <th className="p-4 font-medium text-neutral-300">Fecha de Registro</th>
-                            <th className="p-4 font-medium text-neutral-300 text-right">Acciones</th>
+                        <tr className="bg-[var(--surface-hover)] border-b border-[var(--surface-border)]">
+                            <th className="p-4 font-medium text-[var(--text-muted)]">Usuario</th>
+                            <th className="p-4 font-medium text-[var(--text-muted)]">Rol</th>
+                            <th className="p-4 font-medium text-[var(--text-muted)]">Fecha de Registro</th>
+                            <th className="p-4 font-medium text-[var(--text-muted)] text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={4} className="p-8 text-center text-neutral-500">Cargando directorio...</td>
+                                <td colSpan={4} className="p-8 text-center text-[var(--text-muted)]">Cargando directorio...</td>
                             </tr>
                         ) : users.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="p-8 text-center text-neutral-500">
-                                    Aún no hay usuarios registrados en esta app.
+                                <td colSpan={4} className="p-8 text-center text-[var(--text-muted)]">
+                                    Aún no hay usuarios registrados en esta app Bolbia.
                                     <br />
                                     <span className="text-sm mt-2 block">Cuando los usuarios se registren en la aplicación generada, aparecerán aquí.</span>
                                 </td>
                             </tr>
                         ) : (
                             users.map((u) => (
-                                <tr key={u.id} className="border-b border-neutral-800 hover:bg-neutral-800/30 transition-colors">
+                                <tr key={u.id} className="border-b border-[var(--surface-border)] hover:bg-[var(--surface-hover)]/50 transition-colors">
                                     <td className="p-4 flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
                                             {u.data.email?.charAt(0).toUpperCase() || '?'}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="font-medium text-neutral-200">{u.data.email || 'Email oculto'}</span>
-                                            <span className="text-xs text-neutral-500 flex items-center gap-1"><Mail size={10} /> Registrado vía Auth</span>
+                                            <span className="font-medium text-[var(--text-primary)]">{u.data.email || 'Email oculto'}</span>
+                                            <span className="text-xs text-[var(--text-muted)] flex items-center gap-1"><Mail size={10} /> Registrado vía Auth</span>
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <span className="px-2 py-1 rounded bg-neutral-800 text-xs text-neutral-300 border border-neutral-700 flex items-center w-fit gap-1">
+                                        <span className="px-2 py-1 rounded bg-[var(--surface-hover)] text-xs text-[var(--text-secondary)] border border-[var(--surface-border)] flex items-center w-fit gap-1">
                                             <Shield size={12} /> {u.data.role || 'user'}
                                         </span>
                                     </td>
-                                    <td className="p-4 text-neutral-400 text-sm flex items-center gap-2 mt-2">
-                                        <Calendar size={14} /> {new Date(u.created_at).toLocaleDateString()}
+                                    <td className="p-4 text-[var(--text-muted)] text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <Calendar size={14} /> {new Date(u.created_at).toLocaleDateString()}
+                                        </div>
                                     </td>
                                     <td className="p-4 text-right">
                                         <button
                                             onClick={() => handleDeleteUser(u.id)}
-                                            className="icon-btn text-danger hover:bg-danger/10 p-2 rounded"
+                                            className="text-red-500 hover:bg-red-500/10 p-2 rounded transition-colors"
                                             title="Eliminar perfil"
                                         >
                                             <Trash2 size={18} />

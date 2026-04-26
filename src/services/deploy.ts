@@ -1,11 +1,13 @@
 import { Project } from '../types';
 import { getInjectedProjectFiles } from './systemFiles';
 
-const MAYSON_HOSTING_URL = 'http://localhost:3001';
+const BOLBIA_HOSTING_URL = 'http://localhost:3001';
 
 export const deployService = {
     async deployProject(project: Project): Promise<{ success: boolean; url?: string; error?: string }> {
         try {
+            console.log('Desplegando proyecto:', project.name);
+            
             // Re-inyectamos el cliente completo de Supabase para que viaje compaginado a producción
             // igual que viaja a Sandpack.
             const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -21,7 +23,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export const dbHelper = {
     projectId: '${project.id}',
     auth: {
-        async signUp(email, password) {
+        async signUp(email: string, password: string) {
             return await supabase.auth.signUp({
                 email,
                 password,
@@ -30,7 +32,7 @@ export const dbHelper = {
                 }
             });
         },
-        async signIn(email, password) {
+        async signIn(email: string, password: string) {
             return await supabase.auth.signInWithPassword({ email, password });
         },
         async signOut() {
@@ -60,10 +62,12 @@ export const dbHelper = {
 
             const deploymentPayload = {
                 projectId: project.id,
-                files: deployedFiles
+                files: deployedFiles,
+                name: project.name,
+                customDomain: project.customDomain
             };
 
-            const response = await fetch(`${MAYSON_HOSTING_URL}/api/deploy`, {
+            const response = await fetch(`${BOLBIA_HOSTING_URL}/api/deploy`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -73,7 +77,7 @@ export const dbHelper = {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || 'Fallo interno del servidor de despliegue');
+                throw new Error(errorData.error || 'Error en el servidor de despliegue');
             }
 
             const data = await response.json();
@@ -81,12 +85,11 @@ export const dbHelper = {
                 success: true,
                 url: data.url
             };
-
         } catch (error: any) {
-            console.error('Error deploying project:', error);
+            console.error('Deploy error:', error);
             return {
                 success: false,
-                error: error.message || 'Error de conexión con Mayson Hosting'
+                error: error.message || 'Error de conexión con bolbia Hosting'
             };
         }
     }

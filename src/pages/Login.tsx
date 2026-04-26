@@ -64,12 +64,12 @@ export function Login() {
             <div className="login-card glass-panel">
                 <div className="login-header">
                     <div className="logo-container">
-                        <img src={logo} alt="Mayson Logo" className="logo-img" />
+                        <img src={logo} alt="Bulbia logo" className="logo-img" />
                     </div>
                     <h1>{isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</h1>
                     <p className="text-muted">
                         {isLogin
-                            ? 'Bienvenido de nuevo a Mayson.'
+                            ? 'Bienvenido de nuevo a Bulbia.'
                             : 'Regístrate para empezar a construir.'}
                     </p>
                 </div>
