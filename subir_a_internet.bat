@@ -7,8 +7,8 @@ echo.
 
 echo 1. Preparando los archivos...
 "C:\Program Files\Git\cmd\git.exe" init
-"C:\Program Files\Git\cmd\git.exe" config --global user.email "maysondeploybot@example.com"
-"C:\Program Files\Git\cmd\git.exe" config --global user.name "Mayson Deploy Bot"
+"C:\Program Files\Git\cmd\git.exe" config --global user.email "albert.llacuna@gmail.com"
+"C:\Program Files\Git\cmd\git.exe" config --global user.name "Albert Llacuna"
 "C:\Program Files\Git\cmd\git.exe" add .
 
 echo.
