@@ -121,12 +121,49 @@ export function ProjectDashboard() {
         }
     };
 
+    // --- Typewriter Effect ---
+    const phrases = [
+        "construir un CRM inmobiliario...",
+        "generar un dashboard de finanzas...",
+        "hacer un prototipo de e-commerce...",
+        "crear un gestor de proyectos...",
+        "diseñar una landing page moderna..."
+    ];
+    const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+    const [displayText, setDisplayText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const typingSpeed = isDeleting ? 40 : 80;
+        const currentPhrase = phrases[currentPhraseIndex];
+        
+        const timeout = setTimeout(() => {
+            if (!isDeleting) {
+                setDisplayText(currentPhrase.substring(0, displayText.length + 1));
+                if (displayText.length === currentPhrase.length) {
+                    setTimeout(() => setIsDeleting(true), 2000);
+                }
+            } else {
+                setDisplayText(currentPhrase.substring(0, displayText.length - 1));
+                if (displayText.length === 0) {
+                    setIsDeleting(false);
+                    setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+                }
+            }
+        }, typingSpeed);
+
+        return () => clearTimeout(timeout);
+    }, [displayText, isDeleting, currentPhraseIndex]);
+
     if (!user) return null;
 
     return (
         <div className="flex h-screen bg-[var(--background)] text-[var(--text-primary)] overflow-hidden builder-layout">
+            {/* Animated Background */}
+            <div className="mesh-gradient" />
+
             {/* Sidebar */}
-            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--surface)] flex-shrink-0 z-20 shadow-2xl">
+            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--surface)]/40 backdrop-blur-xl flex-shrink-0 z-20 shadow-2xl">
                 <div className="p-4 border-b border-[var(--surface-border)] flex items-center gap-2">
                     <img src={logo} alt="bulbia logo" className="w-8 h-8 rounded shrink-0" />
                     <span className="font-bold text-lg">Bulbia</span>
@@ -169,7 +206,7 @@ export function ProjectDashboard() {
                     )}
                 </div>
 
-                <div className="p-4 border-t border-[var(--surface-border)] mt-auto">
+                <div className="p-4 border-t border-[var(--surface-border)] mt-auto bg-[var(--surface)]/20">
                     <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-3 rounded-xl bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors mb-2 text-left">
                         <div className="flex items-center gap-2 mb-1">
                             <span className="w-2 h-2 rounded-full bg-success"></span>
@@ -206,64 +243,71 @@ export function ProjectDashboard() {
                         </div>
                     </div>
                 )}
-                {/* Background glow effects */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-                <div className="z-10 w-full max-w-3xl flex flex-col items-center animate-fade-in -mt-16">
-                    <div className="flex items-center gap-2 mb-8 bg-[var(--surface)] border border-[var(--surface-border)] px-4 py-1.5 rounded-full shadow-sm">
-                        <Sparkles size={16} className="text-primary" />
-                        <span className="text-sm font-medium text-[var(--text-secondary)]">asistente Bulbia</span>
+                <div className="z-10 w-full max-w-3xl flex flex-col items-center animate-fade-in -mt-24">
+                    <div className="flex items-center gap-2 mb-10 bg-white/40 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 px-5 py-2 rounded-full shadow-lg shadow-black/5">
+                        <Sparkles size={18} className="text-primary animate-pulse" />
+                        <span className="text-sm font-semibold text-[var(--text-secondary)]">Bulbia Intelligence</span>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] text-center mb-4 tracking-tight">
-                        ¿Qué vas a crear a continuación?
+                    <h1 className="text-5xl md:text-6xl font-bold text-[var(--text-primary)] text-center mb-6 tracking-tight leading-tight">
+                        ¿Qué vamos a crear hoy?
                     </h1>
-                    <p className="text-[var(--text-muted)] text-center mb-12 text-lg">
-                        Describe abajo la idea de tu app o inspírate con nuestras plantillas
-                    </p>
-
-                    <form 
-                        onSubmit={handleCreateProjectFromPrompt} 
-                        className="w-full relative shadow-2xl shadow-primary/5 rounded-2xl"
+                    
+                    <div 
+                        className="w-full premium-glass rounded-3xl p-2 shadow-2xl shadow-primary/10 transition-all hover:shadow-primary/20"
                     >
-                        <textarea
-                            id="hero-prompt-input"
-                            className="w-full bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded-2xl px-6 py-5 pr-16 text-lg text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 resize-none transition-all shadow-sm"
-                            style={{ minHeight: '140px' }}
-                            placeholder="Ej: Crea un CRM inmobiliario con gestión de clientes y calendario..."
-                            value={prompt}
-                            onChange={(e) => setPrompt(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    if (prompt.trim()) {
-                                        handleCreateProjectFromPrompt(e as any);
-                                    }
-                                }
-                            }}
-                            autoFocus
-                        />
-                        <button
-                            type="submit"
-                            disabled={!prompt.trim()}
-                            className="absolute bottom-5 right-5 p-3 rounded-xl bg-primary hover:bg-primary-600 text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
-                        >
-                            <Send size={20} />
-                        </button>
-                    </form>
+                        <form onSubmit={handleCreateProjectFromPrompt} className="relative">
+                            <div className="absolute top-6 left-6 pointer-events-none flex items-center gap-1">
+                                <span className="text-xl text-[var(--text-muted)]">Pregunta a Bulbia para</span>
+                                <span className="text-xl text-primary font-medium">{displayText}</span>
+                                <span className="w-[2px] h-6 bg-primary animate-pulse ml-1"></span>
+                            </div>
 
-                    <div className="w-full mt-6">
-                        <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-widest pl-2 mb-3 block">Sugerencias</span>
-                        <div className="flex flex-wrap gap-2">
+                            <textarea
+                                id="hero-prompt-input"
+                                className="w-full bg-transparent border-none rounded-2xl px-6 py-6 pt-16 text-xl text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all"
+                                style={{ minHeight: '180px' }}
+                                value={prompt}
+                                onChange={(e) => setPrompt(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        if (prompt.trim()) {
+                                            handleCreateProjectFromPrompt(e as any);
+                                        }
+                                    }
+                                }}
+                                autoFocus
+                            />
+                            
+                            <div className="flex justify-between items-center px-4 pb-4">
+                                <div className="flex gap-2">
+                                    <button type="button" className="p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors"><Plus size={20} /></button>
+                                    <button type="button" className="p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-2 text-sm font-medium">Build <Settings size={14} /></button>
+                                </div>
+                                <button
+                                    type="submit"
+                                    disabled={!prompt.trim()}
+                                    className="p-3 rounded-full bg-primary hover:bg-primary-600 text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 active:scale-90"
+                                >
+                                    <Send size={22} className="-rotate-45 -translate-y-0.5 translate-x-0.5" />
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div className="w-full mt-10">
+                        <div className="flex flex-wrap justify-center gap-3">
                             {[
                                 "CRM de Ventas", "App de Productividad", "Dashboard de Finanzas", 
-                                "Gestor de Tareas", "Portal de Empleados", "Plataforma Educativa"
+                                "Gestor de Tareas", "Portal de Empleados"
                             ].map(suggestion => (
                                 <button
                                     key={suggestion}
                                     type="button"
                                     onClick={() => setPrompt(`Crea una aplicación de tipo: ${suggestion}. Que sea elegante, moderna y completamente funcional.`)}
-                                    className="px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--surface-border)] hover:bg-[var(--surface-hover)] hover:border-[var(--text-muted)] transition-all text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                                    className="px-5 py-2.5 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10 transition-all text-sm font-medium text-[var(--text-secondary)] shadow-sm hover:shadow-md hover:-translate-y-0.5"
                                 >
                                     {suggestion}
                                 </button>
