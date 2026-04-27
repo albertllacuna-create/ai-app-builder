@@ -250,7 +250,7 @@ export function ProjectDashboard() {
                         <span className="text-xs font-semibold text-[var(--text-secondary)]">Bulbia Intelligence</span>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] text-center mb-6 tracking-tight leading-tight">
+                    <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] text-center mb-6 tracking-tight leading-tight">
                         ¿Qué vamos a crear hoy?
                     </h1>
                     
@@ -258,7 +258,7 @@ export function ProjectDashboard() {
                         className="w-full premium-glass rounded-3xl p-1.5 shadow-2xl shadow-primary/5 transition-all hover:shadow-primary/15"
                     >
                         <form onSubmit={handleCreateProjectFromPrompt} className="relative">
-                            <div className="absolute top-5 left-6 pointer-events-none flex items-center gap-1">
+                            <div className={`absolute top-5 left-6 pointer-events-none flex items-center gap-1 transition-opacity duration-200 ${prompt.length > 0 ? 'opacity-0' : 'opacity-100'}`}>
                                 <span className="text-base text-[var(--text-muted)]">Pregunta a Bulbia para</span>
                                 <span className="text-base text-primary font-medium">{displayText}</span>
                                 <span className="w-[1.5px] h-5 bg-primary animate-pulse ml-0.5"></span>
@@ -266,7 +266,7 @@ export function ProjectDashboard() {
 
                             <textarea
                                 id="hero-prompt-input"
-                                className="w-full bg-transparent border-none rounded-2xl px-6 py-5 pt-12 text-base text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all"
+                                className="w-full bg-transparent border-none rounded-2xl px-6 py-5 text-base text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all"
                                 style={{ minHeight: '130px' }}
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
