@@ -163,7 +163,7 @@ export function ProjectDashboard() {
             <div className="mesh-gradient" />
 
             {/* Sidebar */}
-            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--surface)]/60 backdrop-blur-xl flex-shrink-0 z-20 shadow-2xl">
+            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--background)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
                 <div className="p-4 border-b border-[var(--surface-border)] flex items-center gap-2">
                     <img src={logo} alt="bulbia logo" className="w-8 h-8 rounded shrink-0" />
                     <span className="font-bold text-lg">Bulbia</span>
