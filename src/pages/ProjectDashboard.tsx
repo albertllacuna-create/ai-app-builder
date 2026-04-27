@@ -158,12 +158,12 @@ export function ProjectDashboard() {
     if (!user) return null;
 
     return (
-        <div className="flex h-screen bg-[var(--background)] text-[var(--text-primary)] overflow-hidden builder-layout">
+        <div className="flex h-screen text-[var(--text-primary)] overflow-hidden builder-layout bg-transparent relative">
             {/* Animated Background */}
             <div className="mesh-gradient" />
 
             {/* Sidebar */}
-            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--surface)]/40 backdrop-blur-xl flex-shrink-0 z-20 shadow-2xl">
+            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--surface)]/60 backdrop-blur-xl flex-shrink-0 z-20 shadow-2xl">
                 <div className="p-4 border-b border-[var(--surface-border)] flex items-center gap-2">
                     <img src={logo} alt="bulbia logo" className="w-8 h-8 rounded shrink-0" />
                     <span className="font-bold text-lg">Bulbia</span>
@@ -230,7 +230,7 @@ export function ProjectDashboard() {
             </aside>
 
             {/* Main Area: Hero Prompt */}
-            <main className="flex-1 flex flex-col items-center justify-center relative p-6 overflow-hidden">
+            <main className="flex-1 flex flex-col items-center justify-center relative p-6 overflow-hidden z-10">
                 {/* Alerta de Error flotante */}
                 {error && (
                     <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in duration-300">
@@ -244,30 +244,30 @@ export function ProjectDashboard() {
                     </div>
                 )}
 
-                <div className="z-10 w-full max-w-3xl flex flex-col items-center animate-fade-in -mt-24">
-                    <div className="flex items-center gap-2 mb-10 bg-white/40 dark:bg-black/20 backdrop-blur-md border border-white/30 dark:border-white/10 px-5 py-2 rounded-full shadow-lg shadow-black/5">
-                        <Sparkles size={18} className="text-primary animate-pulse" />
-                        <span className="text-sm font-semibold text-[var(--text-secondary)]">Bulbia Intelligence</span>
+                <div className="z-10 w-full max-w-2xl flex flex-col items-center animate-fade-in -mt-20">
+                    <div className="flex items-center gap-2 mb-8 bg-white/50 dark:bg-black/20 backdrop-blur-md border border-white/40 dark:border-white/10 px-4 py-1.5 rounded-full shadow-lg shadow-black/5">
+                        <Sparkles size={14} className="text-primary animate-pulse" />
+                        <span className="text-xs font-semibold text-[var(--text-secondary)]">Bulbia Intelligence</span>
                     </div>
 
-                    <h1 className="text-5xl md:text-6xl font-bold text-[var(--text-primary)] text-center mb-6 tracking-tight leading-tight">
+                    <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-primary)] text-center mb-6 tracking-tight leading-tight">
                         ¿Qué vamos a crear hoy?
                     </h1>
                     
                     <div 
-                        className="w-full premium-glass rounded-3xl p-2 shadow-2xl shadow-primary/10 transition-all hover:shadow-primary/20"
+                        className="w-full premium-glass rounded-3xl p-1.5 shadow-2xl shadow-primary/5 transition-all hover:shadow-primary/15"
                     >
                         <form onSubmit={handleCreateProjectFromPrompt} className="relative">
-                            <div className="absolute top-6 left-6 pointer-events-none flex items-center gap-1">
-                                <span className="text-xl text-[var(--text-muted)]">Pregunta a Bulbia para</span>
-                                <span className="text-xl text-primary font-medium">{displayText}</span>
-                                <span className="w-[2px] h-6 bg-primary animate-pulse ml-1"></span>
+                            <div className="absolute top-5 left-6 pointer-events-none flex items-center gap-1">
+                                <span className="text-base text-[var(--text-muted)]">Pregunta a Bulbia para</span>
+                                <span className="text-base text-primary font-medium">{displayText}</span>
+                                <span className="w-[1.5px] h-5 bg-primary animate-pulse ml-0.5"></span>
                             </div>
 
                             <textarea
                                 id="hero-prompt-input"
-                                className="w-full bg-transparent border-none rounded-2xl px-6 py-6 pt-16 text-xl text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all"
-                                style={{ minHeight: '180px' }}
+                                className="w-full bg-transparent border-none rounded-2xl px-6 py-5 pt-12 text-base text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all"
+                                style={{ minHeight: '130px' }}
                                 value={prompt}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 onKeyDown={(e) => {
@@ -281,24 +281,24 @@ export function ProjectDashboard() {
                                 autoFocus
                             />
                             
-                            <div className="flex justify-between items-center px-4 pb-4">
-                                <div className="flex gap-2">
-                                    <button type="button" className="p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors"><Plus size={20} /></button>
-                                    <button type="button" className="p-2.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-2 text-sm font-medium">Build <Settings size={14} /></button>
+                            <div className="flex justify-between items-center px-4 pb-3">
+                                <div className="flex gap-1.5">
+                                    <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors"><Plus size={18} /></button>
+                                    <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-1.5 text-xs font-medium">Build <Settings size={12} /></button>
                                 </div>
                                 <button
                                     type="submit"
                                     disabled={!prompt.trim()}
-                                    className="p-3 rounded-full bg-primary hover:bg-primary-600 text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 active:scale-90"
+                                    className="p-2.5 rounded-full bg-primary hover:bg-primary-600 text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 active:scale-90"
                                 >
-                                    <Send size={22} className="-rotate-45 -translate-y-0.5 translate-x-0.5" />
+                                    <Send size={18} className="-rotate-45 -translate-y-0.5 translate-x-0.5" />
                                 </button>
                             </div>
                         </form>
                     </div>
 
-                    <div className="w-full mt-10">
-                        <div className="flex flex-wrap justify-center gap-3">
+                    <div className="w-full mt-8">
+                        <div className="flex flex-wrap justify-center gap-2">
                             {[
                                 "CRM de Ventas", "App de Productividad", "Dashboard de Finanzas", 
                                 "Gestor de Tareas", "Portal de Empleados"
@@ -307,7 +307,7 @@ export function ProjectDashboard() {
                                     key={suggestion}
                                     type="button"
                                     onClick={() => setPrompt(`Crea una aplicación de tipo: ${suggestion}. Que sea elegante, moderna y completamente funcional.`)}
-                                    className="px-5 py-2.5 rounded-2xl bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 hover:bg-white/60 dark:hover:bg-white/10 transition-all text-sm font-medium text-[var(--text-secondary)] shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                                    className="px-4 py-2 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-md border border-white/40 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/10 transition-all text-xs font-medium text-[var(--text-secondary)] shadow-sm hover:shadow-md hover:-translate-y-0.5"
                                 >
                                     {suggestion}
                                 </button>
