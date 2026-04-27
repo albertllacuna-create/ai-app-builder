@@ -9,9 +9,9 @@
 :root {
   --background: #ffffff;
   --foreground: #18181b;
-  --primary: #f59e0b;
-  --primary-hover: #d97706;
-  --primary-light: #fef3c7;
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-light: #ede9fe;
   --surface: #f8f8fa;
   --surface-hover: #f0f0f3;
   --surface-border: #e4e4e7;
@@ -24,8 +24,8 @@
   --shadow-color: rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
   --code-bg: #f4f4f5;
-  --chat-ai-bg: #fffbeb;
-  --chat-ai-border: #fde68a;
+  --chat-ai-bg: #f3f0ff;
+  --chat-ai-border: #e0d4fc;
   --chat-user-bg: #f4f4f5;
   --chat-user-border: #e4e4e7;
   --font-base: 'Inter', system-ui, -apple-system, sans-serif;
@@ -39,7 +39,7 @@
 .dark {
   --background: #09090b;
   --foreground: #fafafa;
-  --primary-light: rgba(245, 158, 11, 0.15);
+  --primary-light: rgba(139, 92, 246, 0.15);
   --surface: rgba(24, 24, 27, 0.7);
   --surface-hover: rgba(39, 39, 42, 0.8);
   --surface-border: rgba(255, 255, 255, 0.08);
@@ -50,8 +50,8 @@
   --shadow-color: rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
   --code-bg: #1e1e1e;
-  --chat-ai-bg: rgba(245, 158, 11, 0.15);
-  --chat-ai-border: rgba(245, 158, 11, 0.3);
+  --chat-ai-bg: rgba(139, 92, 246, 0.15);
+  --chat-ai-border: rgba(139, 92, 246, 0.3);
   --chat-user-bg: rgba(39, 39, 42, 0.8);
   --chat-user-border: rgba(255, 255, 255, 0.08);
 }
@@ -131,13 +131,13 @@ body {
 .btn-primary {
   background: var(--primary);
   color: white;
-  box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.3);
+  box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.3);
 }
 
 .btn-primary:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px 0 rgba(245, 158, 11, 0.35);
+  box-shadow: 0 6px 20px 0 rgba(139, 92, 246, 0.35);
 }
 
 .btn-outline {
@@ -164,7 +164,7 @@ body {
 
 .input-field:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
 }
 
 select.input-field option,
@@ -195,7 +195,7 @@ select.input-field optgroup {
 .blob-1 {
   width: 400px;
   height: 400px;
-  background: rgba(245, 158, 11, 0.1);
+  background: rgba(139, 92, 246, 0.1);
   top: -100px;
   left: -100px;
 }
@@ -518,8 +518,8 @@ button {
 
 .project-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(245, 158, 11, 0.5);
-  box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.15);
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.15);
 }
 
 .project-icon {
@@ -936,7 +936,7 @@ button {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
   animation: pulseBackground 4s ease-in-out infinite alternate;
 }
 
@@ -974,7 +974,7 @@ button {
   position: absolute;
   width: 100%;
   height: 100%;
-  border: 2px solid rgba(245, 158, 11, 0.2);
+  border: 2px solid rgba(139, 92, 246, 0.2);
   border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
   animation: morphRing 8s linear infinite;
 }
@@ -983,7 +983,7 @@ button {
   position: absolute;
   width: 80%;
   height: 80%;
-  border: 2px solid rgba(245, 158, 11, 0.1);
+  border: 2px solid rgba(139, 92, 246, 0.1);
   border-radius: 50%;
   animation: spin 10s linear infinite reverse;
 }
@@ -1260,7 +1260,7 @@ button {
 }
 
 .dark .markdown-body code {
-  background: rgba(245, 158, 11, 0.15);
+  background: rgba(139, 92, 246, 0.15);
   color: #c4b5fd;
 }
 
