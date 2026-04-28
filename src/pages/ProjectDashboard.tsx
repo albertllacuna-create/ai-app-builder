@@ -29,9 +29,7 @@ export function ProjectDashboard() {
             setAttachments(prev => [...prev, ...Array.from(e.target.files as FileList)]);
         }
         // Reset input value so the same file can be selected again if removed
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
+        e.target.value = '';
     };
 
     const removeAttachment = (index: number) => {
@@ -297,14 +295,6 @@ export function ProjectDashboard() {
                                 autoFocus
                             />
                             
-                            <input 
-                                type="file" 
-                                ref={fileInputRef} 
-                                className="hidden" 
-                                multiple 
-                                onChange={handleFileSelect} 
-                            />
-                            
                             {attachments.length > 0 && (
                                 <div className="flex flex-wrap gap-2 px-6 pb-3">
                                     {attachments.map((file, i) => (
@@ -325,14 +315,18 @@ export function ProjectDashboard() {
 
                             <div className="flex justify-between items-center px-4 pb-3">
                                 <div className="flex gap-1.5">
-                                    <button 
-                                        type="button" 
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative"
+                                    <label 
+                                        className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative cursor-pointer m-0"
                                         title="Adjuntar archivos"
                                     >
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            multiple 
+                                            onChange={handleFileSelect} 
+                                        />
                                         <Plus size={18} className="group-hover:text-primary transition-colors" />
-                                    </button>
+                                    </label>
                                     <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-1.5 text-xs font-medium">Build <Settings size={12} /></button>
                                 </div>
                                 <button
