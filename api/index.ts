@@ -211,13 +211,36 @@ app.post('/api/chat', async (req, res) => {
 
     const systemPrompt = buildSystemPrompt(filteredFiles);
 
-    // Formatear mensajes para Vercel AI (Adaptarse tanto al modelo v1 'content' como al modelo v3 'parts')
+    // Formatear mensajes para Vercel AI, soportando modo Multimodal (texto + imágenes/archivos)
     const formattedMessages = messages
-        .map((m: any) => ({
-            role: (m.role === 'ai' || m.role === 'model') ? 'assistant' : m.role,
-            content: m.content || (m.parts ? m.parts.map((p: any) => p.text).join('') : '')
-        }))
-        .filter((m: any) => typeof m.content === 'string' && m.content.length > 0);
+        .map((m: any) => {
+            const role = (m.role === 'ai' || m.role === 'model') ? 'assistant' : m.role;
+            let content: any = m.content || (m.parts ? m.parts.map((p: any) => p.text).join('') : '');
+
+            // Convertir a formato de "partes" si hay adjuntos
+            if (m.experimental_attachments && m.experimental_attachments.length > 0) {
+                const parts = [];
+                if (typeof content === 'string' && content.trim().length > 0) {
+                    parts.push({ type: 'text', text: content });
+                }
+                
+                for (const att of m.experimental_attachments) {
+                    if (att.contentType?.startsWith('image/')) {
+                        parts.push({ type: 'image', image: att.url });
+                    } else {
+                        // Otros archivos se envían como tipo 'file' para los modelos que lo soporten
+                        parts.push({ type: 'file', mimeType: att.contentType || 'application/octet-stream', data: att.url });
+                    }
+                }
+                content = parts;
+            }
+
+            return { role, content };
+        })
+        .filter((m: any) => {
+            if (Array.isArray(m.content)) return m.content.length > 0;
+            return typeof m.content === 'string' && m.content.trim().length > 0;
+        });
 
     // Selector de proveedor dinámico con Fallback Automático si falta la API Key
     let config = MODELS_CONFIG[DEFAULT_MODEL_ID] || MODELS_CONFIG['gemini-3-flash'];

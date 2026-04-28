@@ -157,9 +157,20 @@ export function AppBuilder() {
         
         if (initialPrompt) {
             initialPromptHandled.current = true;
-            // setPrompt is not strictly needed here since we pass directly to handleSendPrompt, 
-            // but we keep it to clear the query param early synchronously
-            handleSendPrompt(initialPrompt);
+            
+            // Extraer adjuntos de sessionStorage si los hay
+            let attachedFiles: any[] | undefined = undefined;
+            const storedAttachments = sessionStorage.getItem('bulbia_pending_attachments');
+            if (storedAttachments) {
+                try {
+                    attachedFiles = JSON.parse(storedAttachments);
+                } catch(e) {
+                    console.error("Failed to parse pending attachments");
+                }
+                sessionStorage.removeItem('bulbia_pending_attachments');
+            }
+
+            handleSendPrompt(initialPrompt, attachedFiles);
             navigate(location.pathname, { replace: true });
         }
     }, [project, location, navigate, messages.length, handleSendPrompt]);

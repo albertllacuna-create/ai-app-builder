@@ -73,12 +73,33 @@ export function ProjectDashboard() {
         return () => subscription.unsubscribe();
     }, [navigate]);
 
+    const readFileAsDataURL = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleCreateProjectFromPrompt = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!prompt.trim()) return;
 
         try {
             setIsSyncing(true);
+            
+            if (attachments.length > 0) {
+                const processedAttachments = await Promise.all(
+                    attachments.map(async (file) => ({
+                        name: file.name,
+                        type: file.type,
+                        url: await readFileAsDataURL(file)
+                    }))
+                );
+                sessionStorage.setItem('bulbia_pending_attachments', JSON.stringify(processedAttachments));
+            }
+
             // Create a temporary project name
             const proj = await db.createProject(prompt.trim().substring(0, 30) + '...');
             

@@ -130,7 +130,7 @@ export function useMaysonChat(
         }
     }, [project, status, sendMessage]);
 
-    const handleSendPrompt = async (eOrText?: React.FormEvent | string) => {
+    const handleSendPrompt = async (eOrText?: React.FormEvent | string, attachments?: any[]) => {
         if (eOrText && typeof eOrText !== 'string' && 'preventDefault' in eOrText) {
             (eOrText as React.FormEvent).preventDefault();
         }
@@ -155,11 +155,21 @@ export function useMaysonChat(
         
         // El hook usa automáticamente la ruta /api/chat y appendea a vercelMessages
         try {
-            await sendMessage({ 
+            const messagePayload: any = { 
                 id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : `msg-${Date.now()}-${Math.random()}`,
                 role: 'user', 
                 content: userPromptText 
-            }, {
+            };
+            
+            if (attachments && attachments.length > 0) {
+                messagePayload.experimental_attachments = attachments.map((att: any) => ({
+                    name: att.name,
+                    contentType: att.type,
+                    url: att.url
+                }));
+            }
+
+            await sendMessage(messagePayload, {
                 body: {
                     currentFiles: project.files,
                     userTokens: user.tokens
