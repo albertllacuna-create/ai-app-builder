@@ -315,18 +315,19 @@ export function ProjectDashboard() {
 
                             <div className="flex justify-between items-center px-4 pb-3">
                                 <div className="flex gap-1.5">
-                                    <label 
-                                        className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative cursor-pointer m-0"
+                                    <div 
+                                        className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative cursor-pointer m-0 flex items-center justify-center"
                                         title="Adjuntar archivos"
                                     >
                                         <input 
                                             type="file" 
-                                            className="hidden" 
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                                             multiple 
                                             onChange={handleFileSelect} 
+                                            title=""
                                         />
-                                        <Plus size={18} className="group-hover:text-primary transition-colors" />
-                                    </label>
+                                        <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
+                                    </div>
                                     <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-1.5 text-xs font-medium">Build <Settings size={12} /></button>
                                 </div>
                                 <button

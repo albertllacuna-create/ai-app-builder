@@ -56,12 +56,11 @@ export function Login() {
     };
 
     return (
-        <div className="login-container">
-            {/* Background decorations */}
-            <div className="blob blob-1"></div>
-            <div className="blob blob-2"></div>
+        <div className="login-container bg-transparent relative">
+            {/* Animated Background */}
+            <div className="mesh-gradient" />
 
-            <div className="login-card glass-panel">
+            <div className="login-card glass-panel relative z-10">
                 <div className="login-header">
                     <div className="logo-container">
                         <img src={logo} alt="Bulbia logo" className="logo-img" />
