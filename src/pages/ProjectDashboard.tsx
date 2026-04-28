@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles } from 'lucide-react';
+import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { db } from '../services/db';
 import { Project } from '../types';
@@ -21,6 +21,22 @@ export function ProjectDashboard() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isSyncing, setIsSyncing] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [attachments, setAttachments] = useState<File[]>([]);
+
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setAttachments(prev => [...prev, ...Array.from(e.target.files as FileList)]);
+        }
+        // Reset input value so the same file can be selected again if removed
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    const removeAttachment = (index: number) => {
+        setAttachments(prev => prev.filter((_, i) => i !== index));
+    };
 
     // Limpiar error automáticamente tras 5 segundos
     useEffect(() => {
@@ -281,9 +297,42 @@ export function ProjectDashboard() {
                                 autoFocus
                             />
                             
+                            <input 
+                                type="file" 
+                                ref={fileInputRef} 
+                                className="hidden" 
+                                multiple 
+                                onChange={handleFileSelect} 
+                            />
+                            
+                            {attachments.length > 0 && (
+                                <div className="flex flex-wrap gap-2 px-6 pb-3">
+                                    {attachments.map((file, i) => (
+                                        <div key={i} className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 px-2.5 py-1.5 rounded-lg text-xs animate-in zoom-in duration-200">
+                                            {file.type.startsWith('image/') ? <ImageIcon size={14} className="text-primary" /> : <FileText size={14} className="text-primary" />}
+                                            <span className="truncate max-w-[150px] text-[var(--text-secondary)] font-medium">{file.name}</span>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => removeAttachment(i)} 
+                                                className="text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-full p-0.5 transition-colors ml-1"
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
                             <div className="flex justify-between items-center px-4 pb-3">
                                 <div className="flex gap-1.5">
-                                    <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors"><Plus size={18} /></button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative"
+                                        title="Adjuntar archivos"
+                                    >
+                                        <Plus size={18} className="group-hover:text-primary transition-colors" />
+                                    </button>
                                     <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-1.5 text-xs font-medium">Build <Settings size={12} /></button>
                                 </div>
                                 <button
