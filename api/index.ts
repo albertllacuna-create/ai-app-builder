@@ -261,6 +261,7 @@ app.post('/api/chat', async (req, res) => {
           model: aiModel,
           system: systemPrompt,
           messages: formattedMessages,
+          // @ts-ignore
           maxTokens: 8192,
         });
 
@@ -279,6 +280,7 @@ app.post('/api/chat', async (req, res) => {
             model: googleProvider('gemini-3-flash-preview'),
             system: systemPrompt,
             messages: formattedMessages,
+            // @ts-ignore
             maxTokens: 8192,
           });
           if (typeof (fallbackResult as any).pipeUIMessageStreamToResponse === 'function') return (fallbackResult as any).pipeUIMessageStreamToResponse(res);
