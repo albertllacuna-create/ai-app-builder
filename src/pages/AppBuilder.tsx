@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, Outlet, Link, useLocation } from 'react-router-dom';
-    Send, Maximize2, FileCode2, Sparkles, ExternalLink, Loader2, Rocket, Play, RefreshCw, Code2,
+import { Send, Maximize2, FileCode2, Sparkles, ExternalLink, Loader2, Rocket, Play, RefreshCw, Code2,
     LayoutDashboard, Users, Database, Globe, Settings, CreditCard, PanelsTopLeft, ArrowLeft, Monitor, Smartphone,
-    AlertTriangle, X, Save, Plus, FileText, Image as ImageIcon
+    AlertTriangle, X, Save, Plus, Image as ImageIcon, FileText
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { db } from '../services/db';
@@ -36,6 +36,7 @@ export function AppBuilder() {
     const [isDeploying, setIsDeploying] = useState(false);
     const [deployStatus, setDeployStatus] = useState<{ url?: string; error?: string } | null>(null);
     const initialPromptHandled = useRef(false);
+    
     const [attachments, setAttachments] = useState<File[]>([]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,25 +57,6 @@ export function AppBuilder() {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
-    };
-
-    const onSubmitPrompt = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!prompt.trim() || isAiTyping) return;
-        
-        let processedAttachments: any[] | undefined = undefined;
-        if (attachments.length > 0) {
-            processedAttachments = await Promise.all(
-                attachments.map(async (file) => ({
-                    name: file.name,
-                    type: file.type,
-                    url: await readFileAsDataURL(file)
-                }))
-            );
-            setAttachments([]);
-        }
-        
-        handleSendPrompt(e, processedAttachments);
     };
 
     // --- Hooks Custom Orchestration ---
@@ -334,8 +316,28 @@ export function AppBuilder() {
                     )}
                 </div>
 
-                <form className="chat-input-area border-t border-[var(--surface-border)] bg-[var(--surface)]" onSubmit={onSubmitPrompt}>
-                    <div className="input-wrapper relative flex flex-col bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all p-1 shadow-sm">
+                <form className="chat-input-area border-t border-[var(--surface-border)] bg-[var(--surface)]" onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!prompt.trim() || isAiTyping) return;
+                    
+                    let processedAttachments: any[] | undefined = undefined;
+                    if (attachments.length > 0) {
+                        try {
+                            processedAttachments = await Promise.all(
+                                attachments.map(async (file) => ({
+                                    name: file.name,
+                                    type: file.type,
+                                    url: await readFileAsDataURL(file)
+                                }))
+                            );
+                            setAttachments([]);
+                        } catch (err) {
+                            console.error("Error processing attachments:", err);
+                        }
+                    }
+                    handleSendPrompt(e, processedAttachments);
+                }}>
+                    <div className="input-wrapper relative flex flex-col bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all shadow-sm">
                         
                         {attachments.length > 0 && (
                             <div className="flex flex-wrap gap-2 px-3 pt-3">
@@ -355,15 +357,17 @@ export function AppBuilder() {
                             </div>
                         )}
 
-                        <div className="flex items-end">
-                            <div className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative cursor-pointer m-1 flex items-center justify-center shrink-0" title="Adjuntar archivos">
+                        <div className="flex items-center p-1">
+                            <div 
+                                className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative cursor-pointer m-1 flex items-center justify-center shrink-0"
+                                title="Adjuntar archivos"
+                            >
                                 <input 
                                     type="file" 
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" 
                                     multiple 
                                     onChange={handleFileSelect} 
                                     title=""
-                                    value=""
                                 />
                                 <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
                             </div>
@@ -372,13 +376,14 @@ export function AppBuilder() {
                                 className="chat-input w-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-3 py-2.5 resize-none outline-none text-[13px] leading-relaxed"
                                 placeholder="Ej: Crea una tabla... (Shift+Enter para nueva línea)"
                                 value={prompt}
-                                rows={Math.min(100, prompt.split('\n').length || 1)}
+                                rows={Math.min(10, prompt.split('\n').length || 1)}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault();
-                                        if (prompt.trim() && !isAiTyping) {
-                                            onSubmitPrompt(e as any);
+                                        if ((prompt.trim() || attachments.length > 0) && !isAiTyping) {
+                                            const form = e.currentTarget.closest('form');
+                                            if (form) form.requestSubmit();
                                         }
                                     }
                                 }}
@@ -388,7 +393,7 @@ export function AppBuilder() {
                             <button
                                 type="submit"
                                 className="send-btn flex-shrink-0 self-end flex items-center justify-center p-2.5 mx-1 mb-1 rounded-lg bg-primary hover:bg-primary-600 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={!prompt.trim() || isAiTyping}
+                                disabled={(!prompt.trim() && attachments.length === 0) || isAiTyping}
                             >
                                 <Send size={16} />
                             </button>

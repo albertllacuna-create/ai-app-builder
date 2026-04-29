@@ -346,7 +346,6 @@ export function ProjectDashboard() {
                                             multiple 
                                             onChange={handleFileSelect} 
                                             title=""
-                                            value=""
                                         />
                                         <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
                                     </div>
