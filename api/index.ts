@@ -225,11 +225,18 @@ app.post('/api/chat', async (req, res) => {
                 }
                 
                 for (const att of m.experimental_attachments) {
+                    // Limpiar el prefijo data:xxx/yyy;base64, si existe
+                    const base64Data = att.url.includes(',') ? att.url.split(',')[1] : att.url;
+
                     if (att.contentType?.startsWith('image/')) {
-                        parts.push({ type: 'image', image: att.url });
+                        parts.push({ type: 'image', image: base64Data });
                     } else {
-                        // Otros archivos se envían como tipo 'file' para los modelos que lo soporten
-                        parts.push({ type: 'file', mimeType: att.contentType || 'application/octet-stream', data: att.url });
+                        // Otros archivos se envían como tipo 'file'
+                        parts.push({ 
+                            type: 'file', 
+                            mimeType: att.contentType || 'application/octet-stream', 
+                            data: base64Data 
+                        });
                     }
                 }
                 content = parts;
