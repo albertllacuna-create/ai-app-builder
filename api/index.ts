@@ -19,12 +19,27 @@ app.use(express.json({ limit: '10mb' }));
 // =====================================================
 // SYSTEM PROMPT BUILDER
 // =====================================================
-function buildSystemPrompt(currentFiles: Record<string, string>): string {
+function buildSystemPrompt(currentFiles: Record<string, string>, mode: 'build' | 'plan' = 'build'): string {
   const filesContext = Object.entries(currentFiles)
     .map(([path, content]) => `Archivo: ${path}\n\`\`\`\n${content}\n\`\`\``)
     .join('\n\n');
 
   const isProjectEmpty = !filesContext || Object.keys(currentFiles).filter(k => k !== '/public/index.html' && k !== '/src/index.tsx' && k !== '/src/styles.css' && k !== '/src/App.tsx').length === 0;
+
+  const modeInstructions = mode === 'plan' 
+    ? `
+## MODO PLANIFICACIÓN (DRAFTING)
+- NO GENERES BLOQUES DE CÓDIGO (filepath: /src/...).
+- Tu tarea es analizar la solicitud y proponer un PLAN DE ACCIÓN detallado.
+- Explica qué archivos vas a crear, qué librerías usarás y cómo estructurarás la lógica.
+- Usa listas (bullet points) y Markdown para que sea legible.
+- El usuario debe aprobar este plan antes de que pases al modo de construcción.
+`
+    : `
+## MODO CONSTRUCCIÓN (EXECUTING)
+- Genera el código directamente usando bloques de código con "// filepath: /src/...".
+- No te demores en explicaciones largas. Construye la solución.
+`;
 
   return `
 PROYECTO ACTUAL:
@@ -34,9 +49,11 @@ ${isProjectEmpty ? '\n⚠️ PROYECTO VACÍO.' : ''}
 ## 1. IDENTIDAD
 Eres un asistente especializado en crear aplicaciones y programas web funcionales. Tu objetivo es construir software real y útil, no demostraciones vacías.
 
+${modeInstructions}
+
 ## 2. COMPORTAMIENTO 
 - Escucha la solicitud del usuario (ej: "crea un CRM").
-- NO hagas preguntas adicionales ni des opciones.
+- NO hagas preguntas adicionales ni des opciones (a menos que estés en MODO PLANIFICACIÓN).
 - Toma tú mismo las decisiones arquitectónicas basándote en la información disponible y en tu experiencia como arquitecto.
 - Genera el código directamente. Los usuarios prefieren ver resultados funcionales rápidamente, aunque luego pidan modificaciones.
 - Si el mensaje empieza con "ERROR DE COMPILACIÓN DETECTADO AUTOMÁTICAMENTE": corrige solo los archivos afectados sin cambiar el resto.
@@ -187,7 +204,7 @@ ${allPaths.join('\n')}`;
 // =====================================================
 app.post('/api/chat', async (req, res) => {
   try {
-    const { messages, currentFiles = {}, userTokens } = req.body;
+    const { messages, currentFiles = {}, userTokens, mode = 'build' } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
       res.status(400).json({ error: 'Missing or invalid messages array' });
@@ -209,7 +226,7 @@ app.post('/api/chat', async (req, res) => {
        filteredFiles = await getRelevantFiles(lastUserMessage, currentFiles, apiKey);
     }
 
-    const systemPrompt = buildSystemPrompt(filteredFiles);
+    const systemPrompt = buildSystemPrompt(filteredFiles, mode);
 
     // Formatear mensajes para Vercel AI, soportando modo Multimodal (texto + imágenes/archivos)
     const formattedMessages = messages

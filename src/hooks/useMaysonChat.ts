@@ -130,7 +130,7 @@ export function useMaysonChat(
         }
     }, [project, status, sendMessage]);
 
-    const handleSendPrompt = async (eOrText?: React.FormEvent | string, attachments?: any[]) => {
+    const handleSendPrompt = async (eOrText?: React.FormEvent | string, attachments?: any[], mode: 'build' | 'plan' = 'build') => {
         if (eOrText && typeof eOrText !== 'string' && 'preventDefault' in eOrText) {
             (eOrText as React.FormEvent).preventDefault();
         }
@@ -172,7 +172,8 @@ export function useMaysonChat(
             await sendMessage(messagePayload, {
                 body: {
                     currentFiles: project.files,
-                    userTokens: user.tokens
+                    userTokens: user.tokens,
+                    mode: mode // <--- Enviamos el modo
                 }
             });
         } catch (err: any) {

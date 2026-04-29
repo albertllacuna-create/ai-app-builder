@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, Outlet, Link, useLocation } from 'react-router-dom';
 import { Send, Maximize2, FileCode2, Sparkles, ExternalLink, Loader2, Rocket, Play, RefreshCw, Code2,
     LayoutDashboard, Users, Database, Globe, Settings, CreditCard, PanelsTopLeft, ArrowLeft, Monitor, Smartphone,
-    AlertTriangle, X, Save, Plus, Image as ImageIcon, FileText
+    AlertTriangle, X, Save, Plus, Image as ImageIcon, FileText, Zap, ListChecks, CheckCircle2
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { db } from '../services/db';
@@ -37,6 +37,7 @@ export function AppBuilder() {
     const [deployStatus, setDeployStatus] = useState<{ url?: string; error?: string } | null>(null);
     const initialPromptHandled = useRef(false);
     const [error, setError] = useState<string | null>(null);
+    const [interactionMode, setInteractionMode] = useState<'build' | 'plan'>('build');
     
     const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -103,6 +104,11 @@ export function AppBuilder() {
             reader.onerror = reject;
             reader.readAsText(file);
         });
+    };
+
+    const handleApprovePlan = () => {
+        setInteractionMode('build');
+        handleSendPrompt("¡Plan aprobado! Por favor, procede a realizar todos los cambios de código descritos en el plan ahora.", undefined, 'build');
     };
 
     // --- Hooks Custom Orchestration ---
@@ -345,6 +351,19 @@ export function AppBuilder() {
                                 ) : (
                                     <p>{msg.content}</p>
                                 )}
+                                
+                                {/* Botón de Aprobar Plan si estamos en modo Plan y es el último mensaje de la IA */}
+                                {idx === messages.length - 1 && msg.role === 'ai' && interactionMode === 'plan' && !isAiTyping && (
+                                    <div className="mt-4 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                        <button 
+                                            onClick={handleApprovePlan}
+                                            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-indigo-600 text-white rounded-xl font-bold shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all group border border-white/20"
+                                        >
+                                            <CheckCircle2 size={18} className="group-hover:rotate-12 transition-transform" /> 
+                                            Aprobar y Ejecutar Cambios
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         );
                     })}
@@ -405,10 +424,34 @@ export function AppBuilder() {
                             setIsSyncing(false);
                         }
                     }
-                    handleSendPrompt(finalPrompt, imageAttachments.length > 0 ? imageAttachments : undefined);
+                    handleSendPrompt(finalPrompt, imageAttachments.length > 0 ? imageAttachments : undefined, interactionMode);
                 }}>
                     <div className="input-wrapper relative flex flex-col bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all shadow-sm">
                         
+                        {/* Selector de Modo (Plan / Build) */}
+                        <div className="flex items-center gap-1 px-3 pt-2">
+                            <div className="flex bg-black/5 dark:bg-white/5 p-0.5 rounded-lg border border-black/5 dark:border-white/5">
+                                <button
+                                    type="button"
+                                    onClick={() => setInteractionMode('build')}
+                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${interactionMode === 'build' ? 'bg-white dark:bg-neutral-800 shadow-sm text-primary' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                                >
+                                    <Zap size={12} /> BUILD
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setInteractionMode('plan')}
+                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${interactionMode === 'plan' ? 'bg-white dark:bg-neutral-800 shadow-sm text-indigo-500' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                                >
+                                    <ListChecks size={12} /> PLAN
+                                </button>
+                            </div>
+                            <div className="h-3 w-[1px] bg-[var(--surface-border)] mx-1"></div>
+                            <span className="text-[9px] uppercase tracking-wider font-bold text-[var(--text-muted)] opacity-50">
+                                {interactionMode === 'plan' ? 'Discutir antes de construir' : 'Aplicar cambios directamente'}
+                            </span>
+                        </div>
+
                         {attachments.length > 0 && (
                             <div className="flex flex-wrap gap-2 px-3 pt-3">
                                 {attachments.map((file, i) => (
