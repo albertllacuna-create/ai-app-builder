@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon, Zap, ListChecks, Loader2 } from 'lucide-react';
+import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon, Zap, ListChecks, Loader2, ChevronDown, Check } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { db } from '../services/db';
 import { Project } from '../types';
@@ -22,6 +22,7 @@ export function ProjectDashboard() {
     const [error, setError] = useState<string | null>(null);
     const [isSyncing, setIsSyncing] = useState(false);
     const [interactionMode, setInteractionMode] = useState<'build' | 'plan'>('build');
+    const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -402,22 +403,59 @@ export function ProjectDashboard() {
                                         />
                                         <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
                                     </div>
-                                <div className="flex bg-black/5 dark:bg-white/5 p-0.5 rounded-lg border border-black/5 dark:border-white/5">
-                                    <button
-                                        type="button"
-                                        onClick={() => setInteractionMode('build')}
-                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold transition-all ${interactionMode === 'build' ? 'bg-white dark:bg-neutral-800 shadow-sm text-primary' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
-                                    >
-                                        <Zap size={13} /> BUILD
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setInteractionMode('plan')}
-                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold transition-all ${interactionMode === 'plan' ? 'bg-white dark:bg-neutral-800 shadow-sm text-indigo-500' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
-                                    >
-                                        <ListChecks size={13} /> PLAN
-                                    </button>
-                                </div>
+                                    <div className="h-6 w-[1px] bg-black/10 dark:bg-white/10 mx-1"></div>
+
+                                    {/* Selector de Modo (Plan / Build) - Estilo Lovable Dropdown */}
+                                    <div className="relative">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsModeMenuOpen(!isModeMenuOpen)}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-black/5 dark:hover:bg-white/5 ${interactionMode === 'plan' ? 'text-indigo-500' : 'text-primary'}`}
+                                        >
+                                            {interactionMode === 'build' ? <Zap size={14} /> : <ListChecks size={14} />}
+                                            {interactionMode === 'build' ? 'Build' : 'Plan'}
+                                            <ChevronDown size={14} className={`transition-transform duration-200 ${isModeMenuOpen ? 'rotate-180' : ''}`} />
+                                        </button>
+
+                                        {isModeMenuOpen && (
+                                            <>
+                                                <div 
+                                                    className="fixed inset-0 z-40" 
+                                                    onClick={() => setIsModeMenuOpen(false)}
+                                                />
+                                                <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-2xl z-50 p-1.5 animate-in fade-in zoom-in slide-in-from-bottom-2 duration-200">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { setInteractionMode('build'); setIsModeMenuOpen(false); }}
+                                                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors ${interactionMode === 'build' ? 'bg-primary/10 text-primary' : 'hover:bg-neutral-100 dark:hover:bg-white/5 text-neutral-600 dark:text-neutral-400'}`}
+                                                    >
+                                                        <div className="flex items-center gap-2.5">
+                                                            <Zap size={16} />
+                                                            <div>
+                                                                <div className="font-bold text-xs">Build</div>
+                                                                <div className="text-[10px] opacity-70">Aplica cambios directamente</div>
+                                                            </div>
+                                                        </div>
+                                                        {interactionMode === 'build' && <Check size={14} />}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => { setInteractionMode('plan'); setIsModeMenuOpen(false); }}
+                                                        className={`w-full flex items-center justify-between px-3 py-2 mt-1 rounded-lg text-left transition-colors ${interactionMode === 'plan' ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-neutral-100 dark:hover:bg-white/5 text-neutral-600 dark:text-neutral-400'}`}
+                                                    >
+                                                        <div className="flex items-center gap-2.5">
+                                                            <ListChecks size={16} />
+                                                            <div>
+                                                                <div className="font-bold text-xs">Plan</div>
+                                                                <div className="text-[10px] opacity-70">Discutir antes de construir</div>
+                                                            </div>
+                                                        </div>
+                                                        {interactionMode === 'plan' && <Check size={14} />}
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                                 <button
                                     type="submit"

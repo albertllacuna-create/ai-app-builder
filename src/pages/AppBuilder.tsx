@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, Outlet, Link, useLocation } from 'react-router-dom';
 import { Send, Maximize2, FileCode2, Sparkles, ExternalLink, Loader2, Rocket, Play, RefreshCw, Code2,
     LayoutDashboard, Users, Database, Globe, Settings, CreditCard, PanelsTopLeft, ArrowLeft, Monitor, Smartphone,
-    AlertTriangle, X, Save, Plus, Image as ImageIcon, FileText, Zap, ListChecks, CheckCircle2
+    AlertTriangle, X, Save, Plus, Image as ImageIcon, FileText, Zap, ListChecks, CheckCircle2, ChevronDown, Check
 } from 'lucide-react';
 import Editor from '@monaco-editor/react';
 import { db } from '../services/db';
@@ -38,6 +38,7 @@ export function AppBuilder() {
     const initialPromptHandled = useRef(false);
     const [error, setError] = useState<string | null>(null);
     const [interactionMode, setInteractionMode] = useState<'build' | 'plan'>('build');
+    const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
     
     const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -430,27 +431,61 @@ export function AppBuilder() {
                 }}>
                     <div className="input-wrapper relative flex flex-col bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all shadow-sm">
                         
-                        {/* Selector de Modo (Plan / Build) */}
+                        {/* Selector de Modo (Plan / Build) - Estilo Lovable Dropdown */}
                         <div className="flex items-center gap-1 px-3 pt-2">
-                            <div className="flex bg-black/5 dark:bg-white/5 p-0.5 rounded-lg border border-black/5 dark:border-white/5">
+                            <div className="relative">
                                 <button
                                     type="button"
-                                    onClick={() => setInteractionMode('build')}
-                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${interactionMode === 'build' ? 'bg-white dark:bg-neutral-800 shadow-sm text-primary' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                                    onClick={() => setIsModeMenuOpen(!isModeMenuOpen)}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-black/5 dark:hover:bg-white/5 ${interactionMode === 'plan' ? 'text-indigo-500' : 'text-primary'}`}
                                 >
-                                    <Zap size={12} /> BUILD
+                                    {interactionMode === 'build' ? <Zap size={14} /> : <ListChecks size={14} />}
+                                    {interactionMode === 'build' ? 'Build' : 'Plan'}
+                                    <ChevronDown size={14} className={`transition-transform duration-200 ${isModeMenuOpen ? 'rotate-180' : ''}`} />
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setInteractionMode('plan')}
-                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${interactionMode === 'plan' ? 'bg-white dark:bg-neutral-800 shadow-sm text-indigo-500' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
-                                >
-                                    <ListChecks size={12} /> PLAN
-                                </button>
+
+                                {isModeMenuOpen && (
+                                    <>
+                                        <div 
+                                            className="fixed inset-0 z-40" 
+                                            onClick={() => setIsModeMenuOpen(false)}
+                                        />
+                                        <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-2xl z-50 p-1.5 animate-in fade-in zoom-in slide-in-from-bottom-2 duration-200">
+                                            <button
+                                                type="button"
+                                                onClick={() => { setInteractionMode('build'); setIsModeMenuOpen(false); }}
+                                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors ${interactionMode === 'build' ? 'bg-primary/10 text-primary' : 'hover:bg-neutral-100 dark:hover:bg-white/5 text-neutral-600 dark:text-neutral-400'}`}
+                                            >
+                                                <div className="flex items-center gap-2.5">
+                                                    <Zap size={16} />
+                                                    <div>
+                                                        <div className="font-bold text-xs">Build</div>
+                                                        <div className="text-[10px] opacity-70">Aplica cambios directamente</div>
+                                                    </div>
+                                                </div>
+                                                {interactionMode === 'build' && <Check size={14} />}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setInteractionMode('plan'); setIsModeMenuOpen(false); }}
+                                                className={`w-full flex items-center justify-between px-3 py-2 mt-1 rounded-lg text-left transition-colors ${interactionMode === 'plan' ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-neutral-100 dark:hover:bg-white/5 text-neutral-600 dark:text-neutral-400'}`}
+                                            >
+                                                <div className="flex items-center gap-2.5">
+                                                    <ListChecks size={16} />
+                                                    <div>
+                                                        <div className="font-bold text-xs">Plan</div>
+                                                        <div className="text-[10px] opacity-70">Discutir antes de construir</div>
+                                                    </div>
+                                                </div>
+                                                {interactionMode === 'plan' && <Check size={14} />}
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                             <div className="h-3 w-[1px] bg-[var(--surface-border)] mx-1"></div>
-                            <span className="text-[9px] uppercase tracking-wider font-bold text-[var(--text-muted)] opacity-50">
-                                {interactionMode === 'plan' ? 'Discutir antes de construir' : 'Aplicar cambios directamente'}
+                            <span className="text-[10px] font-medium text-[var(--text-muted)] opacity-60">
+                                {interactionMode === 'plan' ? 'Pensar y diseñar paso a paso' : 'Acelerar y construir rápido'}
                             </span>
                         </div>
 
