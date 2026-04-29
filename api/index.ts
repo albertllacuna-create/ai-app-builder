@@ -217,29 +217,42 @@ app.post('/api/chat', async (req, res) => {
             const role = (m.role === 'ai' || m.role === 'model') ? 'assistant' : m.role;
             let content: any = m.content || (m.parts ? m.parts.map((p: any) => p.text).join('') : '');
 
-            // Convertir a formato de "partes" si hay adjuntos
-            if (m.experimental_attachments && m.experimental_attachments.length > 0) {
-                const parts = [];
+            // Solo permitimos "partes" en mensajes de usuario con adjuntos para evitar errores de esquema en respuestas previas
+            if (role === 'user' && m.experimental_attachments && m.experimental_attachments.length > 0) {
+                const parts: any[] = [];
                 if (typeof content === 'string' && content.trim().length > 0) {
                     parts.push({ type: 'text', text: content });
                 }
                 
                 for (const att of m.experimental_attachments) {
-                    // Limpiar el prefijo data:xxx/yyy;base64, si existe
-                    const base64Data = att.url.includes(',') ? att.url.split(',')[1] : att.url;
+                    try {
+                        const base64Data = att.url.includes(',') ? att.url.split(',')[1] : att.url;
+                        const buffer = Buffer.from(base64Data, 'base64');
+                        const uint8Array = new Uint8Array(buffer);
 
-                    if (att.contentType?.startsWith('image/')) {
-                        parts.push({ type: 'image', image: base64Data });
-                    } else {
-                        // Otros archivos se envían como tipo 'file'
-                        parts.push({ 
-                            type: 'file', 
-                            mimeType: att.contentType || 'application/octet-stream', 
-                            data: base64Data 
-                        });
+                        if (att.contentType?.startsWith('image/')) {
+                            parts.push({ 
+                                type: 'image', 
+                                image: uint8Array,
+                                mimeType: att.contentType 
+                            });
+                        } else {
+                            // Otros archivos se envían como tipo 'file' (Gemini soporta PDFs, Excels, etc.)
+                            parts.push({ 
+                                type: 'file', 
+                                data: uint8Array,
+                                mimeType: att.contentType || 'application/octet-stream'
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Error decoding attachment:", att.name, err);
                     }
                 }
-                content = parts;
+                
+                // Si al final tenemos partes, usamos el array como contenido
+                if (parts.length > 0) {
+                    content = parts;
+                }
             }
 
             return { role, content };
