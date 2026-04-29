@@ -50,7 +50,7 @@ export function useMaysonChat(
         }
     });
 
-    const { messages: vercelMessages = [], sendMessage, status = 'idle', isLoading = false, setMessages: setVercelMessages = () => {} } = chatState as any;
+    const { messages: vercelMessages = [], append: sendMessage, status = 'idle', isLoading = false, setMessages: setVercelMessages = () => {} } = chatState as any;
 
     if (!sendMessage) {
         console.error("DEBUG: useChat returned:", Object.keys(chatState || {}));
