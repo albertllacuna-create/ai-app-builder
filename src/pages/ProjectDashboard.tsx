@@ -342,10 +342,11 @@ export function ProjectDashboard() {
                                     >
                                         <input 
                                             type="file" 
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" 
                                             multiple 
                                             onChange={handleFileSelect} 
                                             title=""
+                                            value=""
                                         />
                                         <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
                                     </div>
