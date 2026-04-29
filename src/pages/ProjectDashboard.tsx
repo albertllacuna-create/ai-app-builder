@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon } from 'lucide-react';
+import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon, Zap, ListChecks, Loader2 } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { db } from '../services/db';
 import { Project } from '../types';
@@ -21,6 +21,7 @@ export function ProjectDashboard() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [interactionMode, setInteractionMode] = useState<'build' | 'plan'>('build');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachments, setAttachments] = useState<File[]>([]);
 
@@ -156,7 +157,7 @@ export function ProjectDashboard() {
             const proj = await db.createProject(finalPrompt.substring(0, 30) + '...');
             
             // Navigate and pass the prompt to AppBuilder via query parameter
-            navigate(`/project/${proj.id}?prompt=${encodeURIComponent(finalPrompt)}`);
+            navigate(`/project/${proj.id}?prompt=${encodeURIComponent(finalPrompt)}&mode=${interactionMode}`);
 
             // Asynchronously generate and update the project name based on the prompt
             fetch('/api/generate-name', {
@@ -401,7 +402,22 @@ export function ProjectDashboard() {
                                         />
                                         <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
                                     </div>
-                                    <button type="button" className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors flex items-center gap-1.5 text-xs font-medium">Build <Settings size={12} /></button>
+                                <div className="flex bg-black/5 dark:bg-white/5 p-0.5 rounded-lg border border-black/5 dark:border-white/5">
+                                    <button
+                                        type="button"
+                                        onClick={() => setInteractionMode('build')}
+                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold transition-all ${interactionMode === 'build' ? 'bg-white dark:bg-neutral-800 shadow-sm text-primary' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                                    >
+                                        <Zap size={13} /> BUILD
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setInteractionMode('plan')}
+                                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-bold transition-all ${interactionMode === 'plan' ? 'bg-white dark:bg-neutral-800 shadow-sm text-indigo-500' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'}`}
+                                    >
+                                        <ListChecks size={13} /> PLAN
+                                    </button>
+                                </div>
                                 </div>
                                 <button
                                     type="submit"

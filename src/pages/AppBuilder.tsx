@@ -227,9 +227,11 @@ export function AppBuilder() {
         
         const searchParams = new URLSearchParams(location.search);
         const initialPrompt = searchParams.get('prompt');
+        const initialMode = searchParams.get('mode') as 'build' | 'plan' || 'build';
         
         if (initialPrompt) {
             initialPromptHandled.current = true;
+            if (initialMode) setInteractionMode(initialMode);
             
             // Extraer adjuntos de sessionStorage si los hay
             let attachedFiles: any[] | undefined = undefined;
@@ -243,7 +245,7 @@ export function AppBuilder() {
                 sessionStorage.removeItem('bulbia_pending_attachments');
             }
 
-            handleSendPrompt(initialPrompt, attachedFiles);
+            handleSendPrompt(initialPrompt, attachedFiles, initialMode);
             navigate(location.pathname, { replace: true });
         }
     }, [project, location, navigate, messages.length, handleSendPrompt]);
