@@ -26,9 +26,36 @@ export function ProjectDashboard() {
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setAttachments(prev => [...prev, ...Array.from(e.target.files as FileList)]);
+            const files = Array.from(e.target.files);
+            const validFiles: File[] = [];
+            const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+            files.forEach(file => {
+                if (file.size > MAX_SIZE) {
+                    setError(`El archivo "${file.name}" es demasiado grande (máx 10MB)`);
+                    return;
+                }
+                
+                // Tipos permitidos: imágenes, documentos de texto, código
+                const allowedTypes = [
+                    'image/', 'text/', 'application/pdf', 'application/json',
+                    'application/javascript', 'application/typescript', 'application/x-javascript'
+                ];
+                const isAllowed = allowedTypes.some(type => file.type.startsWith(type)) || 
+                                 /\.(ts|tsx|js|jsx|css|json|md|txt)$/.test(file.name);
+
+                if (!isAllowed) {
+                    setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes o texto)`);
+                    return;
+                }
+
+                validFiles.push(file);
+            });
+
+            if (validFiles.length > 0) {
+                setAttachments(prev => [...prev, ...validFiles]);
+            }
         }
-        // Reset input value so the same file can be selected again if removed
         e.target.value = '';
     };
 

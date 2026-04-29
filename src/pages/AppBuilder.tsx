@@ -36,15 +36,52 @@ export function AppBuilder() {
     const [isDeploying, setIsDeploying] = useState(false);
     const [deployStatus, setDeployStatus] = useState<{ url?: string; error?: string } | null>(null);
     const initialPromptHandled = useRef(false);
+    const [error, setError] = useState<string | null>(null);
     
     const [attachments, setAttachments] = useState<File[]>([]);
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setAttachments(prev => [...prev, ...Array.from(e.target.files as FileList)]);
+            const files = Array.from(e.target.files);
+            const validFiles: File[] = [];
+            const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+            files.forEach(file => {
+                if (file.size > MAX_SIZE) {
+                    setError(`El archivo "${file.name}" es demasiado grande (máx 10MB)`);
+                    return;
+                }
+                
+                // Tipos permitidos: imágenes, documentos de texto, código
+                const allowedTypes = [
+                    'image/', 'text/', 'application/pdf', 'application/json',
+                    'application/javascript', 'application/typescript', 'application/x-javascript'
+                ];
+                const isAllowed = allowedTypes.some(type => file.type.startsWith(type)) || 
+                                 /\.(ts|tsx|js|jsx|css|json|md|txt)$/.test(file.name);
+
+                if (!isAllowed) {
+                    setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes o texto)`);
+                    return;
+                }
+
+                validFiles.push(file);
+            });
+
+            if (validFiles.length > 0) {
+                setAttachments(prev => [...prev, ...validFiles]);
+            }
         }
         e.target.value = '';
     };
+
+    // Limpiar error automáticamente tras 5 segundos
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => setError(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const removeAttachment = (index: number) => {
         setAttachments(prev => prev.filter((_, i) => i !== index));
@@ -246,7 +283,19 @@ export function AppBuilder() {
     return (
         <div className="builder-layout bg-[var(--background)] text-[var(--text-primary)]">
             {/* Main Chat Area */}
-            <section className="chat-panel glass-panel border-r border-[var(--surface-border)]">
+            <section className="chat-panel glass-panel border-r border-[var(--surface-border)] relative">
+                {/* Alerta de Error flotante en el chat */}
+                {error && (
+                    <div className="absolute top-16 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in duration-300 w-[90%]">
+                        <div className="bg-red-500/15 backdrop-blur-md border border-red-500/50 text-red-500 px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-3">
+                            <AlertTriangle size={16} />
+                            <span className="font-medium text-[11px] flex-1">{error}</span>
+                            <button onClick={() => setError(null)} className="hover:bg-red-500/20 p-1 rounded-lg transition-colors">
+                                <X size={14} />
+                            </button>
+                        </div>
+                    </div>
+                )}
                 <div className="panel-header border-b border-[var(--surface-border)]" style={{ justifyContent: 'space-between', padding: '1rem 1.25rem' }}>
                     <div className="flex items-center gap-2">
                         <button onClick={() => navigate('/dashboard')} className="p-1.5 hover:bg-[var(--surface-hover)] rounded-md transition-colors mr-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]" title="Volver al Dashboard">
