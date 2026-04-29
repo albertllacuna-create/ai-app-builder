@@ -52,18 +52,16 @@ export function AppBuilder() {
                     return;
                 }
                 
-                // Tipos permitidos: imágenes, documentos de texto, código, excels
+                // Tipos permitidos: imágenes, documentos de texto, código
                 const allowedTypes = [
-                    'image/', 'text/', 'application/pdf', 'application/json',
-                    'application/javascript', 'application/typescript', 'application/x-javascript',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    'application/vnd.ms-excel'
+                    'image/', 'text/', 'application/json',
+                    'application/javascript', 'application/typescript', 'application/x-javascript'
                 ];
                 const isAllowed = allowedTypes.some(type => file.type.startsWith(type)) || 
-                                 /\.(ts|tsx|js|jsx|css|json|md|txt|xlsx|xls|csv)$/.test(file.name);
+                                 /\.(ts|tsx|js|jsx|css|json|md|txt|csv)$/.test(file.name);
 
                 if (!isAllowed) {
-                    setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes o texto)`);
+                    setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes, texto o CSV)`);
                     return;
                 }
 
@@ -95,6 +93,15 @@ export function AppBuilder() {
             reader.onload = () => resolve(reader.result as string);
             reader.onerror = reject;
             reader.readAsDataURL(file);
+        });
+    };
+
+    const readFileAsText = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsText(file);
         });
     };
 
@@ -371,22 +378,34 @@ export function AppBuilder() {
                     e.preventDefault();
                     if (!prompt.trim() || isAiTyping) return;
                     
-                    let processedAttachments: any[] | undefined = undefined;
+                    let finalPrompt = prompt.trim();
+                    let imageAttachments: any[] = [];
+                    
                     if (attachments.length > 0) {
+                        setIsSyncing(true);
                         try {
-                            processedAttachments = await Promise.all(
-                                attachments.map(async (file) => ({
-                                    name: file.name,
-                                    type: file.type,
-                                    url: await readFileAsDataURL(file)
-                                }))
-                            );
+                            for (const file of attachments) {
+                                if (file.type.startsWith('image/')) {
+                                    imageAttachments.push({
+                                        name: file.name,
+                                        type: file.type,
+                                        url: await readFileAsDataURL(file)
+                                    });
+                                } else {
+                                    // Tratar como texto (CSV, JSON, Code)
+                                    const text = await readFileAsText(file);
+                                    finalPrompt += `\n\n[Contenido del archivo adjunto: ${file.name}]\n${text}\n[Fin de archivo: ${file.name}]\n`;
+                                }
+                            }
                             setAttachments([]);
                         } catch (err) {
                             console.error("Error processing attachments:", err);
+                            setError("Error al procesar archivos adjuntos");
+                        } finally {
+                            setIsSyncing(false);
                         }
                     }
-                    handleSendPrompt(e, processedAttachments);
+                    handleSendPrompt(finalPrompt, imageAttachments.length > 0 ? imageAttachments : undefined);
                 }}>
                     <div className="input-wrapper relative flex flex-col bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded-xl focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/50 transition-all shadow-sm">
                         

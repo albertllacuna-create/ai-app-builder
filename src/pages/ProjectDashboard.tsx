@@ -36,18 +36,16 @@ export function ProjectDashboard() {
                     return;
                 }
                 
-                // Tipos permitidos: imágenes, documentos de texto, código, excels
+                // Tipos permitidos: imágenes, documentos de texto, código (excluyendo binarios como Excel)
                 const allowedTypes = [
-                    'image/', 'text/', 'application/pdf', 'application/json',
-                    'application/javascript', 'application/typescript', 'application/x-javascript',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                    'application/vnd.ms-excel'
+                    'image/', 'text/', 'application/json',
+                    'application/javascript', 'application/typescript', 'application/x-javascript'
                 ];
                 const isAllowed = allowedTypes.some(type => file.type.startsWith(type)) || 
-                                 /\.(ts|tsx|js|jsx|css|json|md|txt|xlsx|xls|csv)$/.test(file.name);
+                                 /\.(ts|tsx|js|jsx|css|json|md|txt|csv)$/.test(file.name);
 
                 if (!isAllowed) {
-                    setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes o texto)`);
+                    setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes, texto o código)`);
                     return;
                 }
 
@@ -111,6 +109,15 @@ export function ProjectDashboard() {
         });
     };
 
+    const readFileAsText = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsText(file);
+        });
+    };
+
     const handleCreateProjectFromPrompt = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!prompt.trim()) return;
@@ -118,22 +125,38 @@ export function ProjectDashboard() {
         try {
             setIsSyncing(true);
             
+            let finalPrompt = prompt.trim();
+            let imageAttachments: any[] = [];
+            
             if (attachments.length > 0) {
-                const processedAttachments = await Promise.all(
-                    attachments.map(async (file) => ({
-                        name: file.name,
-                        type: file.type,
-                        url: await readFileAsDataURL(file)
-                    }))
-                );
-                sessionStorage.setItem('bulbia_pending_attachments', JSON.stringify(processedAttachments));
+                for (const file of attachments) {
+                    if (file.type.startsWith('image/')) {
+                        imageAttachments.push({
+                            name: file.name,
+                            type: file.type,
+                            url: await readFileAsDataURL(file)
+                        });
+                    } else {
+                        // Tratar como texto (CSV, JSON, Code)
+                        try {
+                            const text = await readFileAsText(file);
+                            finalPrompt += `\n\n[Archivo adjunto: ${file.name}]\n${text}\n`;
+                        } catch (err) {
+                            console.warn("Failed to read text file:", file.name);
+                        }
+                    }
+                }
+                
+                if (imageAttachments.length > 0) {
+                    sessionStorage.setItem('bulbia_pending_attachments', JSON.stringify(imageAttachments));
+                }
             }
 
             // Create a temporary project name
-            const proj = await db.createProject(prompt.trim().substring(0, 30) + '...');
+            const proj = await db.createProject(finalPrompt.substring(0, 30) + '...');
             
             // Navigate and pass the prompt to AppBuilder via query parameter
-            navigate(`/project/${proj.id}?prompt=${encodeURIComponent(prompt.trim())}`);
+            navigate(`/project/${proj.id}?prompt=${encodeURIComponent(finalPrompt)}`);
 
             // Asynchronously generate and update the project name based on the prompt
             fetch('/api/generate-name', {
