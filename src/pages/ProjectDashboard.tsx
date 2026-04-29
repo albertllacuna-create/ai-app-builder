@@ -36,13 +36,15 @@ export function ProjectDashboard() {
                     return;
                 }
                 
-                // Tipos permitidos: imágenes, documentos de texto, código
+                // Tipos permitidos: imágenes, documentos de texto, código, excels
                 const allowedTypes = [
                     'image/', 'text/', 'application/pdf', 'application/json',
-                    'application/javascript', 'application/typescript', 'application/x-javascript'
+                    'application/javascript', 'application/typescript', 'application/x-javascript',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'application/vnd.ms-excel'
                 ];
                 const isAllowed = allowedTypes.some(type => file.type.startsWith(type)) || 
-                                 /\.(ts|tsx|js|jsx|css|json|md|txt)$/.test(file.name);
+                                 /\.(ts|tsx|js|jsx|css|json|md|txt|xlsx|xls|csv)$/.test(file.name);
 
                 if (!isAllowed) {
                     setError(`El tipo de archivo "${file.name}" no es compatible (usa imágenes o texto)`);
