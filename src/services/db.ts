@@ -95,6 +95,7 @@ class SupabaseDB {
                     stripePlans: p.stripe_plans || [],
                     type: p.type || 'Web App',
                     updatedAt: p.updated_at,
+                    favorite: p.favorite || false,
                     files: p.files || {},
                     messages: p.messages || [],
                     history: p.history || []
@@ -129,6 +130,7 @@ class SupabaseDB {
             files: project.files,
             messages: project.messages,
             history: project.history || [],
+            favorite: project.favorite || false,
             updated_at: project.updatedAt
         });
 

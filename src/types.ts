@@ -39,6 +39,7 @@ export interface Project {
     stripeConnected?: boolean;
     type: string;
     updatedAt: string;
+    favorite?: boolean;
     files: Record<string, string>; // path -> content
     messages: Message[];
     history?: {

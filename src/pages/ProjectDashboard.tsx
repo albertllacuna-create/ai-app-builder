@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon, Zap, ListChecks, Loader2, ChevronDown, Check } from 'lucide-react';
+import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon, Zap, ListChecks, Loader2, ChevronDown, Check, Star, Layers, Clock } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { db } from '../services/db';
 import { Project } from '../types';
@@ -25,6 +25,16 @@ export function ProjectDashboard() {
     const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachments, setAttachments] = useState<File[]>([]);
+    const [sidebarView, setSidebarView] = useState<'home' | 'all'>('home');
+
+    const toggleFavorite = async (e: React.MouseEvent, projectId: string) => {
+        e.stopPropagation();
+        const project = projects.find(p => p.id === projectId);
+        if (project) {
+            await db.updateProjectMetadata(projectId, { favorite: !project.favorite });
+            setProjects([...db.getProjects()]);
+        }
+    };
 
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -263,69 +273,138 @@ export function ProjectDashboard() {
             {/* Animated Background */}
             <div className="mesh-gradient" />
 
-            {/* Sidebar */}
-            <aside className="w-72 border-r border-[var(--surface-border)] flex flex-col bg-[var(--background)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
-                <div className="p-4 border-b border-[var(--surface-border)] flex items-center gap-2">
-                    <img src={logo} alt="bulbia logo" className="w-8 h-8 rounded shrink-0" />
-                    <span className="font-bold text-lg">Bulbia</span>
+            {/* Sidebar - Base44 Style */}
+            <aside className="w-64 border-r border-[var(--surface-border)] flex flex-col bg-[var(--background)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
+                {/* Logo */}
+                <div className="px-4 py-3 border-b border-[var(--surface-border)] flex items-center gap-2">
+                    <img src={logo} alt="bulbia logo" className="w-7 h-7 rounded shrink-0" />
+                    <span className="font-bold text-[15px]">Bulbia</span>
                 </div>
                 
-                <div className="p-4">
+                {/* Create App Button */}
+                <div className="px-3 pt-3 pb-1">
                     <button 
-                        className="w-full btn btn-primary flex items-center justify-center gap-2"
+                        className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-gradient-to-r from-primary to-indigo-500 text-white text-[12px] font-semibold hover:opacity-90 transition-all shadow-md shadow-primary/20 active:scale-[0.98]"
                         onClick={() => {
+                            setSidebarView('home');
                             setPrompt('');
                             document.getElementById('hero-prompt-input')?.focus();
                         }}
                     >
-                        <Plus size={18} /> Nuevo Proyecto
+                        <Plus size={15} /> Crear App
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto px-2 pb-4">
-                    <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-widest pl-2 mb-2 mt-4">Tus Proyectos</h3>
-                    {projects.slice().reverse().map(project => (
-                        <div 
-                            key={project.id} 
-                            className="group relative flex flex-col p-3 mx-2 mb-1 rounded-xl hover:bg-[var(--surface-hover)] cursor-pointer transition-colors border border-transparent hover:border-[var(--surface-border)]" 
-                            onClick={() => navigate(`/project/${project.id}`)}
-                        >
-                            <div className="flex justify-between items-center w-full">
-                                <span className="font-medium text-sm truncate pr-10 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
-                                <div className="absolute right-2 opacity-0 group-hover:opacity-100 flex gap-1 bg-[var(--surface-elevated)] border border-[var(--surface-border)] rounded px-1 transition-opacity shadow-lg">
-                                    <button className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors" title="Duplicar" onClick={(e) => { e.stopPropagation(); setProjectToClone(project); }}><Copy size={14} /></button>
-                                    <button className="p-1 text-[var(--text-muted)] hover:text-red-500 transition-colors" title="Eliminar" onClick={(e) => { e.stopPropagation(); setProjectToDelete(project); }}><Trash2 size={14} /></button>
+                {/* Navigation */}
+                <nav className="px-2 pt-2 pb-1 space-y-0.5">
+                    <button 
+                        onClick={() => setSidebarView('all')}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]'}`}
+                    >
+                        <Layers size={14} /> Todas las Apps
+                    </button>
+                </nav>
+
+                {/* Scrollable content */}
+                <div className="flex-1 overflow-y-auto px-2 pb-2">
+                    {sidebarView === 'all' ? (
+                        /* ALL APPS VIEW */
+                        <div>
+                            <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3">Todos los proyectos</h3>
+                            {projects.slice().reverse().map(project => (
+                                <div 
+                                    key={project.id} 
+                                    className="group relative flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
+                                    onClick={() => navigate(`/project/${project.id}`)}
+                                >
+                                    <button 
+                                        onClick={(e) => toggleFavorite(e, project.id)}
+                                        className={`shrink-0 p-0.5 rounded transition-colors ${project.favorite ? 'text-amber-400' : 'text-transparent group-hover:text-[var(--text-muted)]'} hover:text-amber-400`}
+                                        title={project.favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                                    >
+                                        <Star size={12} fill={project.favorite ? 'currentColor' : 'none'} />
+                                    </button>
+                                    <div className="flex-1 min-w-0">
+                                        <span className="block text-[12px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                        <span className="block text-[9px] text-[var(--text-muted)]">{new Date(project.updatedAt).toLocaleDateString()}</span>
+                                    </div>
+                                    <div className="opacity-0 group-hover:opacity-100 flex gap-0.5 transition-opacity shrink-0">
+                                        <button className="p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors rounded" title="Duplicar" onClick={(e) => { e.stopPropagation(); setProjectToClone(project); }}><Copy size={12} /></button>
+                                        <button className="p-1 text-[var(--text-muted)] hover:text-red-500 transition-colors rounded" title="Eliminar" onClick={(e) => { e.stopPropagation(); setProjectToDelete(project); }}><Trash2 size={12} /></button>
+                                    </div>
                                 </div>
-                            </div>
-                            <span className="text-[10px] text-[var(--text-muted)] mt-1">{new Date(project.updatedAt).toLocaleDateString()}</span>
+                            ))}
+                            {projects.length === 0 && (
+                                <div className="px-3 py-6 text-center text-[var(--text-muted)] text-[11px]">
+                                    Aún no tienes proyectos.
+                                </div>
+                            )}
                         </div>
-                    ))}
-                    {projects.length === 0 && (
-                        <div className="p-4 text-center text-neutral-500 text-sm mt-4">
-                            Aún no tienes proyectos.
+                    ) : (
+                        /* HOME VIEW (Favorites + Recent) */
+                        <div>
+                            {/* Favorites */}
+                            {projects.some(p => p.favorite) && (
+                                <div>
+                                    <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3">Favoritos</h3>
+                                    {projects.filter(p => p.favorite).map(project => (
+                                        <div 
+                                            key={project.id} 
+                                            className="group flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
+                                            onClick={() => navigate(`/project/${project.id}`)}
+                                        >
+                                            <Star size={12} className="text-amber-400 shrink-0" fill="currentColor" />
+                                            <span className="text-[12px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Recent */}
+                            <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
+                                <Clock size={10} /> Recientes
+                            </h3>
+                            {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
+                                <div 
+                                    key={project.id} 
+                                    className="group flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
+                                    onClick={() => navigate(`/project/${project.id}`)}
+                                >
+                                    <div className="flex-1 min-w-0">
+                                        <span className="block text-[12px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                        <span className="block text-[9px] text-[var(--text-muted)]">{new Date(project.updatedAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {projects.length === 0 && (
+                                <div className="px-3 py-6 text-center text-[var(--text-muted)] text-[11px]">
+                                    Aún no tienes proyectos.
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
 
-                <div className="p-4 border-t border-[var(--surface-border)] mt-auto bg-[var(--surface)]/20">
-                    <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-3 rounded-xl bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors mb-2 text-left">
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="w-2 h-2 rounded-full bg-success"></span>
-                            <span className="text-xs font-medium text-[var(--text-muted)]">Plan {db.getUser()?.plan || 'Free'}</span>
+                {/* Footer */}
+                <div className="px-3 py-3 border-t border-[var(--surface-border)] mt-auto space-y-1.5">
+                    <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-2.5 rounded-lg bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors text-left">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-success"></span>
+                            <span className="text-[10px] font-medium text-[var(--text-muted)]">Plan {db.getUser()?.plan || 'Free'}</span>
                         </div>
-                        <span className="text-sm font-bold text-[var(--text-primary)]">{db.getUser()?.tokens?.toLocaleString()} Tokens REST.</span>
+                        <span className="text-[12px] font-bold text-[var(--text-primary)]">{db.getUser()?.tokens?.toLocaleString()} Tokens REST.</span>
                     </button>
                     
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-1">
                         <ThemeToggle />
-                        <button className="flex-1 flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--surface-hover)] transition-colors text-left" onClick={() => setShowSettings(true)}>
-                            <Settings size={18} className="text-[var(--text-muted)]" />
-                            <span className="text-sm font-medium text-[var(--text-secondary)]">Ajustes</span>
+                        <button className="flex-1 flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left" onClick={() => setShowSettings(true)}>
+                            <Settings size={14} className="text-[var(--text-muted)]" />
+                            <span className="text-[11px] font-medium text-[var(--text-secondary)]">Ajustes</span>
                         </button>
                     </div>
-                    <button className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--surface-hover)] transition-colors text-left text-red-500/80 hover:text-red-500" onClick={handleLogout}>
-                        <LogOut size={18} />
-                        <span className="text-sm font-medium">Cerrar Sesión</span>
+                    <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left text-red-500/80 hover:text-red-500" onClick={handleLogout}>
+                        <LogOut size={14} />
+                        <span className="text-[11px] font-medium">Cerrar Sesión</span>
                     </button>
                 </div>
             </aside>
