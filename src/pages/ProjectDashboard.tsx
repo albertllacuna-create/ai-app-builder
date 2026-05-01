@@ -102,6 +102,18 @@ export function ProjectDashboard() {
         return () => subscription.unsubscribe();
     }, [navigate]);
 
+    // Atajo de teclado Alt+P para cambiar entre Plan/Build
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.altKey && e.key.toLowerCase() === 'p') {
+                e.preventDefault();
+                setInteractionMode(prev => prev === 'build' ? 'plan' : 'build');
+            }
+        };
+        window.addEventListener('keydown', handler);
+        return () => window.removeEventListener('keydown', handler);
+    }, []);
+
     const readFileAsDataURL = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -405,16 +417,15 @@ export function ProjectDashboard() {
                                     </div>
                                     <div className="h-6 w-[1px] bg-black/10 dark:bg-white/10 mx-1"></div>
 
-                                    {/* Selector de Modo (Plan / Build) - Estilo Lovable Dropdown */}
+                                    {/* Selector de Modo (Plan / Build) - Estilo Lovable */}
                                     <div className="relative">
                                         <button
                                             type="button"
                                             onClick={() => setIsModeMenuOpen(!isModeMenuOpen)}
-                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-semibold transition-all hover:bg-black/5 dark:hover:bg-white/5 ${interactionMode === 'plan' ? 'text-indigo-500' : 'text-primary'}`}
+                                            className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[13px] font-medium transition-all hover:bg-black/5 dark:hover:bg-white/5 ${interactionMode === 'plan' ? 'text-indigo-500' : 'text-[var(--text-secondary)]'}`}
                                         >
-                                            {interactionMode === 'build' ? <Zap size={14} /> : <ListChecks size={14} />}
                                             {interactionMode === 'build' ? 'Build' : 'Plan'}
-                                            <ChevronDown size={14} className={`transition-transform duration-200 ${isModeMenuOpen ? 'rotate-180' : ''}`} />
+                                            <ChevronDown size={14} className={`transition-transform duration-200 opacity-60 ${isModeMenuOpen ? 'rotate-180' : ''}`} />
                                         </button>
 
                                         {isModeMenuOpen && (
@@ -423,35 +434,34 @@ export function ProjectDashboard() {
                                                     className="fixed inset-0 z-40" 
                                                     onClick={() => setIsModeMenuOpen(false)}
                                                 />
-                                                <div className="absolute bottom-full left-0 mb-2 w-56 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-2xl z-50 p-1.5 animate-in fade-in zoom-in slide-in-from-bottom-2 duration-200">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => { setInteractionMode('build'); setIsModeMenuOpen(false); }}
-                                                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors ${interactionMode === 'build' ? 'bg-primary/10 text-primary' : 'hover:bg-neutral-100 dark:hover:bg-white/5 text-neutral-600 dark:text-neutral-400'}`}
-                                                    >
-                                                        <div className="flex items-center gap-2.5">
-                                                            <Zap size={16} />
+                                                <div className="absolute bottom-full left-0 mb-2 w-64 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200">
+                                                    <div className="p-1.5">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => { setInteractionMode('build'); setIsModeMenuOpen(false); }}
+                                                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${interactionMode === 'build' ? 'bg-neutral-100 dark:bg-white/10' : 'hover:bg-neutral-50 dark:hover:bg-white/5'}`}
+                                                        >
                                                             <div>
-                                                                <div className="font-bold text-xs">Build</div>
-                                                                <div className="text-[10px] opacity-70">Aplica cambios directamente</div>
+                                                                <div className="font-semibold text-[13px] text-[var(--text-primary)]">Build</div>
+                                                                <div className="text-[11px] text-[var(--text-muted)] mt-0.5">Aplica cambios directamente</div>
                                                             </div>
-                                                        </div>
-                                                        {interactionMode === 'build' && <Check size={14} />}
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => { setInteractionMode('plan'); setIsModeMenuOpen(false); }}
-                                                        className={`w-full flex items-center justify-between px-3 py-2 mt-1 rounded-lg text-left transition-colors ${interactionMode === 'plan' ? 'bg-indigo-500/10 text-indigo-500' : 'hover:bg-neutral-100 dark:hover:bg-white/5 text-neutral-600 dark:text-neutral-400'}`}
-                                                    >
-                                                        <div className="flex items-center gap-2.5">
-                                                            <ListChecks size={16} />
+                                                            {interactionMode === 'build' && <Check size={16} className="text-[var(--text-primary)] shrink-0" />}
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => { setInteractionMode('plan'); setIsModeMenuOpen(false); }}
+                                                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors mt-0.5 ${interactionMode === 'plan' ? 'bg-neutral-100 dark:bg-white/10' : 'hover:bg-neutral-50 dark:hover:bg-white/5'}`}
+                                                        >
                                                             <div>
-                                                                <div className="font-bold text-xs">Plan</div>
-                                                                <div className="text-[10px] opacity-70">Discutir antes de construir</div>
+                                                                <div className="font-semibold text-[13px] text-[var(--text-primary)]">Plan</div>
+                                                                <div className="text-[11px] text-[var(--text-muted)] mt-0.5">Discutir antes de construir</div>
                                                             </div>
-                                                        </div>
-                                                        {interactionMode === 'plan' && <Check size={14} />}
-                                                    </button>
+                                                            {interactionMode === 'plan' && <Check size={16} className="text-[var(--text-primary)] shrink-0" />}
+                                                        </button>
+                                                    </div>
+                                                    <div className="border-t border-neutral-200 dark:border-neutral-700 px-3 py-2 flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
+                                                        Cambiar con <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-[9px] font-mono font-medium border border-neutral-200 dark:border-neutral-600">Alt</kbd> <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-[9px] font-mono font-medium border border-neutral-200 dark:border-neutral-600">P</kbd>
+                                                    </div>
                                                 </div>
                                             </>
                                         )}
