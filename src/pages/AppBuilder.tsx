@@ -357,12 +357,12 @@ export function AppBuilder() {
                                 
                                 {/* Botón de Aprobar Plan si estamos en modo Plan y es el último mensaje de la IA */}
                                 {idx === messages.length - 1 && msg.role === 'ai' && interactionMode === 'plan' && !isAiTyping && (
-                                    <div className="mt-4 flex justify-center animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                    <div className="mt-6 flex justify-center animate-in fade-in slide-in-from-bottom-3 duration-700">
                                         <button 
                                             onClick={handleApprovePlan}
-                                            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-indigo-600 text-white rounded-xl font-bold shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all group border border-white/20"
+                                            className="flex items-center gap-2 px-8 py-3 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold shadow-[0_10px_25px_-5px_rgba(79,70,229,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(79,70,229,0.5)] hover:scale-[1.03] active:scale-[0.97] transition-all group relative z-50 border border-white/10"
                                         >
-                                            <CheckCircle2 size={18} className="group-hover:rotate-12 transition-transform" /> 
+                                            <CheckCircle2 size={20} className="group-hover:scale-110 transition-transform" /> 
                                             Aprobar y Ejecutar Cambios
                                         </button>
                                     </div>
