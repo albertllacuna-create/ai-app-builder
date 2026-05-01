@@ -50,10 +50,24 @@ export function useMaysonChat(
         }
     });
 
-    const { messages: vercelMessages = [], append: sendMessage, status = 'idle', isLoading = false, setMessages: setVercelMessages = () => {} } = chatState as any;
+    const { messages: vercelMessages = [], status = 'idle', isLoading = false, setMessages: setVercelMessages = () => {} } = chatState as any;
 
-    if (!sendMessage) {
-        console.error("DEBUG: useChat returned:", Object.keys(chatState || {}));
+    // Función de envío robusta con detección automática
+    const sendMessage = useCallback(async (msg: any, options?: any) => {
+        const sendFn = chatState.sendMessage || chatState.append;
+        if (typeof sendFn === 'function') {
+            return sendFn(msg, options);
+        }
+        
+        const typeOfSend = typeof chatState.sendMessage;
+        const typeOfAppend = typeof chatState.append;
+        const keys = Object.keys(chatState).join(', ');
+        
+        throw new Error(`No se encontró función de envío válida. sendMessage: ${typeOfSend}, append: ${typeOfAppend}. Keys: ${keys}`);
+    }, [chatState]);
+
+    if (!chatState.sendMessage && !chatState.append) {
+        console.error("DEBUG: No send function found in useChat. Keys:", Object.keys(chatState || {}));
     }
 
     // Controlar una única carga desde base de datos independiente de re-renders para el SDK
