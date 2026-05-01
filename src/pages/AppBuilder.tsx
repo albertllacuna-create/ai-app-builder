@@ -109,7 +109,19 @@ export function AppBuilder() {
 
     const handleApprovePlan = () => {
         setInteractionMode('build');
-        handleSendPrompt("¡Plan aprobado! Por favor, procede a realizar todos los cambios de código descritos en el plan ahora.", undefined, 'build');
+        const approvalPrompt = `✅ PLAN APROBADO. Ahora EJECUTA la implementación completa.
+
+INSTRUCCIONES CRÍTICAS PARA LA EJECUCIÓN:
+1. Genera TODOS los archivos de código necesarios en esta misma respuesta.
+2. Cada archivo DEBE estar en su propio bloque de código (\`\`\`tsx) con "// filepath:" en la primera línea.
+3. EMPIEZA siempre por App.tsx — este archivo debe ser COMPLETO y funcional por sí solo.
+4. Si creas componentes auxiliares, asegúrate de que cada uno tenga su "export default" correcto.
+5. NO crees más de 4-5 archivos. Si puedes hacer todo en App.tsx, mejor.
+6. TODOS los imports deben corresponder a archivos que generes en esta respuesta o que ya existan.
+7. Usa MemoryRouter (NUNCA BrowserRouter). Usa dbHelper de '../supabase'. Tailwind CSS para estilos.
+
+Construye ahora la aplicación completa basándote en el plan que acabamos de acordar.`;
+        handleSendPrompt(approvalPrompt, undefined, 'build');
     };
 
     // --- Hooks Custom Orchestration ---

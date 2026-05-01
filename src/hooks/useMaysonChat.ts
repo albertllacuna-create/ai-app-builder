@@ -15,13 +15,15 @@ export function useMaysonChat(
     const autoHealRetries = useRef(0);
     const isAutoHealing = useRef(false);
     const MAX_AUTO_HEAL_RETRIES = 5;
+    const modeRef = useRef<'build' | 'plan'>('build');
 
     // Conexión Vercel AI SDK
     const chatState = useChat({
         api: '/api/chat',
         body: { 
             currentFiles: project?.files || {}, 
-            userTokens: db.getUser()?.tokens || 0
+            userTokens: db.getUser()?.tokens || 0,
+            mode: modeRef.current
         },
         // Removemos initialMessages de aquí para evitar fallos si el project entra a destiempo
         onFinish: ({ message }) => {
@@ -165,6 +167,7 @@ export function useMaysonChat(
         }
 
         setPrompt('');
+        modeRef.current = mode; // Actualizar ref antes de enviar
         await db.saveSnapshot(project.id);
         
         // El hook usa automáticamente la ruta /api/chat y appendea a vercelMessages
