@@ -281,22 +281,18 @@ export function ProjectDashboard() {
                     <span className="font-bold text-[15px]">Bulbia</span>
                 </div>
                 
-                {/* Create App Button */}
-                <div className="px-3 pt-3 pb-1">
+                {/* Navigation */}
+                <nav className="px-2 pt-3 pb-1 space-y-0.5">
                     <button 
-                        className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-[12px] font-semibold hover:opacity-90 transition-all shadow-md active:scale-[0.98]"
                         onClick={() => {
                             setSidebarView('home');
                             setPrompt('');
                             document.getElementById('hero-prompt-input')?.focus();
                         }}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-semibold transition-colors ${sidebarView === 'home' ? 'bg-primary/10 text-primary' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
                     >
-                        <Plus size={15} /> Crear App
+                        <Plus size={14} /> Crear App
                     </button>
-                </div>
-
-                {/* Navigation */}
-                <nav className="px-2 pt-2 pb-1 space-y-0.5">
                     <button 
                         onClick={() => setSidebarView('all')}
                         className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]'}`}
@@ -305,13 +301,15 @@ export function ProjectDashboard() {
                     </button>
                 </nav>
 
-                {/* Scrollable sidebar content - only Favorites + Recent */}
+                {/* Scrollable sidebar content - Favorites + Recent */}
                 <div className="flex-1 overflow-y-auto px-2 pb-2">
-                    {/* Favorites */}
-                    {projects.some(p => p.favorite) && (
-                        <div>
-                            <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3">Favoritos</h3>
-                            {projects.filter(p => p.favorite).map(project => (
+                    {/* Favorites - always visible */}
+                    <div>
+                        <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
+                            <Star size={10} /> Favoritos
+                        </h3>
+                        {projects.filter(p => p.favorite).length > 0 ? (
+                            projects.filter(p => p.favorite).map(project => (
                                 <div 
                                     key={project.id} 
                                     className="group flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
@@ -320,9 +318,13 @@ export function ProjectDashboard() {
                                     <Star size={12} className="text-amber-400 shrink-0" fill="currentColor" />
                                     <span className="text-[12px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            ))
+                        ) : (
+                            <div className="px-3 py-2 text-[10px] text-[var(--text-muted)] opacity-60 italic">
+                                Sin favoritos aún
+                            </div>
+                        )}
+                    </div>
 
                     {/* Recent */}
                     <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
