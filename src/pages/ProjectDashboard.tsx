@@ -355,6 +355,12 @@ export function ProjectDashboard() {
                         <span className="text-[10px] font-medium text-[var(--text-muted)] mb-0.5">Plan {db.getUser()?.plan || 'Free'}</span>
                         <span className="text-[12px] font-bold text-[var(--text-primary)]">{db.getUser()?.tokens?.toLocaleString()} Tokens REST.</span>
                     </button>
+                    <div className="flex items-center gap-2 px-2 py-2">
+                        <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-primary uppercase">{user.email?.charAt(0) || '?'}</span>
+                        </div>
+                        <span className="text-[11px] text-[var(--text-muted)] truncate">{user.email}</span>
+                    </div>
                     <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left" onClick={() => setShowSettings(true)}>
                         <Settings size={14} className="text-[var(--text-muted)]" />
                         <span className="text-[11px] font-medium text-[var(--text-secondary)]">Ajustes</span>
