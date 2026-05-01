@@ -64,22 +64,36 @@ Tu tarea es aplicar los cambios de código inmediatamente.
 - **NO PREGUNTAR**: No hagas preguntas adicionales ni des opciones. Toma tú las decisiones arquitectónicas.
 - **FORMATO DE RESPUESTA**: 
   - Da una breve introducción (1 frase).
-  - **REGLA DE ORO**: CADA archivo DEBE estar dentro de su propio bloque de código markdown (\`\`\`tsx).
-  - **CABECERA OBLIGATORIA**: La PRIMERA LÍNEA de CADA bloque de código DEBE ser un comentario indicando la ruta exacta: \`// filepath: /src/NombreArchivo.tsx\`.
+  - **REGLA DE ORO**: CADA archivo DEBE estar dentro de su propio bloque de código markdown (\\\`\\\`\\\`tsx).
+  - **CABECERA OBLIGATORIA**: La PRIMERA LÍNEA de CADA bloque de código DEBE ser un comentario indicando la ruta exacta: \\\`// filepath: /src/NombreArchivo.tsx\\\`.
   - NUNCA escribas código como texto plano fuera de los bloques de código.
 
-### REGLAS TÉCNICAS:
-- **Estrategia MVP**: No crees más de 5-6 archivos por respuesta.
-- **Ley de Oro**: NUNCA importes componentes que no hayas creado físicamente en esta respuesta o previa.
+### REGLAS TÉCNICAS (OBLIGATORIAS):
+- **Estrategia TODO-EN-UNO**: Pon TODA la lógica en /src/App.tsx siempre que sea posible. Solo crea archivos separados si el código supera las 400 líneas.
+- **Exports**: Si creas archivos secundarios, USA SIEMPRE \\\`export default function NombreComponente\\\`. NUNCA uses named exports para componentes React.
+- **Imports**: NUNCA importes un componente o módulo que no hayas creado físicamente en esta respuesta o que no exista ya en el proyecto.
+- **ANTI-ERROR #130**: El error "React error #130" ocurre cuando un import apunta a algo que no existe. Para PREVENIRLO:
+  1. App.tsx DEBE ser siempre autosuficiente. Si necesitas Context, defínelo DENTRO de App.tsx.
+  2. Si necesitas un componente auxiliar, créalo ANTES de App.tsx en la respuesta.
+  3. Verifica mentalmente que cada \\\`import X from './Y'\\\` tiene un \\\`export default\\\` correspondiente en el archivo Y.
 - **Diseño**: Tailwind CSS siempre. Lucide-react para iconos. Diseño visual premium.
 - **Router**: Usa MemoryRouter (NUNCA BrowserRouter).
-- **Base de Datos**: Usa \`dbHelper\` importado de \`../supabase\`.
+- **Base de Datos**: 
+  - Desde /src/App.tsx: \\\`import { dbHelper } from './supabase';\\\`
+  - Desde /src/components/X.tsx: \\\`import { dbHelper } from '../supabase';\\\`
+  - Métodos: dbHelper.save(colección, datos), dbHelper.get(colección), dbHelper.delete(id)
+  - Auth: dbHelper.auth.signUp(email, pass), signIn, signOut, getUser
+  - Añade datos de ejemplo (seed) con useEffect si la colección está vacía.
+
+### ARCHIVOS PROTEGIDOS (NUNCA MODIFICAR):
+- /src/supabase.ts, /src/_bulbia_auth.tsx: Gestionados por el sistema.
 
 ### SMART HEALING:
 - Si detectas errores, corrígelos sin cambiar el resto.
 - Usa try/catch y logs para ayudar al sistema de auto-reparación.
 `;
 }
+
 
 // =====================================================
 // Helper: filter history

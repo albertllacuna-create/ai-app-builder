@@ -133,6 +133,21 @@ export function useMaysonChat(
         }
 
         try {
+            modeRef.current = 'build'; // Auto-heal siempre opera en modo build
+            
+            // Instrucciones especiales para error #130
+            if (errorMessage.includes('#130') || errorMessage.includes('Element type is invalid')) {
+                fixPrompt = `ERROR REACT #130 DETECTADO: Un componente importado es "undefined". Esto ocurre por imports rotos.
+
+SOLUCIÓN OBLIGATORIA:
+1. Reescribe /src/App.tsx poniendo TODA la lógica dentro de este archivo (componentes, contextos, todo).
+2. ELIMINA todos los imports a archivos que no sean './supabase' o librerías externas (react, lucide-react, react-router-dom).
+3. Define TODOS los componentes y tipos DENTRO de App.tsx.
+4. Usa export default para el componente principal.
+
+${errorMessage.substring(0, 300)}`;
+            }
+
             await sendMessage({
                 id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : `msg-${Date.now()}-${Math.random()}`,
                 role: 'user',
