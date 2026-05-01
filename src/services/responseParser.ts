@@ -28,15 +28,24 @@ export function parseCodeBlocks(text: string): Record<string, string> {
     }
   }
 
-  // Soporte Legacy: Antiguos <code_changes>
-  const legacyRegex = /(?:^|\n)[^\/\n]*(\/[a-zA-Z0-9_./-]+)[^\n]*\n+```[a-zA-Z0-9]*\n([\s\S]*?)\n```/g;
-  const legacyMatchContent = normalized.match(/<code_changes>([\s\S]*?)<\/code_changes>/i);
-  if (legacyMatchContent) {
-      let lMatch;
-      while ((lMatch = legacyRegex.exec(legacyMatchContent[1])) !== null) {
-          const filePath = lMatch[1].trim();
-          if (!result[filePath]) result[filePath] = lMatch[2].trimEnd();
+  // Soporte de emergencia: Si la IA olvida los backticks pero pone "// filepath:"
+  if (Object.keys(result).length === 0) {
+    const lines = normalized.split('\n');
+    let currentFile: string | null = null;
+    let currentContent: string[] = [];
+    
+    for (const line of lines) {
+      const pathMatch = /(?:\/\/|\/\*|<!--|#)\s*filepath:\s*([^\s\n*]+)/i.exec(line);
+      if (pathMatch) {
+        if (currentFile) result[currentFile] = currentContent.join('\n').trim();
+        currentFile = pathMatch[1].trim();
+        if (!currentFile.startsWith('/')) currentFile = '/' + currentFile;
+        currentContent = [];
+      } else if (currentFile) {
+        currentContent.push(line);
       }
+    }
+    if (currentFile) result[currentFile] = currentContent.join('\n').trim();
   }
 
   return result;
