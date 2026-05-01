@@ -350,22 +350,15 @@ export function ProjectDashboard() {
                 </div>
 
                 {/* Footer */}
-                <div className="px-3 py-3 border-t border-[var(--surface-border)] mt-auto space-y-1.5">
-                    <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-2.5 rounded-lg bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors text-left">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-success"></span>
-                            <span className="text-[10px] font-medium text-[var(--text-muted)]">Plan {db.getUser()?.plan || 'Free'}</span>
-                        </div>
+                <div className="px-3 py-3 border-t border-[var(--surface-border)] mt-auto space-y-0.5">
+                    <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-2.5 rounded-lg bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors text-left mb-1.5">
+                        <span className="text-[10px] font-medium text-[var(--text-muted)] mb-0.5">Plan {db.getUser()?.plan || 'Free'}</span>
                         <span className="text-[12px] font-bold text-[var(--text-primary)]">{db.getUser()?.tokens?.toLocaleString()} Tokens REST.</span>
                     </button>
-                    
-                    <div className="flex items-center gap-1">
-                        <ThemeToggle />
-                        <button className="flex-1 flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left" onClick={() => setShowSettings(true)}>
-                            <Settings size={14} className="text-[var(--text-muted)]" />
-                            <span className="text-[11px] font-medium text-[var(--text-secondary)]">Ajustes</span>
-                        </button>
-                    </div>
+                    <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left" onClick={() => setShowSettings(true)}>
+                        <Settings size={14} className="text-[var(--text-muted)]" />
+                        <span className="text-[11px] font-medium text-[var(--text-secondary)]">Ajustes</span>
+                    </button>
                     <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left text-red-500/80 hover:text-red-500" onClick={handleLogout}>
                         <LogOut size={14} />
                         <span className="text-[11px] font-medium">Cerrar Sesión</span>
@@ -518,6 +511,14 @@ export function ProjectDashboard() {
                                 </div>
                                 <p className="mt-2 text-sm text-[var(--text-muted)]">{db.getUser()?.tokens?.toLocaleString() || 0} tokens disponibles este mes</p>
                                 <button className="btn btn-primary mt-4 w-full" onClick={() => navigate('/pricing')}>Ampliar Plan de IA</button>
+                            </div>
+
+                            <div className="settings-section mt-4">
+                                <h3><Settings size={18} className="inline-icon" /> Apariencia</h3>
+                                <div className="flex items-center justify-between mt-2">
+                                    <span className="text-sm text-[var(--text-secondary)]">Modo oscuro / claro</span>
+                                    <ThemeToggle />
+                                </div>
                             </div>
                         </div>
                     </div>
