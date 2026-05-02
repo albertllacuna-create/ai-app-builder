@@ -14,6 +14,7 @@ import { getSupabaseContent } from '../services/systemFiles';
 import { supabase } from '../services/supabase';
 import { useMaysonChat } from '../hooks/useMaysonChat';
 import { useRemoteBundler } from '../hooks/useRemoteBundler';
+import logo from '../assets/logo.png';
 import '../index.css';
 
 export function AppBuilder() {
@@ -805,22 +806,22 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                     {(isAiTyping || bundleLoading) && (
                                         <div className="absolute inset-0 bg-white/80 backdrop-blur-2xl z-20 flex flex-col items-center justify-center rounded-[inherit] animate-in fade-in duration-500">
                                             <div className="flex flex-col items-center max-w-sm w-full text-center p-12">
+                                                {/* Colorful Background Blobs */}
+                                                <div className="absolute inset-0 overflow-hidden rounded-[inherit] -z-10 opacity-30">
+                                                    <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-400 blur-[120px] animate-pulse"></div>
+                                                    <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-400 blur-[120px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+                                                    <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-indigo-400 blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+                                                </div>
+
                                                 {/* Pulsing Logo Section */}
                                                 <div className="relative mb-8 group">
-                                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#6ba7e5] to-[#a468e0] blur-3xl opacity-20 group-hover:opacity-30 transition-opacity animate-pulse rounded-full"></div>
-                                                    <div className="relative transform transition-transform duration-700 animate-bounce-slow">
-                                                        <svg width="80" height="80" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
-                                                            <defs>
-                                                                <linearGradient id="logoGradientOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                                    <stop offset="0%" stopColor="#6ba7e5" stopOpacity="1" />
-                                                                    <stop offset="100%" stopColor="#a468e0" stopOpacity="1" />
-                                                                </linearGradient>
-                                                            </defs>
-                                                            <path d="M250,50 C160,50 90,120 90,210 C90,270 120,320 170,350 L170,390 C170,400 180,410 190,410 L310,410 C320,410 330,400 330,390 L330,350 C380,320 410,270 410,210 C410,120 340,50 250,50 M250,430 C220,430 200,450 200,470 L300,470 C300,450 280,430 250,430 Z" 
-                                                                    fill="none" stroke="url(#logoGradientOverlay)" strokeWidth="25" strokeLinecap="round"/>
-                                                            <path d="M220,90 L220,330 M220,180 C220,130 300,130 300,180 C300,230 220,230 220,230" 
-                                                                    fill="none" stroke="url(#logoGradientOverlay)" strokeWidth="25" strokeLinecap="round" strokeLinejoin="round"/>
-                                                        </svg>
+                                                    <div className="absolute inset-0 bg-primary/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full"></div>
+                                                    <div className="relative transform transition-all duration-700 animate-bounce-slow">
+                                                        <img 
+                                                            src={logo} 
+                                                            alt="Bulbia Logo" 
+                                                            className="w-24 h-24 object-contain drop-shadow-2xl"
+                                                        />
                                                     </div>
                                                 </div>
 
