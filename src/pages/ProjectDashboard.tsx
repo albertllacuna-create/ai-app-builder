@@ -5,7 +5,7 @@ import { supabase } from '../services/supabase';
 import { db } from '../services/db';
 import { Project } from '../types';
 import { ThemeToggle } from '../components/ThemeToggle';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 import '../index.css';
 
 export function ProjectDashboard() {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../services/supabase';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 import '../index.css';
 
 export function Login() {
