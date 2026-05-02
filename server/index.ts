@@ -63,7 +63,12 @@ import ...
 - **Diseño**: Tailwind CSS y Lucide-react siempre. Estética premium.
 - **Router**: Usa MemoryRouter en App.tsx.
 - **Base de Datos**: Usa dbHelper de './supabase'.
-- **Autocorrección**: Si detectas errores, usa try/catch y console.error.
+
+## 4. CALIDAD DEL CÓDIGO (EVITAR ERRORES)
+- **Sintaxis**: Cierra siempre todos los paréntesis, llaves y comillas. Un error de sintaxis bloquea toda la app.
+- **Imports**: Importa SIEMPRE lo que uses (React, lucide icons, etc).
+- **Consistencia**: Si cambias un componente, asegúrate de actualizar donde se use.
+- **Auto-corrección**: Usa bloques try/catch en operaciones asíncronas.
 `;
 }
 
@@ -78,7 +83,7 @@ function filterHistory(history: { role: 'ai' | 'user'; content: string }[]) {
 // AI MODELS & PRICING CONFIGURATION
 // =====================================================
 // Puedes cambiar este valor para actualizar el modelo global de toda la plataforma
-const DEFAULT_MODEL_ID = 'gemini-3-flash'; 
+const DEFAULT_MODEL_ID = 'claude-3-5-sonnet'; 
 
 const MODELS_CONFIG: Record<string, { provider: string, model: string, inputPrice: number, outputPrice: number }> = {
   'claude-3-5-sonnet': {
@@ -104,6 +109,12 @@ const MODELS_CONFIG: Record<string, { provider: string, model: string, inputPric
     model: 'gemini-3-flash-preview',
     inputPrice: 0.10,
     outputPrice: 0.30
+  },
+  'gemini-1.5-pro': {
+    provider: 'google',
+    model: 'gemini-1.5-pro',
+    inputPrice: 3.50,
+    outputPrice: 10.50
   }
 };
 
