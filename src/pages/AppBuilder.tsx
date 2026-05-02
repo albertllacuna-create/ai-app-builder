@@ -806,12 +806,19 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                     {(isAiTyping || bundleLoading) && (
                                         <div className="absolute inset-0 bg-white/80 backdrop-blur-2xl z-20 flex flex-col items-center justify-center rounded-[inherit] animate-in fade-in duration-500">
                                             <div className="flex flex-col items-center max-w-sm w-full text-center p-12">
-                                                {/* Colorful Background Blobs */}
-                                                <div className="absolute inset-0 overflow-hidden rounded-[inherit] -z-10 opacity-40">
-                                                    <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-blue-400/40 rounded-full blur-[100px] animate-pulse"></div>
-                                                    <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] bg-purple-400/40 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }}></div>
-                                                    <div className="absolute top-[20%] right-[-10%] w-[50%] h-[50%] bg-indigo-400/30 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }}></div>
-                                                </div>
+                                                {/* Unified Mesh Gradient Background */}
+                                                <div 
+                                                    className="absolute inset-0 -z-10 opacity-60"
+                                                    style={{
+                                                        background: `
+                                                            radial-gradient(at 0% 0%, rgba(107, 167, 229, 0.4) 0px, transparent 55%),
+                                                            radial-gradient(at 100% 100%, rgba(164, 104, 224, 0.4) 0px, transparent 55%),
+                                                            radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.2) 0px, transparent 40%),
+                                                            radial-gradient(at 0% 100%, rgba(164, 104, 224, 0.2) 0px, transparent 40%)
+                                                        `,
+                                                        filter: 'blur(60px)'
+                                                    }}
+                                                ></div>
 
                                                 {/* Pulsing Logo Section */}
                                                 <div className="relative mb-8 group">
