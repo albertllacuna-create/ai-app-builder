@@ -812,14 +812,14 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                                         <svg width="80" height="80" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
                                                             <defs>
                                                                 <linearGradient id="logoGradientOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                                    <stop offset="0%" style="stop-color:#6ba7e5;stop-opacity:1" />
-                                                                    <stop offset="100%" style="stop-color:#a468e0;stop-opacity:1" />
+                                                                    <stop offset="0%" stopColor="#6ba7e5" stopOpacity="1" />
+                                                                    <stop offset="100%" stopColor="#a468e0" stopOpacity="1" />
                                                                 </linearGradient>
                                                             </defs>
                                                             <path d="M250,50 C160,50 90,120 90,210 C90,270 120,320 170,350 L170,390 C170,400 180,410 190,410 L310,410 C320,410 330,400 330,390 L330,350 C380,320 410,270 410,210 C410,120 340,50 250,50 M250,430 C220,430 200,450 200,470 L300,470 C300,450 280,430 250,430 Z" 
-                                                                    fill="none" stroke="url(#logoGradientOverlay)" stroke-width="25" stroke-linecap="round"/>
+                                                                    fill="none" stroke="url(#logoGradientOverlay)" strokeWidth="25" strokeLinecap="round"/>
                                                             <path d="M220,90 L220,330 M220,180 C220,130 300,130 300,180 C300,230 220,230 220,230" 
-                                                                    fill="none" stroke="url(#logoGradientOverlay)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/>
+                                                                    fill="none" stroke="url(#logoGradientOverlay)" strokeWidth="25" strokeLinecap="round" strokeLinejoin="round"/>
                                                         </svg>
                                                     </div>
                                                 </div>
