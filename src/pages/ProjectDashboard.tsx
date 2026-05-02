@@ -289,15 +289,15 @@ export function ProjectDashboard() {
                             setPrompt('');
                             document.getElementById('hero-prompt-input')?.focus();
                         }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-semibold transition-colors ${sidebarView === 'home' ? 'bg-primary/10 text-primary' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold transition-colors ${sidebarView === 'home' ? 'bg-[var(--surface-hover)] text-primary' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
                     >
-                        <Plus size={14} /> Crear App
+                        <Plus size={15} /> Crear App
                     </button>
                     <button 
                         onClick={() => setSidebarView('all')}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]'}`}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]'}`}
                     >
-                        <Layers size={14} /> Todas las Apps
+                        <Layers size={15} /> Todas las Apps
                     </button>
                 </nav>
 
@@ -305,8 +305,8 @@ export function ProjectDashboard() {
                 <div className="flex-1 overflow-y-auto px-2 pb-2">
                     {/* Favorites - always visible */}
                     <div>
-                        <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
-                            <Star size={10} /> Favoritos
+                        <h3 className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
+                            <Star size={11} /> Favoritos
                         </h3>
                         {projects.filter(p => p.favorite).length > 0 ? (
                             projects.filter(p => p.favorite).map(project => (
@@ -316,19 +316,19 @@ export function ProjectDashboard() {
                                     onClick={() => navigate(`/project/${project.id}`)}
                                 >
                                     <Star size={12} className="text-amber-400 shrink-0" fill="currentColor" />
-                                    <span className="text-[12px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                    <span className="text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                                 </div>
                             ))
                         ) : (
-                            <div className="px-3 py-2 text-[10px] text-[var(--text-muted)] opacity-60 italic">
+                            <div className="px-3 py-2 text-[11px] text-[var(--text-muted)] opacity-60 italic">
                                 Sin favoritos aún
                             </div>
                         )}
                     </div>
 
                     {/* Recent */}
-                    <h3 className="text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
-                        <Clock size={10} /> Recientes
+                    <h3 className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
+                        <Clock size={11} /> Recientes
                     </h3>
                     {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
                         <div 
@@ -337,8 +337,8 @@ export function ProjectDashboard() {
                             onClick={() => navigate(`/project/${project.id}`)}
                         >
                             <div className="flex-1 min-w-0">
-                                <span className="block text-[12px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
-                                <span className="block text-[9px] text-[var(--text-muted)]">{new Date(project.updatedAt).toLocaleDateString()}</span>
+                                <span className="block text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                <span className="block text-[10px] text-[var(--text-muted)]">{new Date(project.updatedAt).toLocaleDateString()}</span>
                             </div>
                         </div>
                     ))}
