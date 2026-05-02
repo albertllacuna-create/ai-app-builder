@@ -394,30 +394,8 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                             </div>
                         );
                     })}
-                    {isAiTyping && (
-                        <div className="chat-bubble ai-bubble">
-                            {streamingText ? (
-                                <div className="w-full">
-                                    <div className="markdown-body whitespace-pre-wrap text-sm text-neutral-200 leading-relaxed">
-                                        {streamingText.replace(/<\/?chat>|<\/?code_changes>|<\/?plan_options>/gi, '').substring(0, 500)}
-                                        {streamingText.length > 500 && '...'}
-                                    </div>
-                                    <div className="mt-2 flex items-center gap-2 text-[11px] text-primary/70">
-                                        <Loader2 size={12} className="animate-spin" />
-                                        <span>Generando lógica y archivos...</span>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex items-center">
-                                    <div className="typing-dots">
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
-                                        <div className="typing-dot"></div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
+                    {/* Indicador de escritura eliminado para unificar con el overlay principal */}
+
                 </div>
 
                 <form className="chat-input-area border-t border-[var(--surface-border)] bg-[var(--surface)]" onSubmit={async (e) => {
@@ -750,11 +728,8 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                             </ul>
                                         </div>
                                         <div className="code-editor" style={{ flex: 1, padding: '1.5rem', background: 'var(--code-bg)', overflow: 'auto', position: 'relative' }}>
-                                            {isAiTyping && (
-                                                <div className="absolute top-0 left-0 right-0 p-2.5 bg-primary/20 border-b border-primary/30 text-primary font-medium text-xs flex items-center gap-2 justify-center z-10 backdrop-blur-md animate-pulse">
-                                                    <Loader2 size={14} className="animate-spin" /> Bulbia está aplicando modificaciones...
-                                                </div>
-                                            )}
+                                            {/* Notificación eliminada para unificar con el overlay principal */}
+
                                             <div className="flex items-center justify-between mb-4 border-b border-[var(--surface-border)] pb-2" style={{ marginTop: isAiTyping ? '30px' : '0', transition: 'margin-top 0.3s' }}>
                                                 <div className="flex items-center gap-2">
                                                     <div className="text-primary text-xs font-medium font-mono">{codeFile}</div>
@@ -828,9 +803,8 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                         }`}
                                 >
                                     {(isAiTyping || bundleLoading) && (
-                                        <div className="absolute inset-0 bg-[var(--background)]/60 backdrop-blur-md z-20 flex flex-col items-center justify-center rounded-[inherit]">
-                                            <div className={`absolute inset-0 ${autoHealStatus === 'fixing' ? 'bg-gradient-to-tr from-amber-500/10 to-orange-500/10' : 'bg-gradient-to-tr from-primary/10 to-indigo-500/10'} animate-pulse`}></div>
-                                            <div className="relative flex flex-col items-center bg-[var(--surface-elevated)] p-6 rounded-2xl border border-[var(--surface-border)] shadow-xl">
+                                        <div className="absolute inset-0 bg-[var(--background)]/70 backdrop-blur-md z-20 flex flex-col items-center justify-center rounded-[inherit] animate-in fade-in duration-300">
+                                            <div className="relative flex flex-col items-center bg-[var(--surface-elevated)] p-8 rounded-3xl border border-[var(--surface-border)] shadow-2xl">
                                                 <div className="relative mb-5">
                                                     <div className={`absolute inset-0 ${autoHealStatus === 'fixing' ? 'bg-amber-500/40' : 'bg-primary/40'} blur-xl rounded-full animate-pulse`}></div>
                                                     <div className={`relative ${autoHealStatus === 'fixing' ? 'bg-gradient-to-br from-amber-500 to-orange-600' : 'bg-gradient-to-br from-primary to-indigo-600'} p-3 rounded-xl shadow-lg border border-white/20`}>
