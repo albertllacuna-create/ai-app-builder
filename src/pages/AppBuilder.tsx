@@ -808,15 +808,15 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                             <div className="flex flex-col items-center max-w-sm w-full text-center p-12">
                                                 {/* Unified Mesh Gradient Background */}
                                                 <div 
-                                                    className="absolute inset-0 -z-10 opacity-60"
+                                                    className="absolute inset-0 -z-10 opacity-80"
                                                     style={{
                                                         background: `
-                                                            radial-gradient(at 0% 0%, rgba(107, 167, 229, 0.4) 0px, transparent 55%),
-                                                            radial-gradient(at 100% 100%, rgba(164, 104, 224, 0.4) 0px, transparent 55%),
-                                                            radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.2) 0px, transparent 40%),
-                                                            radial-gradient(at 0% 100%, rgba(164, 104, 224, 0.2) 0px, transparent 40%)
+                                                            radial-gradient(at 0% 0%, rgba(107, 167, 229, 0.6) 0px, transparent 65%),
+                                                            radial-gradient(at 100% 100%, rgba(164, 104, 224, 0.6) 0px, transparent 65%),
+                                                            radial-gradient(at 100% 0%, rgba(79, 70, 229, 0.4) 0px, transparent 50%),
+                                                            radial-gradient(at 0% 100%, rgba(164, 104, 224, 0.4) 0px, transparent 50%)
                                                         `,
-                                                        filter: 'blur(60px)'
+                                                        filter: 'blur(80px)'
                                                     }}
                                                 ></div>
 
