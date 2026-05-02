@@ -246,18 +246,8 @@ root.render(
                 '/src/styles.css': `/* Tailwind CSS base */`,
                 '/src/App.tsx': `export default function App() {
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8 text-neutral-800 font-sans">
-      <div className="bg-white border border-neutral-100 p-10 rounded-[2rem] shadow-2xl max-w-xl text-center">
-        <h1 className="text-4xl font-black text-neutral-900 mb-4 tracking-tighter italic">
-          BULBIA <span className="text-indigo-600">CLOUD</span>
-        </h1>
-        <p className="text-lg text-neutral-500 leading-relaxed mb-6">
-          Tu aplicación está viva en la nube. Empieza a editar para construir algo asombroso.
-        </p>
-        <div className="w-12 h-12 bg-indigo-600 rounded-full mx-auto flex items-center justify-center text-white font-bold animate-bounce">
-          ↓
-        </div>
-      </div>
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      {/* Tu aplicación aparecerá aquí */}
     </div>
   );
 }`

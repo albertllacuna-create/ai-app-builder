@@ -803,25 +803,42 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                         }`}
                                 >
                                     {(isAiTyping || bundleLoading) && (
-                                        <div className="absolute inset-0 bg-[var(--background)]/70 backdrop-blur-md z-20 flex flex-col items-center justify-center rounded-[inherit] animate-in fade-in duration-300">
-                                            <div className="relative flex flex-col items-center bg-[var(--surface-elevated)] p-8 rounded-3xl border border-[var(--surface-border)] shadow-2xl">
-                                                <div className="relative mb-5">
-                                                    <div className={`absolute inset-0 ${autoHealStatus === 'fixing' ? 'bg-amber-500/40' : 'bg-primary/40'} blur-xl rounded-full animate-pulse`}></div>
-                                                    <div className={`relative ${autoHealStatus === 'fixing' ? 'bg-gradient-to-br from-amber-500 to-orange-600' : 'bg-gradient-to-br from-primary to-indigo-600'} p-3 rounded-xl shadow-lg border border-white/20`}>
-                                                        {autoHealStatus === 'fixing'
-                                                            ? <AlertTriangle size={24} className="text-white animate-pulse" />
-                                                            : <Sparkles size={24} className="text-white animate-pulse" />
-                                                        }
+                                        <div className="absolute inset-0 bg-white/80 backdrop-blur-2xl z-20 flex flex-col items-center justify-center rounded-[inherit] animate-in fade-in duration-500">
+                                            <div className="flex flex-col items-center max-w-sm w-full text-center p-12">
+                                                {/* Pulsing Logo Section */}
+                                                <div className="relative mb-8 group">
+                                                    <div className="absolute inset-0 bg-gradient-to-tr from-[#6ba7e5] to-[#a468e0] blur-3xl opacity-20 group-hover:opacity-30 transition-opacity animate-pulse rounded-full"></div>
+                                                    <div className="relative transform transition-transform duration-700 animate-bounce-slow">
+                                                        <svg width="80" height="80" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
+                                                            <defs>
+                                                                <linearGradient id="logoGradientOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                                    <stop offset="0%" style="stop-color:#6ba7e5;stop-opacity:1" />
+                                                                    <stop offset="100%" style="stop-color:#a468e0;stop-opacity:1" />
+                                                                </linearGradient>
+                                                            </defs>
+                                                            <path d="M250,50 C160,50 90,120 90,210 C90,270 120,320 170,350 L170,390 C170,400 180,410 190,410 L310,410 C320,410 330,400 330,390 L330,350 C380,320 410,270 410,210 C410,120 340,50 250,50 M250,430 C220,430 200,450 200,470 L300,470 C300,450 280,430 250,430 Z" 
+                                                                    fill="none" stroke="url(#logoGradientOverlay)" stroke-width="25" stroke-linecap="round"/>
+                                                            <path d="M220,90 L220,330 M220,180 C220,130 300,130 300,180 C300,230 220,230 220,230" 
+                                                                    fill="none" stroke="url(#logoGradientOverlay)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/>
+                                                        </svg>
                                                     </div>
                                                 </div>
-                                                <h3 className="text-[var(--text-primary)] font-bold text-base mb-1.5 flex items-center gap-2">
-                                                    {bundleLoading && !isAiTyping ? '⚡ Optimizando y Compilando...' : autoHealStatus === 'fixing' ? '🔧 Auto-reparación en curso...' : '✨ Bulbia está creando tu app'}
+
+                                                {/* Main Status Text */}
+                                                <h3 className="text-2xl font-bold text-neutral-900 mb-2 tracking-tight">
+                                                    {bundleLoading && !isAiTyping ? 'Optimizando...' : autoHealStatus === 'fixing' ? 'Reparando...' : 'Construyendo tu idea...'}
                                                 </h3>
-                                                <div className="flex items-center gap-2 text-[var(--text-muted)] text-xs font-medium bg-[var(--surface)] px-3 py-1.5 rounded-full border border-[var(--surface-border)]">
-                                                    <Loader2 size={12} className={`animate-spin ${autoHealStatus === 'fixing' ? 'text-amber-500' : 'text-primary'}`} />
-                                                    <span>{bundleLoading && !isAiTyping ? 'Procesando bundle con esbuild remoto' : autoHealStatus === 'fixing' ? 'Analizando logs...' : 'Escribiendo archivos de sistema...'}</span>
+                                                
+                                                {/* Secondary Status Text */}
+                                                <div className="flex items-center justify-center gap-2 text-neutral-500 font-medium text-sm animate-pulse">
+                                                    <div className={`w-1.5 h-1.5 rounded-full ${autoHealStatus === 'fixing' ? 'bg-amber-500' : 'bg-[#a468e0]'}`}></div>
+                                                    <span>{bundleLoading && !isAiTyping ? 'Refinando el bundle con esbuild' : autoHealStatus === 'fixing' ? 'Analizando errores...' : 'Escribiendo archivos de sistema'}</span>
                                                 </div>
 
+                                                {/* Progress Indicator */}
+                                                <div className="mt-8 w-48 h-1 bg-neutral-100 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-gradient-to-r from-[#6ba7e5] to-[#a468e0] w-1/2 animate-shimmer"></div>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
