@@ -16,6 +16,38 @@ export function Login() {
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
+    const phrases = [
+        "Convierte tus ideas en apps",
+        "Diseña tu propio CRM",
+        "Crea el futuro de tu negocio",
+        "Automatiza tus procesos hoy"
+    ];
+    const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+    const [currentText, setCurrentText] = useState("");
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            const currentPhrase = phrases[currentPhraseIndex];
+            
+            if (isDeleting) {
+                setCurrentText(currentPhrase.substring(0, currentText.length - 1));
+                if (currentText === "") {
+                    setIsDeleting(false);
+                    setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+                }
+            } else {
+                setCurrentText(currentPhrase.substring(0, currentText.length + 1));
+                if (currentText === currentPhrase) {
+                    setTimeout(() => setIsDeleting(true), 2500); // Esperar antes de borrar
+                    return;
+                }
+            }
+        }, isDeleting ? 40 : 80);
+
+        return () => clearTimeout(timeout);
+    }, [currentText, isDeleting, currentPhraseIndex]);
+
     useEffect(() => {
         // Redirigir si ya hay sesión activa o si se acaba de crear vía OAuth (Google)
         supabase.auth.getSession().then(({ data: { session } }) => {
@@ -99,15 +131,15 @@ export function Login() {
             <div className="split-left">
                 {/* Header with Logo */}
                 <div className="mb-12 flex items-center gap-2">
-                    <img src={logo} alt="Bolbia logo" className="h-8 w-auto" />
-                    <span className="font-bold text-xl tracking-tight">Bolbia</span>
+                    <img src={logo} alt="Bulbia logo" className="h-8 w-auto" />
+                    <span className="font-bold text-xl tracking-tight">Bulbia</span>
                 </div>
 
                 {/* Form Container */}
                 <div className="split-left-content">
                     <div className="mb-8">
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-2">
-                            {isLogin ? 'Bienvenido a Bolbia' : 'Crear tu cuenta'}
+                            {isLogin ? 'Bienvenido a Bulbia' : 'Crear tu cuenta'}
                         </h1>
                         <p className="text-slate-500 text-sm">
                             {isLogin
@@ -250,7 +282,7 @@ export function Login() {
                 
                 {/* Floating Mock Prompt */}
                 <div className="mock-prompt">
-                    <div className="mock-prompt-text">Convierte tus ideas en apps</div>
+                    <div className="mock-prompt-text">{currentText}</div>
                     <div className="mock-prompt-button">
                         <ArrowUp size={20} />
                     </div>
