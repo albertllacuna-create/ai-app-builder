@@ -539,7 +539,7 @@ export function ProjectDashboard() {
                                                     <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Siguiente Reset</span>
                                                 </div>
                                                 <div className="text-xl font-bold text-[var(--text-primary)]">
-                                                    {user?.nextResetDate ? new Date(user.nextResetDate).toLocaleDateString() : 'En 15 días'}
+                                                    {db.getUser()?.nextResetDate ? new Date(db.getUser()!.nextResetDate!).toLocaleDateString() : 'En 15 días'}
                                                 </div>
                                             </div>
                                         </div>
