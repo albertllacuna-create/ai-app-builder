@@ -168,7 +168,7 @@ export function Login() {
                                 type="button" 
                                 onClick={handleGoogleLogin} 
                                 disabled={loading}
-                                style={{ border: '2px solid #8b5cf6' }}
+                                style={{ border: '1px solid #8b5cf6' }}
                                 className="w-full flex items-center justify-center gap-3 bg-white text-slate-900 hover:bg-violet-50 transition-all font-medium py-2.5 rounded-lg mb-6 shadow-sm disabled:opacity-70"
                             >
                                 <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
@@ -190,10 +190,10 @@ export function Login() {
 
                             <form onSubmit={handleNextStep}>
                                 <div className="mb-4">
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Correo electrónico</label>
+                                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Correo electrónico</label>
                                     <input
                                         type="email"
-                                        className="input-clean"
+                                        className="input-clean border-slate-400"
                                         placeholder="tu@empresa.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -216,7 +216,7 @@ export function Login() {
                             </button>
 
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-slate-700 mb-1.5">Correo electrónico</label>
+                                <label className="block text-sm font-semibold text-slate-900 mb-1.5">Correo electrónico</label>
                                 <input
                                     type="email"
                                     className="input-clean bg-slate-50 text-slate-500 cursor-not-allowed"
@@ -226,10 +226,10 @@ export function Login() {
                             </div>
 
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-slate-700 mb-1.5">Contraseña</label>
+                                <label className="block text-sm font-semibold text-slate-900 mb-1.5">Contraseña</label>
                                 <input
                                     type="password"
-                                    className="input-clean"
+                                    className="input-clean border-slate-400"
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -240,10 +240,10 @@ export function Login() {
 
                             {!isLogin && (
                                 <div className="mb-6">
-                                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Confirmar Contraseña</label>
+                                    <label className="block text-sm font-semibold text-slate-900 mb-1.5">Confirmar Contraseña</label>
                                     <input
                                         type="password"
-                                        className="input-clean"
+                                        className="input-clean border-slate-400"
                                         placeholder="••••••••"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
