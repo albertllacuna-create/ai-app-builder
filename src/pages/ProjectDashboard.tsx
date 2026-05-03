@@ -10,12 +10,9 @@ import '../index.css';
 
 export function ProjectDashboard() {
     const navigate = useNavigate();
-    const [showSettings, setShowSettings] = useState(false);
+    const [sidebarView, setSidebarView] = useState<'home' | 'all' | 'settings'>('home');
     const [settingsTab, setSettingsTab] = useState<'account' | 'billing' | 'usage'>('account');
-    
-    // We replace the old modal variables with the unified prompt state
     const [prompt, setPrompt] = useState('');
-    
     const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
     const [projectToClone, setProjectToClone] = useState<Project | null>(null);
     const [user, setUser] = useState<any>(null);
@@ -26,7 +23,6 @@ export function ProjectDashboard() {
     const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachments, setAttachments] = useState<File[]>([]);
-    const [sidebarView, setSidebarView] = useState<'home' | 'all' | 'settings'>('home');
 
     const toggleFavorite = async (e: React.MouseEvent, projectId: string) => {
         e.stopPropagation();
@@ -682,185 +678,6 @@ export function ProjectDashboard() {
                 )}
             </main>
 
-            {/* Settings Modal */}
-            {showSettings && (
-                <div className="modal-overlay" onClick={() => setShowSettings(false)}>
-                    <div className="modal-content glass-panel slide-up flex flex-col md:flex-row p-0 overflow-hidden" style={{ maxWidth: '800px', height: '600px' }} onClick={e => e.stopPropagation()}>
-                        {/* Modal Sidebar */}
-                        <div className="w-full md:w-56 bg-[var(--surface)] border-r border-[var(--surface-border)] p-4 flex flex-col gap-1">
-                            <div className="flex items-center gap-2 px-2 py-3 mb-4">
-                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <Settings size={18} className="text-primary" />
-                                </div>
-                                <span className="font-bold text-sm">Ajustes</span>
-                            </div>
-                            
-                            {[
-                                { id: 'account', name: 'Cuenta', icon: UserIcon },
-                                { id: 'billing', name: 'Plan y Facturación', icon: CreditCard },
-                                { id: 'usage', name: 'Uso de Créditos', icon: Zap },
-                            ].map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setSettingsTab(tab.id as any)}
-                                    className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium transition-all ${settingsTab === tab.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'}`}
-                                >
-                                    <tab.icon size={16} />
-                                    {tab.name}
-                                </button>
-                            ))}
-
-                            <div className="mt-auto pt-4 border-t border-[var(--surface-border)]">
-                                <div className="flex items-center justify-between px-2 py-2">
-                                    <span className="text-[11px] text-[var(--text-muted)] font-medium">Tema</span>
-                                    <ThemeToggle />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Modal Content */}
-                        <div className="flex-1 flex flex-col h-full bg-[var(--background)]">
-                            <div className="px-6 py-4 border-b border-[var(--surface-border)] flex items-center justify-between">
-                                <h2 className="text-base font-bold">
-                                    {settingsTab === 'account' && 'Configuración de Cuenta'}
-                                    {settingsTab === 'billing' && 'Suscripción y Facturación'}
-                                    {settingsTab === 'usage' && 'Estadísticas de Consumo'}
-                                </h2>
-                                <button className="p-1.5 hover:bg-[var(--surface-hover)] rounded-lg transition-colors text-[var(--text-muted)] hover:text-[var(--text-primary)]" onClick={() => setShowSettings(false)}>
-                                    <X size={18} />
-                                </button>
-                            </div>
-
-                            <div className="flex-1 overflow-y-auto p-8">
-                                {settingsTab === 'account' && (
-                                    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-                                        <div className="space-y-2">
-                                            <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Correo Electrónico</label>
-                                            <input 
-                                                type="email" 
-                                                value={user?.email || ''} 
-                                                disabled 
-                                                className="w-full px-4 py-2.5 bg-[var(--surface)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-muted)] cursor-not-allowed"
-                                            />
-                                            <p className="text-[10px] text-[var(--text-muted)]">El email no se puede cambiar por motivos de seguridad.</p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Nombre Completo</label>
-                                            <input 
-                                                type="text" 
-                                                defaultValue={user?.fullName || ''} 
-                                                onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })}
-                                                placeholder="Tu nombre real"
-                                                className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
-                                            />
-                                        </div>
-
-                                        <div className="pt-8 border-t border-[var(--surface-border)]">
-                                            <h4 className="text-sm font-bold text-red-500 mb-2">Zona de Peligro</h4>
-                                            <p className="text-xs text-[var(--text-muted)] mb-4">Una vez elimines tu cuenta, no hay vuelta atrás. Todos tus proyectos y datos se borrarán permanentemente.</p>
-                                            <button 
-                                                onClick={async () => {
-                                                    if (confirm('¿ESTÁS SEGURO? Esta acción es irreversible.')) {
-                                                        await db.deleteAccount();
-                                                        navigate('/login');
-                                                    }
-                                                }}
-                                                className="px-4 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white border border-red-500/20 rounded-xl text-xs font-bold transition-all"
-                                            >
-                                                Eliminar mi cuenta de Bulbia
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {settingsTab === 'billing' && (
-                                    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-                                        <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 p-4 opacity-10">
-                                                <Zap size={80} className="text-primary" />
-                                            </div>
-                                            <div className="relative z-10">
-                                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1 block">Plan Actual</span>
-                                                <h3 className="text-2xl font-black text-primary mb-1">Plan {db.getUser()?.plan || 'Free'}</h3>
-                                                <p className="text-sm text-[var(--text-secondary)]">Renovación mensual automática</p>
-                                                <button onClick={() => navigate('/pricing')} className="mt-6 px-6 py-2.5 bg-primary text-white rounded-xl text-xs font-bold shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
-                                                    Mejorar Plan
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-4 flex items-center gap-2">
-                                                <History size={14} /> Historial de Facturación
-                                            </h4>
-                                            <div className="border border-[var(--surface-border)] rounded-2xl overflow-hidden">
-                                                <table className="w-full text-left text-[12px]">
-                                                    <thead className="bg-[var(--surface)] text-[var(--text-muted)]">
-                                                        <tr>
-                                                            <th className="px-4 py-3 font-semibold">Fecha</th>
-                                                            <th className="px-4 py-3 font-semibold">Concepto</th>
-                                                            <th className="px-4 py-3 font-semibold text-right">Monto</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody className="divide-y divide-[var(--surface-border)]">
-                                                        <tr>
-                                                            <td className="px-4 py-4 text-[var(--text-secondary)]">{new Date().toLocaleDateString()}</td>
-                                                            <td className="px-4 py-4 font-medium text-[var(--text-primary)]">Suscripción Mensual {db.getUser()?.plan || 'Free'}</td>
-                                                            <td className="px-4 py-4 text-right font-bold">$0.00</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {settingsTab === 'usage' && (
-                                    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="bg-[var(--surface)] border border-[var(--surface-border)] p-5 rounded-2xl">
-                                                <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase mb-1 block">Tokens Consumidos</span>
-                                                <div className="text-2xl font-black text-[var(--text-primary)]">
-                                                    {((db.getUser()?.tokens || 100) * 0.4).toLocaleString()} <span className="text-sm font-medium text-[var(--text-muted)]">/ 10,000</span>
-                                                </div>
-                                            </div>
-                                            <div className="bg-[var(--surface)] border border-[var(--surface-border)] p-5 rounded-2xl">
-                                                <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase mb-1 block">Próximo Reset</span>
-                                                <div className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-                                                    <Calendar size={18} className="text-primary" />
-                                                    {user?.nextResetDate ? new Date(user.nextResetDate).toLocaleDateString() : 'En 15 días'}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-4">
-                                            <div className="flex justify-between items-end">
-                                                <div>
-                                                    <h4 className="text-sm font-bold">Consumo de IA</h4>
-                                                    <p className="text-[11px] text-[var(--text-muted)]">Basado en el uso de los modelos Sonnet y Gemini</p>
-                                                </div>
-                                                <span className="text-sm font-bold text-primary">40%</span>
-                                            </div>
-                                            <div className="h-3 w-full bg-[var(--surface)] border border-[var(--surface-border)] rounded-full overflow-hidden">
-                                                <div className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full w-[40%]"></div>
-                                            </div>
-                                        </div>
-
-                                        <div className="p-4 bg-amber-500/5 border border-amber-500/10 rounded-2xl flex gap-3">
-                                            <Zap size={18} className="text-amber-500 shrink-0 mt-0.5" />
-                                            <div>
-                                                <p className="text-xs font-medium text-amber-700 dark:text-amber-400">Tus créditos se reiniciarán automáticamente el día 1 de cada mes.</p>
-                                                <p className="text-[10px] text-amber-600/70 dark:text-amber-400/70 mt-1">Si necesitas más capacidad ahora mismo, puedes ampliar tu plan desde la sección de Facturación.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {/* Confirm Delete Modal */}
             {projectToDelete && (
