@@ -176,8 +176,8 @@ export function ProjectDashboard() {
                 }
             }
 
-            // Create a temporary project name
-            const proj = await db.createProject(finalPrompt.substring(0, 30) + '...');
+            // Create a temporary project name while generating
+            const proj = await db.createProject('Generando nombre...');
             
             // Navigate and pass the prompt to AppBuilder via query parameter
             navigate(`/project/${proj.id}?prompt=${encodeURIComponent(finalPrompt)}&mode=${interactionMode}`);
@@ -289,13 +289,13 @@ export function ProjectDashboard() {
                             setPrompt('');
                             document.getElementById('hero-prompt-input')?.focus();
                         }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold transition-colors ${sidebarView === 'home' ? 'bg-[var(--surface-hover)] text-primary' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold transition-colors ${sidebarView === 'home' ? 'bg-[var(--surface-hover)] text-primary' : 'text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'}`}
                     >
                         <Plus size={15} /> Crear App
                     </button>
                     <button 
                         onClick={() => setSidebarView('all')}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-secondary)]'}`}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
                     >
                         <Layers size={15} /> Todas las Apps
                     </button>
@@ -304,8 +304,8 @@ export function ProjectDashboard() {
                 {/* Scrollable sidebar content - Favorites + Recent */}
                 <div className="flex-1 overflow-y-auto px-2 pb-2">
                     {/* Favorites - always visible */}
-                    <div>
-                        <h3 className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
+                    <div className="mt-6">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-40">
                             <Star size={11} /> Favoritos
                         </h3>
                         {projects.filter(p => p.favorite).length > 0 ? (
@@ -327,9 +327,10 @@ export function ProjectDashboard() {
                     </div>
 
                     {/* Recent */}
-                    <h3 className="text-[11px] font-semibold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-1 mt-3 flex items-center gap-1.5">
-                        <Clock size={11} /> Recientes
-                    </h3>
+                    <div className="mt-6">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-40">
+                            <Clock size={11} /> Recientes
+                        </h3>
                     {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
                         <div 
                             key={project.id} 
@@ -338,10 +339,10 @@ export function ProjectDashboard() {
                         >
                             <div className="flex-1 min-w-0">
                                 <span className="block text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
-                                <span className="block text-[10px] text-[var(--text-muted)]">{new Date(project.updatedAt).toLocaleDateString()}</span>
                             </div>
                         </div>
                     ))}
+                    </div>
                     {projects.length === 0 && (
                         <div className="px-3 py-6 text-center text-[var(--text-muted)] text-[11px]">
                             Aún no tienes proyectos.
