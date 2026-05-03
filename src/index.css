@@ -173,69 +173,130 @@ select.input-field optgroup {
   color: var(--foreground);
 }
 
-/* --- Login Page Styles --- */
-.login-container {
+/* --- Login Split Layout Styles --- */
+.split-layout {
   min-height: 100vh;
+  display: flex;
+  background: #ffffff;
+}
+
+.split-left {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  background: #ffffff;
+  position: relative;
+  z-index: 10;
+}
+
+@media (min-width: 1024px) {
+  .split-left {
+    width: 50%;
+    padding: 4rem;
+  }
+}
+
+.split-left-content {
+  margin: auto;
+  width: 100%;
+  max-width: 380px;
+}
+
+.split-right {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .split-right {
+    display: block;
+    width: 50%;
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+/* Floating Mock Prompt */
+.mock-prompt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 100px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  z-index: 20;
+}
+
+.mock-prompt-text {
+  font-size: 1.25rem;
+  color: #1e293b;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #000;
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #000; }
+}
+
+.mock-prompt-button {
+  background: #0f172a;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  overflow: hidden;
-  background: var(--background);
+  flex-shrink: 0;
 }
 
-.blob {
-  position: absolute;
-  filter: blur(80px);
-  z-index: -1;
-  border-radius: 50%;
-  animation: float 10s infinite ease-in-out alternate;
-}
-
-.blob-1 {
-  width: 400px;
-  height: 400px;
-  background: rgba(139, 92, 246, 0.1);
-  top: -100px;
-  left: -100px;
-}
-
-.blob-2 {
-  width: 300px;
-  height: 300px;
-  background: rgba(16, 185, 129, 0.07);
-  bottom: -50px;
-  right: -50px;
-  animation-delay: -5s;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    transform: translateY(-20px) scale(1.05);
-  }
-}
-
-.login-card {
+/* Clean Input Fields (No icons) */
+.input-clean {
   width: 100%;
-  max-width: 420px;
-  padding: 2.5rem;
-  box-shadow: var(--shadow-lg);
-  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #0f172a;
+  font-family: inherit;
+  transition: all 0.2s;
+  outline: none;
 }
 
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.input-clean:focus {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.1);
 }
+
+.btn-black {
+  background: #0f172a;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-black:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
+
 
 /* --- Lovable Style Mesh Background --- */
 .mesh-gradient {
