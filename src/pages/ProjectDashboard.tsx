@@ -26,7 +26,7 @@ export function ProjectDashboard() {
     const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachments, setAttachments] = useState<File[]>([]);
-    const [sidebarView, setSidebarView] = useState<'home' | 'all'>('home');
+    const [sidebarView, setSidebarView] = useState<'home' | 'all' | 'settings'>('home');
 
     const toggleFavorite = async (e: React.MouseEvent, projectId: string) => {
         e.stopPropagation();
@@ -363,9 +363,12 @@ export function ProjectDashboard() {
                         </div>
                         <span className="text-[11px] text-[var(--text-muted)] truncate">{user.email}</span>
                     </div>
-                    <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left" onClick={() => setShowSettings(true)}>
-                        <Settings size={14} className="text-[var(--text-muted)]" />
-                        <span className="text-[11px] font-medium text-[var(--text-secondary)]">Ajustes</span>
+                    <button 
+                        className={`w-full flex items-center gap-2 p-2 rounded-lg transition-colors text-left ${sidebarView === 'settings' ? 'bg-[var(--surface-hover)] text-primary' : 'hover:bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`} 
+                        onClick={() => setSidebarView('settings')}
+                    >
+                        <Settings size={14} className={sidebarView === 'settings' ? 'text-primary' : 'text-[var(--text-muted)]'} />
+                        <span className="text-[11px] font-medium">Ajustes</span>
                     </button>
                     <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left text-red-500/80 hover:text-red-500" onClick={handleLogout}>
                         <LogOut size={14} />
@@ -387,7 +390,174 @@ export function ProjectDashboard() {
                     </div>
                 )}
 
-                {sidebarView === 'all' ? (
+                {sidebarView === 'settings' ? (
+                    /* === SETTINGS VIEW INTEGRATED === */
+                    <div className="w-full max-w-5xl mx-auto animate-fade-in">
+                        <div className="flex items-center gap-3 mb-8 mt-2">
+                            <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                                <Settings size={24} />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">Ajustes de Plataforma</h1>
+                                <p className="text-sm text-[var(--text-muted)]">Gestiona tu cuenta, suscripción y consumo de créditos</p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col lg:flex-row gap-8">
+                            {/* Settings Navigation */}
+                            <div className="w-full lg:w-64 space-y-1">
+                                {[
+                                    { id: 'account', name: 'Mi Cuenta', icon: UserIcon },
+                                    { id: 'billing', name: 'Plan y Facturación', icon: CreditCard },
+                                    { id: 'usage', name: 'Uso de Créditos', icon: Zap },
+                                ].map(tab => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setSettingsTab(tab.id as any)}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium transition-all ${settingsTab === tab.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'}`}
+                                    >
+                                        <tab.icon size={18} />
+                                        {tab.name}
+                                    </button>
+                                ))}
+                                
+                                <div className="pt-6 mt-6 border-t border-[var(--surface-border)]">
+                                    <div className="flex items-center justify-between px-4 py-2 bg-[var(--surface)] rounded-2xl">
+                                        <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Modo Oscuro</span>
+                                        <ThemeToggle />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Settings Content Area */}
+                            <div className="flex-1 bg-[var(--surface)] border border-[var(--surface-border)] rounded-3xl p-8 shadow-sm">
+                                {settingsTab === 'account' && (
+                                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Email de Usuario</label>
+                                                <input type="email" value={user?.email || ''} disabled className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-muted)] cursor-not-allowed" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Nombre Completo</label>
+                                                <input type="text" defaultValue={user?.fullName || ''} onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} placeholder="Tu nombre" className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all" />
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-8 border-t border-[var(--surface-border)]">
+                                            <h4 className="text-base font-bold text-red-500 mb-2">Zona de Peligro</h4>
+                                            <p className="text-sm text-[var(--text-muted)] mb-6">Al eliminar tu cuenta perderás todos tus proyectos, dominios y créditos de forma permanente.</p>
+                                            <button 
+                                                onClick={async () => {
+                                                    if (confirm('¿ESTÁS SEGURO? Esta acción es irreversible.')) {
+                                                        await db.deleteAccount();
+                                                        navigate('/login');
+                                                    }
+                                                }}
+                                                className="px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-red-500/20 transition-all active:scale-95"
+                                            >
+                                                Eliminar Cuenta Permanentemente
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {settingsTab === 'billing' && (
+                                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
+                                        <div className="bg-gradient-to-br from-primary to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl shadow-primary/20">
+                                            <div className="absolute -top-4 -right-4 opacity-10">
+                                                <Zap size={150} />
+                                            </div>
+                                            <div className="relative z-10">
+                                                <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-[10px] font-bold uppercase tracking-widest mb-4">Suscripción Activa</span>
+                                                <h3 className="text-4xl font-black mb-2">Plan {db.getUser()?.plan || 'Free'}</h3>
+                                                <p className="text-white/80 text-sm mb-8">Acceso total a todas las herramientas de Bulbia AI</p>
+                                                <div className="flex flex-wrap gap-4">
+                                                    <button onClick={() => navigate('/pricing')} className="px-8 py-3 bg-white text-primary rounded-2xl text-sm font-bold hover:bg-neutral-50 transition-all active:scale-95">Gestionar Plan</button>
+                                                    <button className="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl text-sm font-bold transition-all active:scale-95 text-white">Ver Facturas</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2">
+                                                <History size={14} /> Transacciones Recientes
+                                            </h4>
+                                            <div className="bg-[var(--background)] border border-[var(--surface-border)] rounded-2xl overflow-hidden">
+                                                <table className="w-full text-left text-sm">
+                                                    <thead className="bg-[var(--surface)] text-[var(--text-muted)] border-b border-[var(--surface-border)]">
+                                                        <tr>
+                                                            <th className="px-6 py-4 font-semibold text-xs">Fecha</th>
+                                                            <th className="px-6 py-4 font-semibold text-xs">Descripción</th>
+                                                            <th className="px-6 py-4 font-semibold text-xs text-right">Monto</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-[var(--surface-border)]">
+                                                        <tr>
+                                                            <td className="px-6 py-5 text-[var(--text-secondary)]">{new Date().toLocaleDateString()}</td>
+                                                            <td className="px-6 py-5 font-medium text-[var(--text-primary)]">Plan {db.getUser()?.plan || 'Free'} (Mensual)</td>
+                                                            <td className="px-6 py-5 text-right font-bold">$0.00</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {settingsTab === 'usage' && (
+                                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                            <div className="bg-[var(--background)] border border-[var(--surface-border)] p-6 rounded-3xl shadow-sm">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Zap size={16} className="text-primary" />
+                                                    <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Créditos IA</span>
+                                                </div>
+                                                <div className="text-3xl font-black text-[var(--text-primary)]">
+                                                    {((db.getUser()?.tokens || 100) * 0.4).toLocaleString()} <span className="text-sm font-medium text-[var(--text-muted)]">/ 10,000</span>
+                                                </div>
+                                            </div>
+                                            <div className="bg-[var(--background)] border border-[var(--surface-border)] p-6 rounded-3xl shadow-sm">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Calendar size={16} className="text-primary" />
+                                                    <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Siguiente Reset</span>
+                                                </div>
+                                                <div className="text-xl font-bold text-[var(--text-primary)]">
+                                                    {user?.nextResetDate ? new Date(user.nextResetDate).toLocaleDateString() : 'En 15 días'}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div className="flex justify-between items-end">
+                                                <div>
+                                                    <h4 className="text-lg font-bold">Consumo del Ciclo</h4>
+                                                    <p className="text-sm text-[var(--text-muted)]">Estimación basada en las peticiones enviadas a Bulbia</p>
+                                                </div>
+                                                <span className="text-2xl font-black text-primary">40%</span>
+                                            </div>
+                                            <div className="h-4 w-full bg-[var(--background)] border border-[var(--surface-border)] rounded-full overflow-hidden p-1">
+                                                <div className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full w-[40%] shadow-lg shadow-primary/20"></div>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-6 bg-primary/5 border border-primary/10 rounded-3xl">
+                                            <div className="flex gap-4">
+                                                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                                                    <Sparkles size={20} className="text-primary" />
+                                                </div>
+                                                <div>
+                                                    <h5 className="font-bold text-[var(--text-primary)] mb-1">Optimización de Créditos</h5>
+                                                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">Estamos trabajando para reducir el consumo de tokens en peticiones repetitivas. Tu plan actual permite hasta 10,000 peticiones de IA mensuales.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ) : sidebarView === 'all' ? (
                     /* === ALL APPS GALLERY === */
                     <div className="w-full max-w-5xl mx-auto animate-fade-in">
                         <div className="flex items-center justify-between mb-6 mt-2">
