@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { supabase } from '../services/supabase';
@@ -14,6 +14,19 @@ export function Login() {
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
+
+    useEffect(() => {
+        // Redirigir si ya hay sesión activa o si se acaba de crear vía OAuth (Google)
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) navigate('/dashboard');
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) navigate('/dashboard');
+        });
+
+        return () => subscription.unsubscribe();
+    }, [navigate]);
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault();
