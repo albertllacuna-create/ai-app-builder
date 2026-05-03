@@ -272,7 +272,7 @@ export function ProjectDashboard() {
     return (
         <div className="flex h-screen text-[var(--text-primary)] overflow-hidden builder-layout bg-transparent relative">
             {/* Animated Background */}
-            <div className="mesh-gradient" />
+            <div className={`mesh-gradient transition-opacity duration-500 ${sidebarView === 'settings' ? 'opacity-0' : 'opacity-100'}`} />
 
             {/* Sidebar - Base44 Style */}
             <aside className="w-64 border-r border-[var(--surface-border)] flex flex-col bg-[var(--background)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
@@ -378,7 +378,7 @@ export function ProjectDashboard() {
             </aside>
 
             {/* Main Area */}
-            <main className="flex-1 flex flex-col relative p-6 overflow-y-auto z-10">
+            <main className={`flex-1 flex flex-col relative overflow-y-auto z-10 transition-colors duration-500 ${sidebarView === 'settings' ? 'bg-[#f9fafb] p-0' : 'p-6'}`}>
                 {/* Error alert */}
                 {error && (
                     <div className="absolute top-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in zoom-in duration-300">
@@ -391,46 +391,66 @@ export function ProjectDashboard() {
                 )}
 
                 {sidebarView === 'settings' ? (
-                    /* === SETTINGS VIEW INTEGRATED === */
-                    <div className="w-full max-w-5xl mx-auto animate-fade-in">
-                        <div className="flex items-center gap-3 mb-8 mt-2">
-                            <div className="p-2 rounded-xl bg-primary/10 text-primary">
-                                <Settings size={24} />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold text-[var(--text-primary)]">Ajustes de Plataforma</h1>
-                                <p className="text-sm text-[var(--text-muted)]">Gestiona tu cuenta, suscripción y consumo de créditos</p>
-                            </div>
+                    /* === SETTINGS VIEW INTEGRATED - BASE44 STYLE === */
+                    <div className="w-full h-full flex flex-col animate-fade-in">
+                        {/* Settings Top Bar */}
+                        <div className="px-8 py-4 border-b border-gray-200 bg-white flex items-center gap-4 flex-shrink-0">
+                            <button 
+                                onClick={() => setSidebarView('home')}
+                                className="flex items-center gap-1.5 text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
+                            >
+                                <ArrowLeft size={16} /> Volver
+                            </button>
+                            <div className="h-4 w-[1px] bg-gray-200 mx-1"></div>
+                            <h2 className="text-[14px] font-semibold text-gray-900">Configuración</h2>
                         </div>
 
-                        <div className="flex flex-col lg:flex-row gap-8">
+                        <div className="flex-1 flex flex-col lg:flex-row p-8 gap-10 max-w-7xl mx-auto w-full overflow-y-auto">
                             {/* Settings Navigation */}
-                            <div className="w-full lg:w-64 space-y-1">
-                                {[
-                                    { id: 'account', name: 'Mi Cuenta', icon: UserIcon },
-                                    { id: 'billing', name: 'Plan y Facturación', icon: CreditCard },
-                                    { id: 'usage', name: 'Uso de Créditos', icon: Zap },
-                                ].map(tab => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setSettingsTab(tab.id as any)}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium transition-all ${settingsTab === tab.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'}`}
-                                    >
-                                        <tab.icon size={18} />
-                                        {tab.name}
-                                    </button>
-                                ))}
+                            <div className="w-full lg:w-64 space-y-8 flex-shrink-0">
+                                <div>
+                                    <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Espacio de Trabajo</h3>
+                                    <div className="space-y-1">
+                                        {[
+                                            { id: 'account', name: 'Información básica', icon: UserIcon },
+                                            { id: 'billing', name: 'Plan y facturación', icon: CreditCard },
+                                            { id: 'usage', name: 'Uso de créditos', icon: Zap },
+                                        ].map(tab => (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setSettingsTab(tab.id as any)}
+                                                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${settingsTab === tab.id ? 'bg-gray-200/60 text-gray-900' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}
+                                            >
+                                                {tab.name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                                 
-                                <div className="pt-6 mt-6 border-t border-[var(--surface-border)]">
-                                    <div className="flex items-center justify-between px-4 py-2 bg-[var(--surface)] rounded-2xl">
-                                        <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Modo Oscuro</span>
+                                <div className="pt-6 border-t border-gray-200">
+                                    <div className="flex items-center justify-between px-2">
+                                        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Tema Visual</span>
                                         <ThemeToggle />
                                     </div>
                                 </div>
                             </div>
 
                             {/* Settings Content Area */}
-                            <div className="flex-1 bg-[var(--surface)] border border-[var(--surface-border)] rounded-3xl p-8 shadow-sm">
+                            <div className="flex-1 space-y-6">
+                                <div className="mb-6">
+                                    <h1 className="text-2xl font-bold text-gray-900">
+                                        {settingsTab === 'account' && 'Información básica'}
+                                        {settingsTab === 'billing' && 'Plan y facturación'}
+                                        {settingsTab === 'usage' && 'Uso de créditos'}
+                                    </h1>
+                                    <p className="text-sm text-gray-500 mt-1">
+                                        {settingsTab === 'account' && 'Administra los detalles y la configuración de tu cuenta.'}
+                                        {settingsTab === 'billing' && 'Controla tu suscripción, métodos de pago e historial.'}
+                                        {settingsTab === 'usage' && 'Monitoriza el consumo de tokens de IA en tus proyectos.'}
+                                    </p>
+                                </div>
+
+                                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
                                 {settingsTab === 'account' && (
                                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
