@@ -58,16 +58,20 @@ class SupabaseDB {
                 this.state.user = {
                     id: newProfile.id,
                     email: newProfile.email,
+                    fullName: newProfile.full_name || '',
                     plan: newProfile.plan || 'Free',
-                    tokens: newProfile.tokens ?? 100
+                    tokens: newProfile.tokens ?? 100,
+                    nextResetDate: newProfile.next_reset_date || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
                 };
             } else {
                 this.profileId = profile.id;
                 this.state.user = {
                     id: profile.id,
                     email: profile.email,
+                    fullName: profile.full_name || '',
                     plan: profile.plan || 'Free',
-                    tokens: profile.tokens ?? 100
+                    tokens: profile.tokens ?? 100,
+                    nextResetDate: profile.next_reset_date || new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString()
                 };
             }
 
@@ -192,6 +196,43 @@ class SupabaseDB {
         await this.syncUser();
         this.saveCache();
         return true;
+    }
+
+    async updateUserProfile(updates: Partial<User>): Promise<void> {
+        if (!this.state.user || !this.profileId) return;
+
+        // Map UI names to DB names if necessary
+        const dbUpdates: any = {};
+        if (updates.fullName !== undefined) dbUpdates.full_name = updates.fullName;
+        if (updates.plan !== undefined) dbUpdates.plan = updates.plan;
+        if (updates.tokens !== undefined) dbUpdates.tokens = updates.tokens;
+
+        const { error } = await supabase
+            .from('users_profile')
+            .update(dbUpdates)
+            .eq('id', this.profileId);
+
+        if (error) throw error;
+
+        this.state.user = { ...this.state.user, ...updates };
+        this.saveCache();
+    }
+
+    async deleteAccount(): Promise<void> {
+        if (!this.state.user || !this.profileId) return;
+        
+        // This is a simplified version - in a real app you'd want to use a server-side function
+        // to handle complete deletion of all user data across all tables.
+        const { error } = await supabase
+            .from('users_profile')
+            .delete()
+            .eq('id', this.profileId);
+
+        if (error) throw error;
+        
+        this.state.user = null;
+        this.state.projects = [];
+        this.saveCache();
     }
 
     // =====================================================

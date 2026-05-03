@@ -7,8 +7,10 @@ export type bulbiaPlan = 'Free' | 'Starter' | 'Builder' | 'Expert';
 export interface User {
     id: string;
     email: string;
+    fullName?: string;
     plan: bulbiaPlan;
     tokens: number;
+    nextResetDate?: string;
 }
 
 export interface Message {

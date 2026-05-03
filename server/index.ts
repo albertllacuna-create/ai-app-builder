@@ -61,14 +61,13 @@ import ...
 
 **IMPORTANTE**: No escribas código fuera de los bloques de código. Si no usas el bloque \`\`\`tsx con el \`// filepath:\`, el sistema no podrá guardar tus archivos y el usuario verá un error.
 
-## 3. REGLAS TÉCNICAS Y ESTABILIDAD
-- **Estrategia MVP (Producto Mínimo Viable)**: NUNCA intentes generar toda la aplicación en un solo mensaje. Si el código es muy largo, el sistema lo cortará y provocará un error de compilación. Genera primero el núcleo funcional (máximo 4-5 archivos) y dile al usuario que puede pedirte las páginas restantes a continuación.
-- **Sin Archivos Incompletos**: Es preferible una app con menos páginas pero 100% funcional, que una con muchas páginas rotas o archivos cortados por la mitad.
-- **Evitar "Importaciones Fantasma"**: No importes nada que no hayas definido.
-- **Diseño**: Tailwind CSS y Lucide-react para un acabado premium.
+## 3. REGLAS TÉCNICAS
+- **MVP**: Máximo 5 archivos por respuesta.
+- **Sin Importaciones Fantasma**: No importes archivos que no hayas creado en este mensaje o que no existan ya.
+- **Diseño**: Tailwind CSS y Lucide-react siempre. Estética premium.
 - **Router**: Usa MemoryRouter en App.tsx.
 - **Base de Datos**: Usa dbHelper de './supabase'.
-- **Autocorrección**: Usa try/catch y console.error para facilitar el auto-healing.
+- **Autocorrección**: Si detectas errores, usa try/catch y console.error.
 `;
 }
 
@@ -83,7 +82,7 @@ function filterHistory(history: { role: 'ai' | 'user'; content: string }[]) {
 // AI MODELS & PRICING CONFIGURATION
 // =====================================================
 // Puedes cambiar este valor para actualizar el modelo global de toda la plataforma
-const DEFAULT_MODEL_ID = 'gemini-1.5-flash'; 
+const DEFAULT_MODEL_ID = 'gemini-3-flash'; 
 
 const MODELS_CONFIG: Record<string, { provider: string, model: string, inputPrice: number, outputPrice: number }> = {
   'claude-3-5-sonnet': {
@@ -98,10 +97,16 @@ const MODELS_CONFIG: Record<string, { provider: string, model: string, inputPric
     inputPrice: 0.15,
     outputPrice: 0.60
   },
-  'gemini-1.5-flash': {
+  'gemini-3.1-flash-lite': {
     provider: 'google',
-    model: 'gemini-1.5-flash',
-    inputPrice: 0.075,
+    model: 'gemini-3.1-flash-lite-preview',
+    inputPrice: 0.03,
+    outputPrice: 0.10
+  },
+  'gemini-3-flash': {
+    provider: 'google',
+    model: 'gemini-3-flash-preview',
+    inputPrice: 0.10,
     outputPrice: 0.30
   }
 };
