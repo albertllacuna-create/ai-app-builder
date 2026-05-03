@@ -214,7 +214,7 @@ ${errorMessage.substring(0, 300)}`;
             setVercelMessages([...vercelMessages, { 
                  id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : `msg-${Date.now()}`,
                  role: 'assistant', 
-                 content: `⚠️ **Error del Sistema Bolbia**: No se pudo enviar el mensaje. \n\nDetalle: ${err.message}\n\nDEBUG keys: ${keys}`
+                 content: `⚠️ **Error del Sistema Bulbia**: No se pudo enviar el mensaje. \n\nDetalle: ${err.message}\n\nDEBUG keys: ${keys}`
             }]);
             return;
         }

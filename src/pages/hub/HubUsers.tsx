@@ -48,7 +48,7 @@ export function HubUsers() {
                     <h1 className="text-2xl font-bold flex items-center gap-2 text-[var(--text-primary)]">
                         <User className="text-primary" /> Gestión de Usuarios
                     </h1>
-                    <p className="text-[var(--text-muted)] mt-1">Controla quién tiene acceso a los recursos de tu app Bolbia.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Controla quién tiene acceso a los recursos de tu app Bulbia.</p>
                 </div>
                 <button
                     onClick={loadUsers}
@@ -78,7 +78,7 @@ export function HubUsers() {
                         ) : users.length === 0 ? (
                             <tr>
                                 <td colSpan={4} className="p-8 text-center text-[var(--text-muted)]">
-                                    Aún no hay usuarios registrados en esta app Bolbia.
+                                    Aún no hay usuarios registrados en esta app Bulbia.
                                     <br />
                                     <span className="text-sm mt-2 block">Cuando los usuarios se registren en la aplicación generada, aparecerán aquí.</span>
                                 </td>

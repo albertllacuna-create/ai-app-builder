@@ -1,7 +1,7 @@
 import { Project } from '../types';
 import { getInjectedProjectFiles } from './systemFiles';
 
-const BOLBIA_HOSTING_URL = 'http://localhost:3001';
+const BULBIA_HOSTING_URL = 'http://localhost:3001';
 
 export const deployService = {
     async deployProject(project: Project): Promise<{ success: boolean; url?: string; error?: string }> {
@@ -67,7 +67,7 @@ export const dbHelper = {
                 customDomain: project.customDomain
             };
 
-            const response = await fetch(`${BOLBIA_HOSTING_URL}/api/deploy`, {
+            const response = await fetch(`${BULBIA_HOSTING_URL}/api/deploy`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ export const dbHelper = {
             console.error('Deploy error:', error);
             return {
                 success: false,
-                error: error.message || 'Error de conexión con bolbia Hosting'
+                error: error.message || 'Error de conexión con Bulbia Hosting'
             };
         }
     }
