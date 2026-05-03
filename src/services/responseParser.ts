@@ -59,9 +59,10 @@ export function parseAIResponse(responseText: string, projectId: string): Parsed
   let chatMessage = responseText;
   const files = parseCodeBlocks(responseText);
 
-  // Limpiar etiquetas legacy en caso de aparecer
+  // Limpiar etiquetas legacy y bloques de código markdown
   chatMessage = chatMessage.replace(/<chat>([\s\S]*?)<\/chat>/i, '$1');
   chatMessage = chatMessage.replace(/<code_changes>[\s\S]*?<\/code_changes>/i, '');
+  chatMessage = chatMessage.replace(/```[\s\S]*?```/g, ''); // Eliminar bloques de código
   chatMessage = chatMessage.trim();
 
   if (Object.keys(files).length > 0) {

@@ -248,6 +248,13 @@ ${errorMessage.substring(0, 300)}`;
     const lastMessage = vercelMessages[vercelMessages.length - 1];
     const isStreamingMessage = isAiTyping && lastMessage?.role === 'assistant';
     
+    const stripCodeBlocks = (text: string) => {
+        let clean = text.replace(/<chat>([\s\S]*?)<\/chat>/i, '$1');
+        clean = clean.replace(/<code_changes>[\s\S]*?<\/code_changes>/i, '');
+        clean = clean.replace(/```[\s\S]*?(```|$)/g, '');
+        return clean.trim();
+    };
+
     // stableMessages es todo menos el mensaje en stream actual para evitar duplicados en la pantalla
     const stableMessages = isStreamingMessage ? vercelMessages.slice(0, -1) : vercelMessages;
     
@@ -256,11 +263,11 @@ ${errorMessage.substring(0, 300)}`;
          const contentString = m.content || (m.parts ? m.parts.map((p: any) => p.text).join('') : '');
          return {
              role: (m.role === 'assistant' || m.role === 'system') ? 'ai' as const : 'user' as const,
-             content: contentString
+             content: m.role === 'assistant' || m.role === 'system' ? stripCodeBlocks(contentString) : contentString
          };
     });
 
-    const streamingText = isStreamingMessage ? (lastMessage.content || (lastMessage.parts ? lastMessage.parts.map((p: any) => p.text).join('') : '')) : '';
+    const streamingText = isStreamingMessage ? stripCodeBlocks(lastMessage.content || (lastMessage.parts ? lastMessage.parts.map((p: any) => p.text).join('') : '')) : '';
 
     return {
         prompt,

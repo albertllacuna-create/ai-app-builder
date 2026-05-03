@@ -4,7 +4,7 @@ export const BULBIA_AUTH_FILE = `import React, { useState, useEffect } from 'rea
 import { dbHelper } from './supabase';
 import { Lock, Mail, Key, Loader2, ArrowRight } from 'lucide-react';
 
-export function bulbiaAuth({ children }: { children: React.ReactNode }) {
+export function BulbiaAuth({ children }: { children: React.ReactNode }) {
     const [session, setSession] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [isLogin, setIsLogin] = useState(true);
@@ -164,11 +164,11 @@ export function getInjectedProjectFiles(project: Project, supabaseContent: strin
         let indexContent = files['/src/index.tsx'] || '';
 
         // Safety check to ensure we don't wrap it twice if re-rendering
-        if (indexContent && !indexContent.includes('bulbiaAuth')) {
-            indexContent = `import { bulbiaAuth } from './_bulbia_auth';\n` + indexContent;
+        if (indexContent && !indexContent.includes('BulbiaAuth')) {
+            indexContent = `import { BulbiaAuth } from './_bulbia_auth';\n` + indexContent;
 
-            // Reemplazamos <App /> con <bulbiaAuth><App /></bulbiaAuth>
-            indexContent = indexContent.replace(/<App \/>/g, '<bulbiaAuth><App /></bulbiaAuth>');
+            // Reemplazamos <App /> con <BulbiaAuth><App /></BulbiaAuth>
+            indexContent = indexContent.replace(/<App \/>/g, '<BulbiaAuth><App /></BulbiaAuth>');
             files['/src/index.tsx'] = indexContent;
         }
     }
