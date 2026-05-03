@@ -168,7 +168,7 @@ export function Login() {
                                 type="button" 
                                 onClick={handleGoogleLogin} 
                                 disabled={loading}
-                                className="w-full flex items-center justify-center gap-3 bg-white text-slate-700 hover:bg-orange-50 border border-orange-500 transition-all py-2.5 rounded-lg mb-6 disabled:opacity-70"
+                                className="w-full flex items-center justify-center gap-3 bg-white text-slate-700 hover:bg-violet-50 border border-violet-400 transition-all py-2.5 rounded-lg mb-6 disabled:opacity-70"
                             >
                                 <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                                     <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
