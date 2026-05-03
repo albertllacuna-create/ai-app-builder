@@ -573,7 +573,8 @@ export function ProjectDashboard() {
                             </div>
                         </div>
                     </div>
-                ) : sidebarView === 'all' ? (
+                </div>
+            ) : sidebarView === 'all' ? (
                     /* === ALL APPS GALLERY === */
                     <div className="w-full max-w-5xl mx-auto animate-fade-in">
                         <div className="flex items-center justify-between mb-6 mt-2">
@@ -675,9 +676,8 @@ export function ProjectDashboard() {
                             </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </main>
+                )}
+            </main>
 
 
             {/* Confirm Delete Modal */}
