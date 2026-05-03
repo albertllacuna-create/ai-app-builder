@@ -49,13 +49,19 @@ export function Login() {
     }, [currentText, isDeleting, currentPhraseIndex]);
 
     useEffect(() => {
-        // Redirigir si ya hay sesión activa o si se acaba de crear vía OAuth (Google)
-        supabase.auth.getSession().then(({ data: { session } }) => {
+        // Comprobación inmediata al cargar
+        const checkInitialSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
             if (session) navigate('/dashboard');
-        });
+        };
+        
+        checkInitialSession();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            if (session) navigate('/dashboard');
+        // Escuchar cambios (especialmente tras el callback de Google)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session && (event === 'SIGNED_IN' || event === 'INITIAL_SESSION')) {
+                navigate('/dashboard');
+            }
         });
 
         return () => subscription.unsubscribe();
@@ -116,7 +122,12 @@ export function Login() {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: window.location.origin + '/dashboard'
+                    // Al no poner redirectTo, Supabase usará la Site URL configurada
+                    // lo que evita errores de "mismatch" con el protocolo o las www
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'select_account',
+                    },
                 }
             });
             if (error) throw error;
