@@ -344,8 +344,11 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                         <button onClick={() => navigate('/dashboard')} className="p-1.5 hover:bg-[var(--surface-hover)] rounded-md transition-colors mr-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]" title="Volver al Dashboard">
                             <ArrowLeft size={18} />
                         </button>
-                        <Sparkles className="text-primary" size={20} />
-                        <span className="font-bold text-lg leading-none text-[var(--text-primary)]">asistente Bulbia</span>
+                        <img src={logo} alt="Bulbia" className="w-5 h-5 rounded-md" />
+                        <div className="flex flex-col">
+                            <span className="font-bold text-[14px] leading-tight text-[var(--text-primary)]">{project.name}</span>
+                            <span className="text-[10px] text-[var(--text-muted)] leading-tight">{db.getUser()?.email}</span>
+                        </div>
                     </div>
                 </div>
 
