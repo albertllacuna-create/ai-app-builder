@@ -675,8 +675,9 @@ export function ProjectDashboard() {
                             </div>
                         </div>
                     </div>
-                )}
-            </main>
+                </div>
+            )}
+        </main>
 
 
             {/* Confirm Delete Modal */}
