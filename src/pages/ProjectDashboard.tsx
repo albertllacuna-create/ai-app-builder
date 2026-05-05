@@ -575,8 +575,9 @@ export function ProjectDashboard() {
                             </div>
                         </div>
                     </div>
-                    </ErrorBoundary>
-                ) : sidebarView === 'all' ? (
+                </div>
+                </ErrorBoundary>
+            ) : sidebarView === 'all' ? (
                     /* === ALL APPS GALLERY === */
                     <div className="w-full max-w-5xl mx-auto animate-fade-in">
                         <div className="flex items-center justify-between mb-6 mt-2">
