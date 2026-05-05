@@ -152,6 +152,12 @@ ${errorMessage.substring(0, 300)}`;
                 id: (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID() : `msg-${Date.now()}-${Math.random()}`,
                 role: 'user',
                 content: `🔧 [Auto-fix] Error detectado: ${errorMessage.substring(0, 150)}...\n\n${fixPrompt}`
+            }, {
+                body: {
+                    currentFiles: project.files,
+                    userTokens: db.getUser()?.tokens || 0,
+                    mode: 'build'
+                }
             });
             setAutoHealStatus('idle');
         } catch (err) {
@@ -263,11 +269,11 @@ ${errorMessage.substring(0, 300)}`;
          const contentString = m.content || (m.parts ? m.parts.map((p: any) => p.text).join('') : '');
          return {
              role: (m.role === 'assistant' || m.role === 'system') ? 'ai' as const : 'user' as const,
-             content: m.role === 'assistant' || m.role === 'system' ? stripCodeBlocks(contentString) : contentString
+             content: contentString // AiMessageBubble now handles rendering and hiding code blocks securely
          };
     });
 
-    const streamingText = isStreamingMessage ? stripCodeBlocks(lastMessage.content || (lastMessage.parts ? lastMessage.parts.map((p: any) => p.text).join('') : '')) : '';
+    const streamingText = isStreamingMessage ? (lastMessage.content || (lastMessage.parts ? lastMessage.parts.map((p: any) => p.text).join('') : '')) : '';
 
     return {
         prompt,
