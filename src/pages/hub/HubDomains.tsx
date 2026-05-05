@@ -116,7 +116,7 @@ export function HubDomains() {
                             <div className="flex items-center gap-3 text-[var(--text-primary)]">
                                 <Globe size={18} className="text-[var(--text-muted)]" />
                                 <span className={`font-mono text-sm ${isPublished ? 'text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
-                                    {isPublished ? project.publishedUrl : 'No publicado (haz clic en Desplegar)'}
+                                    {isPublished ? `${window.location.origin}/app/${project.id}` : 'No publicado (haz clic en Desplegar)'}
                                 </span>
                             </div>
                         </div>

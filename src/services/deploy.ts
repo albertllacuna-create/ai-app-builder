@@ -1,7 +1,7 @@
 import { Project } from '../types';
 import { getInjectedProjectFiles } from './systemFiles';
 
-const BULBIA_HOSTING_URL = 'http://localhost:3001';
+const BULBIA_HOSTING_URL = ''; // relative URL for both dev (proxy) and prod
 
 export const deployService = {
     async deployProject(project: Project): Promise<{ success: boolean; url?: string; error?: string }> {

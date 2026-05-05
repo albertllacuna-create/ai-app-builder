@@ -3,6 +3,7 @@ import { ProjectDashboard } from './pages/ProjectDashboard';
 import { AppBuilder } from './pages/AppBuilder';
 import { Login } from './pages/Login';
 import { Preview } from './pages/Preview';
+import { AppViewer } from './pages/AppViewer';
 
 import { HubOverview } from './pages/hub/HubOverview';
 import { HubUsers } from './pages/hub/HubUsers';
@@ -33,6 +34,7 @@ function App() {
         </Route>
 
         <Route path="/preview/:projectId" element={<Preview />} />
+        <Route path="/app/:projectId" element={<AppViewer />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

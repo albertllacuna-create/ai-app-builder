@@ -295,8 +295,9 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
         try {
             const result = await deployService.deployProject(project);
             if (result.success && result.url) {
-                setDeployStatus({ url: result.url });
                 await db.updateProjectMetadata(project.id, { publishedUrl: result.url });
+                const bulbiaUrl = `${window.location.origin}/app/${project.id}`;
+                setDeployStatus({ url: bulbiaUrl });
             } else {
                 setDeployStatus({ error: result.error || 'Despliegue fallido' });
             }
