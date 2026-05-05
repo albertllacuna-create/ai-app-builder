@@ -5,6 +5,7 @@ import { supabase } from '../services/supabase';
 import { db } from '../services/db';
 import { Project } from '../types';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 import logo from '../assets/logo.png';
 import '../index.css';
 
@@ -388,6 +389,7 @@ export function ProjectDashboard() {
 
                 {sidebarView === 'settings' ? (
                     /* === SETTINGS VIEW INTEGRATED - BASE44 STYLE === */
+                    <ErrorBoundary>
                     <div className="w-full h-full flex flex-col animate-fade-in">
                         {/* Settings Top Bar */}
                         <div className="px-8 py-4 border-b border-gray-200 bg-white flex items-center gap-4 flex-shrink-0">
@@ -573,8 +575,8 @@ export function ProjectDashboard() {
                             </div>
                         </div>
                     </div>
-                </div>
-            ) : sidebarView === 'all' ? (
+                    </ErrorBoundary>
+                ) : sidebarView === 'all' ? (
                     /* === ALL APPS GALLERY === */
                     <div className="w-full max-w-5xl mx-auto animate-fade-in">
                         <div className="flex items-center justify-between mb-6 mt-2">
