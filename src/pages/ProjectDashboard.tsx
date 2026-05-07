@@ -3,6 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Settings, LogOut, X, CreditCard, User as UserIcon, Trash2, Copy, Send, Sparkles, FileText, Image as ImageIcon, Zap, ListChecks, Loader2, ChevronDown, Check, Star, Layers, Clock, History, Calendar, ArrowLeft } from 'lucide-react';
 import { supabase } from '../services/supabase';
 import { db } from '../services/db';
+import * as LucideIcons from 'lucide-react';
+
+const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | undefined, size?: number, className?: string }) => {
+    const Icon = (LucideIcons as any)[name || 'Sparkles'] || LucideIcons.Sparkles;
+    return <Icon size={size} className={className} />;
+};
 import { Project } from '../types';
 import { ThemeToggle } from '../components/ThemeToggle';
 import { ErrorBoundary } from '../components/ErrorBoundary';
@@ -188,16 +194,34 @@ export function ProjectDashboard() {
             // Navigate and pass the prompt to AppBuilder via query parameter
             navigate(`/project/${proj.id}?prompt=${encodeURIComponent(finalPrompt)}&mode=${interactionMode}`);
 
-            // Asynchronously generate and update the project name based on the prompt
-            fetch('/api/generate-name', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: prompt.trim() })
-            }).then(resp => resp.json()).then(data => {
-                if (data.name) {
-                    db.updateProjectMetadata(proj.id, { name: data.name });
+            // Asynchronously generate and update the project name and logo based on the prompt
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        messages: [{
+                            role: 'user',
+                            content: `Basado en este prompt: "${prompt.trim()}", sugiere un nombre comercial corto (máx 3 palabras) y un icono de Lucide React (ej: ShoppingBag, Zap, Users, Shield, Briefcase, Rocket, Star, Heart, Code, Database, Smartphone, Layout, BarChart, Settings, Mail, Bell, MapPin, Search, Plus, Check, X, Menu, Home, Calendar, Clock, Camera, Image, Video, Music, Mic, Play, Pause, Square, Triangle, Circle) que lo represente. Responde SOLO en formato JSON: {"name": "Nombre", "icon": "IconName"}`
+                        }],
+                        mode: 'plan'
+                    })
+                });
+                const data = await response.json();
+                const content = data.content || (data.parts ? data.parts.map((p: any) => p.text).join('') : '');
+                const match = content.match(/\{.*\}/s);
+                if (match) {
+                    const metadata = JSON.parse(match[0]);
+                    db.updateProjectMetadata(proj.id, { 
+                        name: metadata.name || 'Nueva App',
+                        logoUrl: metadata.icon || 'Sparkles'
+                    });
+                    setProjects(db.getProjects());
                 }
-            });
+            } catch (err) {
+                console.error("Error generating metadata:", err);
+                db.updateProjectMetadata(proj.id, { name: 'Nueva App', logoUrl: 'Sparkles' });
+            }
         } catch (err: any) {
             console.error('Error creating project:', err);
             setError(err.message || 'No se pudo crear el proyecto');
@@ -428,7 +452,9 @@ export function ProjectDashboard() {
                                     className="group flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
                                     onClick={() => navigate(`/project/${project.id}`)}
                                 >
-                                    <Star size={12} className="text-amber-400 shrink-0" fill="currentColor" />
+                                    <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                        <DynamicIcon name={project.logoUrl} size={12} className="text-primary" />
+                                    </div>
                                     <span className="text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                                 </div>
                             ))
@@ -445,11 +471,12 @@ export function ProjectDashboard() {
                             <Clock size={11} /> Recientes
                         </h3>
                     {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
-                        <div 
-                            key={project.id} 
-                            className="group flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
+                        <div key={project.id} className="flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
                             onClick={() => navigate(`/project/${project.id}`)}
                         >
+                            <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                <DynamicIcon name={project.logoUrl} size={12} className="text-primary" />
+                            </div>
                             <div className="flex-1 min-w-0">
                                 <span className="block text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                             </div>
@@ -796,7 +823,9 @@ export function ProjectDashboard() {
                                     <div key={project.id} onClick={() => navigate(`/project/${project.id}`)} className="group relative bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all hover:-translate-y-0.5">
                                         <div className="h-36 bg-gradient-to-br from-neutral-100 to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 flex items-center justify-center border-b border-[var(--surface-border)]">
                                             <div className="text-center">
-                                                <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center"><Layers size={20} className="text-primary" /></div>
+                                                <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center">
+                                                    <DynamicIcon name={project.logoUrl} size={20} className="text-primary" />
+                                                </div>
                                                 <span className="text-[10px] text-[var(--text-muted)]">Vista previa</span>
                                             </div>
                                         </div>

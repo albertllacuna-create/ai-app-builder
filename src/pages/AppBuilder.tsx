@@ -15,7 +15,13 @@ import { supabase } from '../services/supabase';
 import { useMaysonChat } from '../hooks/useMaysonChat';
 import { useRemoteBundler } from '../hooks/useRemoteBundler';
 import logo from '../assets/logo.png';
+import * as LucideIcons from 'lucide-react';
 import '../index.css';
+
+const DynamicIcon = ({ name, size = 16, className = "" }: { name: string | undefined, size?: number, className?: string }) => {
+    const Icon = (LucideIcons as any)[name || 'Sparkles'] || LucideIcons.Sparkles;
+    return <Icon size={size} className={className} />;
+};
 
 export function AppBuilder() {
     const navigate = useNavigate();
@@ -350,7 +356,9 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                         <button onClick={() => navigate('/dashboard')} className="p-1.5 hover:bg-[var(--surface-hover)] rounded-md transition-colors mr-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]" title="Volver al Dashboard">
                             <ArrowLeft size={18} />
                         </button>
-                        <img src={logo} alt="Bulbia" className="w-5 h-5 rounded-md" />
+                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <DynamicIcon name={project.logoUrl} size={18} className="text-primary" />
+                        </div>
                         <div className="flex flex-col">
                             <span className="font-bold text-[14px] leading-tight text-[var(--text-primary)]">{project.name}</span>
                             <span className="text-[10px] text-[var(--text-muted)] leading-tight">{db.getUser()?.email}</span>
