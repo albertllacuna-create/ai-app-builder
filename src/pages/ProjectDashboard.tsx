@@ -303,7 +303,7 @@ export function ProjectDashboard() {
                 <div className="flex-1 overflow-y-auto px-2 pb-2">
                     {/* Favorites - always visible */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-80">
                             <Star size={11} /> Favoritos
                         </h3>
                         {projects.filter(p => p.favorite).length > 0 ? (
@@ -314,7 +314,7 @@ export function ProjectDashboard() {
                                     onClick={() => navigate(`/project/${project.id}`)}
                                 >
                                     <Star size={12} className="text-amber-400 shrink-0" fill="currentColor" />
-                                    <span className="text-[13px] font-semibold truncate text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                    <span className="text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                                 </div>
                             ))
                         ) : (
@@ -326,7 +326,7 @@ export function ProjectDashboard() {
 
                     {/* Recent */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-80">
                             <Clock size={11} /> Recientes
                         </h3>
                     {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
@@ -336,7 +336,7 @@ export function ProjectDashboard() {
                             onClick={() => navigate(`/project/${project.id}`)}
                         >
                             <div className="flex-1 min-w-0">
-                                <span className="block text-[13px] font-semibold truncate text-[var(--text-primary)] transition-colors">{project.name}</span>
+                                <span className="block text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                             </div>
                         </div>
                     ))}
@@ -400,14 +400,14 @@ export function ProjectDashboard() {
                                 <ArrowLeft size={16} /> Volver
                             </button>
                             <div className="h-4 w-[1px] bg-gray-200 mx-1"></div>
-                            <h2 className="text-[14px] font-semibold text-gray-900">Configuración</h2>
+                            <h2 className="text-[14px] font-semibold text-[var(--text-primary)]">Configuración</h2>
                         </div>
 
                         <div className="flex-1 flex flex-col lg:flex-row p-8 gap-10 max-w-7xl mx-auto w-full overflow-y-auto">
                             {/* Settings Navigation */}
                             <div className="w-full lg:w-64 space-y-8 flex-shrink-0">
                                 <div>
-                                    <h3 className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Espacio de Trabajo</h3>
+                                    <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 px-2">Espacio de Trabajo</h3>
                                     <div className="space-y-1">
                                         {[
                                             { id: 'account', name: 'Información básica', icon: UserIcon },
@@ -417,7 +417,7 @@ export function ProjectDashboard() {
                                             <button
                                                 key={tab.id}
                                                 onClick={() => setSettingsTab(tab.id as any)}
-                                                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${settingsTab === tab.id ? 'bg-gray-200/60 text-gray-900' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100'}`}
+                                                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${settingsTab === tab.id ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'}`}
                                             >
                                                 {tab.name}
                                             </button>
@@ -427,7 +427,7 @@ export function ProjectDashboard() {
                                 
                                 <div className="pt-6 border-t border-gray-200">
                                     <div className="flex items-center justify-between px-2">
-                                        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Tema Visual</span>
+                                        <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Tema Visual</span>
                                         <ThemeToggle />
                                     </div>
                                 </div>
@@ -436,12 +436,12 @@ export function ProjectDashboard() {
                             {/* Settings Content Area */}
                             <div className="flex-1 space-y-6">
                                 <div className="mb-6">
-                                    <h1 className="text-2xl font-bold text-gray-900">
+                                    <h1 className="text-2xl font-bold text-[var(--text-primary)]">
                                         {settingsTab === 'account' && 'Información básica'}
                                         {settingsTab === 'billing' && 'Plan y facturación'}
                                         {settingsTab === 'usage' && 'Uso de créditos'}
                                     </h1>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    <p className="text-sm text-[var(--text-muted)] mt-1">
                                         {settingsTab === 'account' && 'Administra los detalles y la configuración de tu cuenta.'}
                                         {settingsTab === 'billing' && 'Controla tu suscripción, métodos de pago e historial.'}
                                         {settingsTab === 'usage' && 'Monitoriza el consumo de tokens de IA en tus proyectos.'}
@@ -454,11 +454,11 @@ export function ProjectDashboard() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Email de Usuario</label>
-                                                <input type="email" value={user?.email || ''} disabled className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-muted)] cursor-not-allowed" />
+                                                <input type="email" value={user?.email || ''} disabled className="w-full px-4 py-2.5 bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-muted)] cursor-not-allowed font-medium" />
                                             </div>
                                             <div className="space-y-2">
                                                 <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Nombre Completo</label>
-                                                <input type="text" defaultValue={user?.fullName || ''} onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} placeholder="Tu nombre" className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all" />
+                                                <input type="text" defaultValue={user?.fullName || ''} onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} placeholder="Tu nombre" className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-primary)] focus:border-primary/50 focus:bg-white dark:focus:bg-black/20 focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium" />
                                             </div>
                                         </div>
 
@@ -482,17 +482,23 @@ export function ProjectDashboard() {
 
                                 {settingsTab === 'billing' && (
                                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
-                                        <div className="bg-gradient-to-br from-primary to-indigo-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl shadow-primary/20">
-                                            <div className="absolute -top-4 -right-4 opacity-10">
-                                                <Zap size={150} />
-                                            </div>
-                                            <div className="relative z-10">
-                                                <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-[10px] font-bold uppercase tracking-widest mb-4">Suscripción Activa</span>
-                                                <h3 className="text-4xl font-black mb-2">Plan {db.getUser()?.plan || 'Free'}</h3>
-                                                <p className="text-white/80 text-sm mb-8">Acceso total a todas las herramientas de Bulbia AI</p>
-                                                <div className="flex flex-wrap gap-4">
-                                                    <button onClick={() => navigate('/pricing')} className="px-8 py-3 bg-white text-primary rounded-2xl text-sm font-bold hover:bg-neutral-50 transition-all active:scale-95">Gestionar Plan</button>
-                                                    <button className="px-8 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl text-sm font-bold transition-all active:scale-95 text-white">Ver Facturas</button>
+                                        <div className="bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-3xl p-6 relative overflow-hidden">
+                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                                <div className="flex items-center gap-5">
+                                                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                                                        <Zap size={28} className="text-primary" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-full">Suscripción Activa</span>
+                                                        </div>
+                                                        <h3 className="text-2xl font-bold text-[var(--text-primary)]">Plan {db.getUser()?.plan || 'Free'}</h3>
+                                                        <p className="text-[var(--text-muted)] text-sm">Acceso total a las herramientas de Bulbia AI</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <button onClick={() => navigate('/pricing')} className="px-6 py-2.5 bg-[var(--text-primary)] text-[var(--background)] rounded-xl text-xs font-bold hover:opacity-90 transition-all active:scale-95">Cambiar Plan</button>
+                                                    <button className="px-6 py-2.5 bg-[var(--surface)] border border-[var(--surface-border)] rounded-xl text-xs font-bold hover:bg-[var(--surface-hover)] transition-all active:scale-95 text-[var(--text-primary)]">Facturación</button>
                                                 </div>
                                             </div>
                                         </div>
