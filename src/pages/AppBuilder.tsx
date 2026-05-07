@@ -717,13 +717,13 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                 {isCodeEditorRoute ? (
                                     <div className="custom-code-viewer" style={{ display: 'flex', width: '100%', height: '100%' }}>
                                         <div className="file-explorer" style={{ width: '220px', borderRight: '1px solid var(--surface-border)', padding: '1.25rem', background: 'var(--surface)' }}>
-                                            <h3 className="text-[10px] font-bold text-[var(--text-muted)] mb-4 uppercase tracking-wider">Archivos Generados</h3>
+                                            <h3 className="text-[10px] font-bold text-[var(--text-secondary)] mb-4 uppercase tracking-wider">Archivos Generados</h3>
                                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} className="space-y-1">
                                                 {Object.keys(project.files).sort().map(filename => (
                                                     <li key={filename}>
                                                         <button
                                                             onClick={() => setCodeFile(filename)}
-                                                            className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-xs transition-colors ${codeFile === filename ? 'bg-primary/15 text-primary' : 'text-[var(--text-muted)] hover:bg-[var(--surface-hover)]'}`}
+                                                            className={`w-full flex items-center gap-2 px-3 py-2 rounded-md text-xs transition-colors ${codeFile === filename ? 'bg-primary/15 text-primary' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)]'}`}
                                                         >
                                                             <FileCode2 size={14} />
                                                             <span className="truncate">{filename.split('/').pop()}</span>

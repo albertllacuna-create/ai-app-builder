@@ -79,8 +79,8 @@ export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo,
 
                                     return (
                                         <div className="flex items-center gap-1.5 py-0.5">
-                                            <FileCode2 size={14} style={{ color: 'var(--text-muted)' }} className="shrink-0" />
-                                            <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>Escrito</span>
+                                            <FileCode2 size={14} style={{ color: 'var(--text-secondary)' }} className="shrink-0" />
+                                            <span className="text-[12px]" style={{ color: 'var(--text-secondary)' }}>Escrito</span>
                                             <span className="text-[12px] font-medium" style={{ color: 'var(--text-primary)' }}>{fileName}</span>
                                         </div>
                                     );
@@ -90,7 +90,7 @@ export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo,
                                 return (
                                     <div className="relative mt-0 mb-0">
                                         <div className="absolute top-0 right-0 px-3 py-1 rounded-bl-lg z-10" style={{ background: 'var(--surface-hover)', borderBottom: '1px solid var(--surface-border)', borderLeft: '1px solid var(--surface-border)' }}>
-                                            <span className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>{match[1]}</span>
+                                            <span className="text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>{match[1]}</span>
                                         </div>
                                         <code className={`${className} text-[12px] leading-relaxed block`} {...props}>{children}</code>
                                     </div>
@@ -142,7 +142,7 @@ export const AiMessageBubble = ({ msg, isAiAndUndoable, isAiTyping, stepsToUndo,
                 <div className="mt-4 flex justify-end">
                     <button
                         onClick={() => handleUndo(stepsToUndo)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800/50 hover:bg-red-500/20 text-neutral-400 hover:text-red-400 border border-neutral-700/50 hover:border-red-500/30 rounded-lg text-[11px] font-medium transition-all shadow-sm"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-neutral-800/50 hover:bg-red-500/20 text-neutral-300 hover:text-red-400 border border-neutral-700/50 hover:border-red-500/30 rounded-lg text-[11px] font-medium transition-all shadow-sm"
                         title={`Deshacer hasta este punto`}
                     >
                         <Undo2 size={14} />

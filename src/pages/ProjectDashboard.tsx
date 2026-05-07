@@ -303,7 +303,7 @@ export function ProjectDashboard() {
                 <div className="flex-1 overflow-y-auto px-2 pb-2">
                     {/* Favorites - always visible */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-40">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-60">
                             <Star size={11} /> Favoritos
                         </h3>
                         {projects.filter(p => p.favorite).length > 0 ? (
@@ -318,7 +318,7 @@ export function ProjectDashboard() {
                                 </div>
                             ))
                         ) : (
-                            <div className="px-3 py-2 text-[11px] text-[var(--text-muted)] opacity-60 italic">
+                            <div className="px-3 py-2 text-[11px] text-[var(--text-muted)] opacity-80 italic">
                                 Sin favoritos aún
                             </div>
                         )}
@@ -326,7 +326,7 @@ export function ProjectDashboard() {
 
                     {/* Recent */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-40">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-60">
                             <Clock size={11} /> Recientes
                         </h3>
                     {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
