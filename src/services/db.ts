@@ -14,11 +14,13 @@ class SupabaseDB {
         if (saved) {
             try {
                 this.state = JSON.parse(saved);
+                if (!this.state.workspaces) this.state.workspaces = [];
+                if (!this.state.activeWorkspaceId) this.state.activeWorkspaceId = null;
             } catch {
-                this.state = { user: null, projects: [] };
+                this.state = { user: null, projects: [], workspaces: [], activeWorkspaceId: null };
             }
         } else {
-            this.state = { user: null, projects: [] };
+            this.state = { user: null, projects: [], workspaces: [], activeWorkspaceId: null };
         }
     }
 
@@ -75,35 +77,81 @@ class SupabaseDB {
                 };
             }
 
-            // 2. Load projects
-            const { data: projects, error: projError } = await supabase
-                .from('projects')
-                .select('*')
-                .eq('user_id', this.profileId)
-                .order('updated_at', { ascending: false });
+            // 2. Load Workspaces
+            const { data: members, error: memberErr } = await supabase
+                .from('workspace_members')
+                .select('*, workspaces(*)')
+                .eq('profile_id', this.profileId);
 
-            if (projError) throw projError;
+            if (memberErr) throw memberErr;
 
-            if (projects) {
-                this.state.projects = projects.map((p: any) => ({
-                    id: p.id,
-                    userId: p.user_id,
-                    name: p.name,
-                    description: p.description || undefined,
-                    logoUrl: p.logo_url || undefined,
-                    visibility: p.visibility || 'private',
-                    requireLogin: p.require_login || false,
-                    publishedUrl: p.published_url || undefined,
-                    customDomain: p.custom_domain || undefined,
-                    stripeConnected: p.stripe_connected || false,
-                    stripePlans: p.stripe_plans || [],
-                    type: p.type || 'Web App',
-                    updatedAt: p.updated_at,
-                    favorite: p.favorite || false,
-                    files: p.files || {},
-                    messages: p.messages || [],
-                    history: p.history || []
-                }));
+            this.state.workspaces = (members || []).map((m: any) => ({
+                id: m.workspaces.id,
+                name: m.workspaces.name,
+                ownerId: m.workspaces.owner_id,
+                createdAt: m.workspaces.created_at,
+                userRole: m.role
+            }));
+
+            // Auto-create personal workspace if none exist
+            if (this.state.workspaces.length === 0) {
+                const { data: ws, error: wsErr } = await supabase
+                    .from('workspaces')
+                    .insert({ name: 'Mi Espacio', owner_id: this.profileId })
+                    .select().single();
+                if (wsErr) throw wsErr;
+
+                await supabase.from('workspace_members').insert({
+                    workspace_id: ws.id,
+                    profile_id: this.profileId,
+                    role: 'owner'
+                });
+
+                this.state.workspaces = [{
+                    id: ws.id,
+                    name: ws.name,
+                    ownerId: ws.owner_id,
+                    createdAt: ws.created_at,
+                    userRole: 'owner'
+                }];
+            }
+
+            if (!this.state.activeWorkspaceId && this.state.workspaces.length > 0) {
+                this.state.activeWorkspaceId = this.state.workspaces[0].id;
+            }
+
+            // 3. Load projects for current workspace
+            if (this.state.activeWorkspaceId) {
+                const { data: projects, error: projError } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .eq('workspace_id', this.state.activeWorkspaceId)
+                    .order('updated_at', { ascending: false });
+
+                if (projError) throw projError;
+
+                if (projects) {
+                    this.state.projects = projects.map((p: any) => ({
+                        id: p.id,
+                        userId: p.user_id,
+                        workspaceId: p.workspace_id,
+                        name: p.name,
+                        description: p.description || undefined,
+                        logoUrl: p.logo_url || undefined,
+                        visibility: p.visibility || 'private',
+                        requireLogin: p.require_login || false,
+                        publishedUrl: p.published_url || undefined,
+                        customDomain: p.custom_domain || undefined,
+                        stripeConnected: p.stripe_connected || false,
+                        stripePlans: p.stripe_plans || [],
+                        type: p.type || 'Web App',
+                        updatedAt: p.updated_at,
+                        favorite: p.favorite || false,
+                        files: p.files || {},
+                        messages: p.messages || [],
+                        history: p.history || []
+                    }));
+                }
             }
 
             this.initialized = true;
@@ -120,7 +168,8 @@ class SupabaseDB {
 
         const { error } = await supabase.from('projects').upsert({
             id: project.id,
-            user_id: this.profileId,
+            user_id: project.userId,
+            workspace_id: project.workspaceId || this.state.activeWorkspaceId,
             name: project.name,
             description: project.description || null,
             type: project.type,
@@ -232,7 +281,173 @@ class SupabaseDB {
         
         this.state.user = null;
         this.state.projects = [];
+        this.state.workspaces = [];
+        this.state.activeWorkspaceId = null;
         this.saveCache();
+    }
+
+    // =====================================================
+    // WORKSPACES
+    // =====================================================
+
+    getWorkspaces() {
+        return this.state.workspaces;
+    }
+
+    getActiveWorkspaceId() {
+        return this.state.activeWorkspaceId;
+    }
+
+    getActiveWorkspace() {
+        return this.state.workspaces.find(w => w.id === this.state.activeWorkspaceId);
+    }
+
+    async switchWorkspace(id: string) {
+        if (this.state.activeWorkspaceId === id) return;
+        this.state.activeWorkspaceId = id;
+        this.saveCache();
+        
+        // Force reload projects for the new workspace
+        if (this.profileId) {
+            const { data: projects, error } = await supabase
+                .from('projects')
+                .select('*')
+                .eq('workspace_id', id)
+                .order('updated_at', { ascending: false });
+            
+            if (!error && projects) {
+                this.state.projects = projects.map((p: any) => ({
+                    id: p.id,
+                    userId: p.user_id,
+                    workspaceId: p.workspace_id,
+                    name: p.name,
+                    description: p.description || undefined,
+                    logoUrl: p.logo_url || undefined,
+                    visibility: p.visibility || 'private',
+                    requireLogin: p.require_login || false,
+                    publishedUrl: p.published_url || undefined,
+                    customDomain: p.custom_domain || undefined,
+                    stripeConnected: p.stripe_connected || false,
+                    stripePlans: p.stripe_plans || [],
+                    type: p.type || 'Web App',
+                    updatedAt: p.updated_at,
+                    favorite: p.favorite || false,
+                    files: p.files || {},
+                    messages: p.messages || [],
+                    history: p.history || []
+                }));
+                this.saveCache();
+            }
+        }
+    }
+
+    async createWorkspace(name: string) {
+        if (!this.profileId) return null;
+        
+        // Limit check (Owner of max 5)
+        const ownedCount = this.state.workspaces.filter(w => w.ownerId === this.profileId).length;
+        if (ownedCount >= 5) {
+            throw new Error("Has alcanzado el límite de 5 espacios de trabajo.");
+        }
+
+        const { data: ws, error: wsErr } = await supabase
+            .from('workspaces')
+            .insert({ name, owner_id: this.profileId })
+            .select().single();
+        
+        if (wsErr) throw wsErr;
+
+        await supabase.from('workspace_members').insert({
+            workspace_id: ws.id,
+            profile_id: this.profileId,
+            role: 'owner'
+        });
+
+        const newWs = {
+            id: ws.id,
+            name: ws.name,
+            ownerId: ws.owner_id,
+            createdAt: ws.created_at,
+            userRole: 'owner' as const
+        };
+
+        this.state.workspaces.push(newWs);
+        await this.switchWorkspace(newWs.id);
+        return newWs;
+    }
+
+    async getWorkspaceMembers(workspaceId: string) {
+        const { data, error } = await supabase
+            .from('workspace_members')
+            .select('*, users_profile(email, full_name)')
+            .eq('workspace_id', workspaceId);
+        
+        if (error) throw error;
+        
+        return data.map((m: any) => ({
+            id: m.id,
+            workspaceId: m.workspace_id,
+            profileId: m.profile_id,
+            role: m.role,
+            email: m.users_profile.email,
+            fullName: m.users_profile.full_name,
+            joinedAt: m.joined_at
+        }));
+    }
+
+    async generateInvitation(workspaceId: string, role: 'editor' | 'viewer') {
+        if (!this.profileId) return null;
+        const token = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days
+
+        const { error } = await supabase.from('workspace_invitations').insert({
+            workspace_id: workspaceId,
+            role,
+            token,
+            created_by: this.profileId,
+            expires_at: expiresAt
+        });
+
+        if (error) throw error;
+        return token;
+    }
+
+    async joinWorkspace(token: string) {
+        if (!this.profileId) throw new Error("Inicia sesión para unirte");
+
+        const { data: invite, error: inviteErr } = await supabase
+            .from('workspace_invitations')
+            .select('*')
+            .eq('token', token)
+            .single();
+        
+        if (inviteErr || !invite) throw new Error("Invitación no válida o expirada");
+        
+        if (new Date(invite.expires_at) < new Date()) {
+            throw new Error("La invitación ha expirado");
+        }
+
+        const { error: joinErr } = await supabase.from('workspace_members').insert({
+            workspace_id: invite.workspace_id,
+            profile_id: this.profileId,
+            role: invite.role
+        });
+
+        if (joinErr) {
+            if (joinErr.code === '23505') return invite.workspace_id; // Already a member
+            throw joinErr;
+        }
+
+        return invite.workspace_id;
+    }
+
+    async removeMember(workspaceId: string, profileId: string) {
+        const { error } = await supabase
+            .from('workspace_members')
+            .delete()
+            .eq('workspace_id', workspaceId)
+            .eq('profile_id', profileId);
+        if (error) throw error;
     }
 
     // =====================================================
@@ -249,11 +464,12 @@ class SupabaseDB {
     }
 
     async createProject(name: string, type: string = 'Web App'): Promise<Project> {
-        if (!this.state.user || !this.profileId) throw new Error('Debes iniciar sesión para crear proyectos en la nube.');
+        if (!this.state.user || !this.profileId || !this.state.activeWorkspaceId) throw new Error('Debes iniciar sesión y seleccionar un espacio de trabajo.');
 
         const project: Project = {
             id: crypto.randomUUID(),
             userId: this.state.user.id,
+            workspaceId: this.state.activeWorkspaceId,
             name,
             type,
             updatedAt: new Date().toISOString(),

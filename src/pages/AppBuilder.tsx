@@ -247,6 +247,11 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
         init();
     }, [projectId, navigate]);
 
+    // Role detection
+    const activeWs = db.getActiveWorkspace();
+    const userRole = activeWs?.userRole || 'owner';
+    const isViewer = userRole === 'viewer';
+
     // Handle incoming prompt query parameter for new projects
     useEffect(() => {
         if (!project || initialPromptHandled.current || messages.length > 0) return;
@@ -525,26 +530,26 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
 
                             <textarea
                                 className="chat-input w-full bg-transparent text-[var(--text-primary)] placeholder-[var(--text-muted)] px-3 py-2.5 resize-none outline-none text-[13px] leading-relaxed"
-                                placeholder="Ej: Crea una tabla... (Shift+Enter para nueva línea)"
+                                placeholder={isViewer ? "Rol de Visor: Solo lectura" : "Ej: Crea una tabla... (Shift+Enter para nueva línea)"}
                                 value={prompt}
                                 rows={Math.min(10, prompt.split('\n').length || 1)}
                                 onChange={(e) => setPrompt(e.target.value)}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter' && !e.shiftKey) {
                                         e.preventDefault();
-                                        if ((prompt.trim() || attachments.length > 0) && !isAiTyping) {
+                                        if ((prompt.trim() || attachments.length > 0) && !isAiTyping && !isViewer) {
                                             const form = e.currentTarget.closest('form');
                                             if (form) form.requestSubmit();
                                         }
                                     }
                                 }}
-                                disabled={isAiTyping}
+                                disabled={isAiTyping || isViewer}
                                 style={{ minHeight: '44px', maxHeight: '400px' }}
                             />
                             <button
                                 type="submit"
                                 className="send-btn flex-shrink-0 self-end flex items-center justify-center p-2.5 mx-1 mb-1 rounded-lg bg-primary hover:bg-primary-600 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={(!prompt.trim() && attachments.length === 0) || isAiTyping}
+                                disabled={(!prompt.trim() && attachments.length === 0) || isAiTyping || isViewer}
                             >
                                 <Send size={16} />
                             </button>
@@ -653,14 +658,14 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                         <button
                             className="flex items-center gap-1.5 whitespace-nowrap shrink-0"
                             onClick={handleDeploy}
-                            disabled={isDeploying || Object.keys(project.files).length <= 1}
+                            disabled={isDeploying || Object.keys(project.files).length <= 1 || isViewer}
                             style={{
                                 padding: '4px 12px',
                                 fontSize: '0.8rem',
                                 borderRadius: '6px',
-                                background: (isDeploying || Object.keys(project.files).length <= 1) ? '#334155' : '#10b981',
-                                color: (isDeploying || Object.keys(project.files).length <= 1) ? '#94a3b8' : 'white',
-                                cursor: (isDeploying || Object.keys(project.files).length <= 1) ? 'not-allowed' : 'pointer',
+                                background: (isDeploying || Object.keys(project.files).length <= 1 || isViewer) ? '#334155' : '#10b981',
+                                color: (isDeploying || Object.keys(project.files).length <= 1 || isViewer) ? '#94a3b8' : 'white',
+                                cursor: (isDeploying || Object.keys(project.files).length <= 1 || isViewer) ? 'not-allowed' : 'pointer',
                                 border: 'none',
                                 fontWeight: 500,
                                 transition: 'all 0.2s',
@@ -717,7 +722,12 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                 {isCodeEditorRoute ? (
                                     <div className="custom-code-viewer" style={{ display: 'flex', width: '100%', height: '100%' }}>
                                         <div className="file-explorer" style={{ width: '220px', borderRight: '1px solid var(--surface-border)', padding: '1.25rem', background: 'var(--surface)' }}>
-                                            <h3 className="text-[10px] font-bold text-[var(--text-secondary)] mb-4 uppercase tracking-wider">Archivos Generados</h3>
+                                            <div className="flex items-center justify-between mb-4">
+                                                <h3 className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Archivos</h3>
+                                                {isViewer && (
+                                                    <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 text-[8px] font-black uppercase tracking-tighter border border-amber-500/20">Solo Lectura</span>
+                                                )}
+                                            </div>
                                             <ul style={{ listStyle: 'none', padding: 0, margin: 0 }} className="space-y-1">
                                                 {Object.keys(project.files).sort().map(filename => (
                                                     <li key={filename}>
@@ -750,7 +760,7 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                                 </div>
                                                 <button 
                                                     onClick={async () => {
-                                                        if (!project) return;
+                                                        if (!project || isViewer) return;
                                                         setIsSyncing(true);
                                                         try {
                                                             await db.updateProjectFiles(project.id, { [codeFile]: localCode });
@@ -764,7 +774,7 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                                             setIsSyncing(false);
                                                         }
                                                     }}
-                                                    disabled={!hasUnsavedChanges || isAiTyping || isSyncing}
+                                                    disabled={!hasUnsavedChanges || isAiTyping || isSyncing || isViewer}
                                                     className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white text-xs font-medium rounded-md hover:bg-primary-600 disabled:opacity-50 transition-colors"
                                                 >
                                                     <Save size={14} /> Guardar Ahora
@@ -785,7 +795,7 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                                         fontSize: 13,
                                                         wordWrap: 'on',
                                                         scrollBeyondLastLine: false,
-                                                        readOnly: isAiTyping, // Bloquear si la IA está escribiendo
+                                                        readOnly: isAiTyping || isViewer, // Bloquear si la IA está escribiendo o es visor
                                                     }}
                                                 />
                                             </div>

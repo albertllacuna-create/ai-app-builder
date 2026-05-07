@@ -4,6 +4,7 @@ import { AppBuilder } from './pages/AppBuilder';
 import { Login } from './pages/Login';
 import { Preview } from './pages/Preview';
 import { AppViewer } from './pages/AppViewer';
+import { JoinWorkspace } from './pages/JoinWorkspace';
 
 import { HubOverview } from './pages/hub/HubOverview';
 import { HubUsers } from './pages/hub/HubUsers';
@@ -35,6 +36,8 @@ function App() {
 
         <Route path="/preview/:projectId" element={<Preview />} />
         <Route path="/app/:projectId" element={<AppViewer />} />
+        <Route path="/join/:token" element={<JoinWorkspace />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

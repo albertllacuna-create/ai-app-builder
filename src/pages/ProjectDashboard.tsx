@@ -24,6 +24,12 @@ export function ProjectDashboard() {
     const [isModeMenuOpen, setIsModeMenuOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [attachments, setAttachments] = useState<File[]>([]);
+    const [workspaces, setWorkspaces] = useState<any[]>([]);
+    const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
+    const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
+    const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
+    const [newWorkspaceName, setNewWorkspaceName] = useState('');
+    const [workspaceMembers, setWorkspaceMembers] = useState<any[]>([]);
 
     const toggleFavorite = async (e: React.MouseEvent, projectId: string) => {
         e.stopPropagation();
@@ -93,6 +99,8 @@ export function ProjectDashboard() {
             // Initialize from Supabase (loads profile + projects from cloud)
             db.login(session.user.email!);
             await db.initFromSupabase({ id: session.user.id, email: session.user.email! });
+            setWorkspaces(db.getWorkspaces());
+            setActiveWorkspaceId(db.getActiveWorkspaceId());
             setProjects(db.getProjects());
         };
 
@@ -230,6 +238,65 @@ export function ProjectDashboard() {
         }
     };
 
+    const handleSwitchWorkspace = async (id: string) => {
+        setIsSyncing(true);
+        await db.switchWorkspace(id);
+        setActiveWorkspaceId(id);
+        setProjects(db.getProjects());
+        setIsWorkspaceMenuOpen(false);
+        setIsSyncing(false);
+    };
+
+    const handleCreateWorkspace = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!newWorkspaceName.trim()) return;
+        try {
+            setIsSyncing(true);
+            await db.createWorkspace(newWorkspaceName);
+            setWorkspaces(db.getWorkspaces());
+            setActiveWorkspaceId(db.getActiveWorkspaceId());
+            setProjects(db.getProjects());
+            setIsCreatingWorkspace(false);
+            setNewWorkspaceName('');
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
+    const handleGenerateInvite = async (role: 'editor' | 'viewer') => {
+        if (!activeWorkspaceId) return;
+        try {
+            const token = await db.generateInvitation(activeWorkspaceId, role);
+            const inviteLink = `${window.location.origin}/join/${token}`;
+            await navigator.clipboard.writeText(inviteLink);
+            alert(`¡Enlace de invitación (${role}) copiado al portapapeles!`);
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
+    useEffect(() => {
+        if (settingsTab === ('members' as any) && activeWorkspaceId) {
+            const loadMembers = async () => {
+                const members = await db.getWorkspaceMembers(activeWorkspaceId);
+                setWorkspaceMembers(members);
+            };
+            loadMembers();
+        }
+    }, [settingsTab, activeWorkspaceId]);
+
+    const handleRemoveMember = async (profileId: string) => {
+        if (!activeWorkspaceId || !confirm('¿Estás seguro de eliminar a este miembro?')) return;
+        try {
+            await db.removeMember(activeWorkspaceId, profileId);
+            setWorkspaceMembers(prev => prev.filter(m => m.profileId !== profileId));
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
     // --- Typewriter Effect ---
     const phrases = [
         "construir un CRM inmobiliario...",
@@ -273,10 +340,58 @@ export function ProjectDashboard() {
 
             {/* Sidebar - Base44 Style */}
             <aside className="w-64 border-r border-[var(--surface-border)] flex flex-col bg-[var(--background)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
-                {/* Logo */}
-                <div className="px-4 py-3 border-b border-[var(--surface-border)] flex items-center gap-2">
-                    <img src={logo} alt="bulbia logo" className="w-7 h-7 rounded shrink-0" />
-                    <span className="font-bold text-[15px]">Bulbia</span>
+                {/* Logo & Workspace Selector */}
+                <div className="relative px-3 py-3 border-b border-[var(--surface-border)]">
+                    <button 
+                        onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[var(--surface-hover)] transition-all group"
+                    >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <img src={logo} alt="bulbia logo" className="w-5 h-5" />
+                            </div>
+                            <div className="flex flex-col items-start min-w-0">
+                                <span className="font-bold text-[13px] text-[var(--text-primary)] truncate">
+                                    {workspaces.find(w => w.id === activeWorkspaceId)?.name || 'Bulbia'}
+                                </span>
+                                <span className="text-[10px] font-medium text-[var(--text-muted)] truncate">
+                                    {workspaces.find(w => w.id === activeWorkspaceId)?.userRole || 'owner'}
+                                </span>
+                            </div>
+                        </div>
+                        <ChevronDown size={14} className={`text-[var(--text-muted)] transition-transform duration-200 ${isWorkspaceMenuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {isWorkspaceMenuOpen && (
+                        <>
+                            <div className="fixed inset-0 z-40" onClick={() => setIsWorkspaceMenuOpen(false)} />
+                            <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-neutral-900 border border-[var(--surface-border)] rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200">
+                                <div className="p-1.5 space-y-0.5">
+                                    <div className="px-3 py-2 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Tus Espacios</div>
+                                    {workspaces.map(ws => (
+                                        <button
+                                            key={ws.id}
+                                            onClick={() => handleSwitchWorkspace(ws.id)}
+                                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors ${activeWorkspaceId === ws.id ? 'bg-primary/5 text-primary' : 'hover:bg-[var(--surface-hover)] text-[var(--text-secondary)]'}`}
+                                        >
+                                            <div className="flex flex-col items-start min-w-0">
+                                                <span className="font-semibold text-[13px] truncate">{ws.name}</span>
+                                                <span className="text-[10px] opacity-60 uppercase">{ws.userRole}</span>
+                                            </div>
+                                            {activeWorkspaceId === ws.id && <Check size={14} />}
+                                        </button>
+                                    ))}
+                                    <div className="h-[1px] bg-[var(--surface-border)] my-1.5" />
+                                    <button 
+                                        onClick={() => setIsCreatingWorkspace(true)}
+                                        className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
+                                    >
+                                        <Plus size={14} /> Nuevo Espacio
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
                 
                 {/* Navigation */}
@@ -411,6 +526,7 @@ export function ProjectDashboard() {
                                     <div className="space-y-1">
                                         {[
                                             { id: 'account', name: 'Información básica', icon: UserIcon },
+                                            { id: 'members', name: 'Colaboradores', icon: ListChecks },
                                             { id: 'billing', name: 'Plan y facturación', icon: CreditCard },
                                             { id: 'usage', name: 'Uso de créditos', icon: Zap },
                                         ].map(tab => (
@@ -440,11 +556,13 @@ export function ProjectDashboard() {
                                         {settingsTab === 'account' && 'Información básica'}
                                         {settingsTab === 'billing' && 'Plan y facturación'}
                                         {settingsTab === 'usage' && 'Uso de créditos'}
+                                        {settingsTab === 'members' && 'Colaboradores'}
                                     </h1>
                                     <p className="text-sm text-[var(--text-muted)] mt-1">
                                         {settingsTab === 'account' && 'Administra los detalles y la configuración de tu cuenta.'}
                                         {settingsTab === 'billing' && 'Controla tu suscripción, métodos de pago e historial.'}
                                         {settingsTab === 'usage' && 'Monitoriza el consumo de tokens de IA en tus proyectos.'}
+                                        {settingsTab === 'members' && 'Gestiona quién tiene acceso a este espacio de trabajo.'}
                                     </p>
                                 </div>
 
@@ -593,6 +711,65 @@ export function ProjectDashboard() {
                                         </div>
                                     </div>
                                 )}
+
+                                {settingsTab === 'members' && (
+                                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                            <div className="bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-2xl p-4 flex items-center gap-4 flex-1">
+                                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary"><UserIcon size={20} /></div>
+                                                <div>
+                                                    <div className="text-sm font-bold">{workspaceMembers.length} Miembros</div>
+                                                    <div className="text-xs text-[var(--text-muted)]">Colaborando en {db.getActiveWorkspace()?.name}</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => handleGenerateInvite('editor')} className="flex-1 sm:flex-none px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"><Plus size={14} /> Invitar Editor</button>
+                                                <button onClick={() => handleGenerateInvite('viewer')} className="flex-1 sm:flex-none px-4 py-2 bg-[var(--text-primary)] text-[var(--background)] rounded-xl text-xs font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2"><Plus size={14} /> Invitar Visor</button>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-[var(--background)] border border-[var(--surface-border)] rounded-2xl overflow-hidden shadow-sm">
+                                            <div className="overflow-x-auto">
+                                                <table className="w-full text-left text-sm">
+                                                    <thead className="bg-[var(--surface)] text-[var(--text-muted)] border-b border-[var(--surface-border)]">
+                                                        <tr>
+                                                            <th className="px-6 py-4 font-semibold text-xs">Usuario</th>
+                                                            <th className="px-6 py-4 font-semibold text-xs">Rol</th>
+                                                            <th className="px-6 py-4 font-semibold text-xs">Unido</th>
+                                                            <th className="px-6 py-4 font-semibold text-xs text-right">Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-[var(--surface-border)]">
+                                                        {workspaceMembers.map(member => (
+                                                            <tr key={member.id} className="hover:bg-[var(--surface-hover)]/30 transition-colors">
+                                                                <td className="px-6 py-5">
+                                                                    <div className="flex items-center gap-3">
+                                                                        <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary text-[10px] font-bold uppercase">{member.email?.charAt(0)}</div>
+                                                                        <div className="min-w-0">
+                                                                            <div className="font-medium text-[var(--text-primary)] truncate">{member.fullName || 'Sin nombre'}</div>
+                                                                            <div className="text-xs text-[var(--text-muted)] truncate">{member.email}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-6 py-5">
+                                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${member.role === 'owner' ? 'bg-primary/10 text-primary' : member.role === 'editor' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-600'}`}>
+                                                                        {member.role === 'owner' ? 'Propietario' : member.role === 'editor' ? 'Editor' : 'Visor'}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="px-6 py-5 text-[var(--text-secondary)] text-xs whitespace-nowrap">{new Date(member.joinedAt).toLocaleDateString()}</td>
+                                                                <td className="px-6 py-5 text-right">
+                                                                    {member.role !== 'owner' && db.getActiveWorkspace()?.userRole === 'owner' && (
+                                                                        <button onClick={() => handleRemoveMember(member.profileId)} className="text-red-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50/50 transition-all"><Trash2 size={16} /></button>
+                                                                    )}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -703,6 +880,41 @@ export function ProjectDashboard() {
                 )}
             </main>
 
+
+            {/* Create Workspace Modal */}
+            {isCreatingWorkspace && (
+                <div className="modal-overlay" onClick={() => setIsCreatingWorkspace(false)}>
+                    <div className="modal-content glass-panel slide-up" style={{ maxWidth: '400px' }} onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>Nuevo Espacio de Trabajo</h2>
+                            <button className="icon-btn" onClick={() => setIsCreatingWorkspace(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleCreateWorkspace} className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Nombre del Espacio</label>
+                                    <input 
+                                        type="text" 
+                                        value={newWorkspaceName} 
+                                        onChange={(e) => setNewWorkspaceName(e.target.value)}
+                                        placeholder="Ej: Marketing, Personal, Cliente X..." 
+                                        className="w-full px-4 py-3 bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-xl text-sm outline-none focus:border-primary transition-all"
+                                        autoFocus
+                                    />
+                                </div>
+                                <div className="pt-2 flex gap-2">
+                                    <button type="button" className="btn btn-outline w-full" onClick={() => setIsCreatingWorkspace(false)}>Cancelar</button>
+                                    <button type="submit" className="btn btn-primary w-full" disabled={!newWorkspaceName.trim() || isSyncing}>
+                                        {isSyncing ? <Loader2 size={18} className="animate-spin mx-auto" /> : 'Crear Espacio'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Confirm Delete Modal */}
             {projectToDelete && (
