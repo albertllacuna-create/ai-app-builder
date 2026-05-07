@@ -466,8 +466,8 @@ export function ProjectDashboard() {
                 {/* Footer */}
                 <div className="px-3 py-3 border-t border-[var(--surface-border)] mt-auto space-y-0.5">
                     <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-2.5 rounded-lg bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors text-left mb-1.5">
-                        <span className="text-[10px] font-medium text-[var(--text-secondary)] mb-0.5">Plan {db.getUser()?.plan || 'Free'}</span>
-                        <span className="text-[12px] font-bold text-[var(--text-primary)]">{db.getUser()?.tokens?.toLocaleString()} Tokens REST.</span>
+                        <span className="text-[10px] font-medium text-[var(--text-secondary)] mb-0.5">Plan {db.getActiveWorkspace()?.plan || 'Free'}</span>
+                        <span className="text-[12px] font-bold text-[var(--text-primary)]">{(db.getActiveWorkspace()?.tokens ?? 0).toLocaleString()} Tokens REST.</span>
                     </button>
                     <div className="flex items-center gap-2 px-2 py-2">
                         <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
@@ -625,7 +625,7 @@ export function ProjectDashboard() {
                                                         <div className="flex items-center gap-2 mb-1">
                                                             <span className="text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-full">Suscripción Activa</span>
                                                         </div>
-                                                        <h3 className="text-2xl font-bold text-[var(--text-primary)]">Plan {db.getUser()?.plan || 'Free'}</h3>
+                                                        <h3 className="text-2xl font-bold text-[var(--text-primary)]">Plan {db.getActiveWorkspace()?.plan || 'Free'}</h3>
                                                         <p className="text-[var(--text-muted)] text-sm">Acceso total a las herramientas de Bulbia AI</p>
                                                     </div>
                                                 </div>
@@ -652,7 +652,7 @@ export function ProjectDashboard() {
                                                     <tbody className="divide-y divide-[var(--surface-border)]">
                                                         <tr>
                                                             <td className="px-6 py-5 text-[var(--text-secondary)]">{new Date().toLocaleDateString()}</td>
-                                                            <td className="px-6 py-5 font-medium text-[var(--text-primary)]">Plan {db.getUser()?.plan || 'Free'} (Mensual)</td>
+                                                            <td className="px-6 py-5 font-medium text-[var(--text-primary)]">Plan {db.getActiveWorkspace()?.plan || 'Free'} (Mensual)</td>
                                                             <td className="px-6 py-5 text-right font-bold">$0.00</td>
                                                         </tr>
                                                     </tbody>
@@ -671,7 +671,7 @@ export function ProjectDashboard() {
                                                     <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Créditos IA</span>
                                                 </div>
                                                 <div className="text-3xl font-black text-[var(--text-primary)]">
-                                                    {((db.getUser()?.tokens || 100) * 0.4).toLocaleString()} <span className="text-sm font-medium text-[var(--text-muted)]">/ 10,000</span>
+                                                    {((db.getActiveWorkspace()?.tokens || 0) * 0.4).toLocaleString()} <span className="text-sm font-medium text-[var(--text-muted)]">/ 10,000</span>
                                                 </div>
                                             </div>
                                             <div className="bg-[var(--background)] border border-[var(--surface-border)] p-6 rounded-3xl shadow-sm">
@@ -680,7 +680,7 @@ export function ProjectDashboard() {
                                                     <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Siguiente Reset</span>
                                                 </div>
                                                 <div className="text-xl font-bold text-[var(--text-primary)]">
-                                                    {db.getUser()?.nextResetDate ? new Date(db.getUser()!.nextResetDate!).toLocaleDateString() : 'En 15 días'}
+                                                    {db.getActiveWorkspace()?.nextResetDate ? new Date(db.getActiveWorkspace()!.nextResetDate!).toLocaleDateString() : 'En 30 días'}
                                                 </div>
                                             </div>
                                         </div>

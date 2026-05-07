@@ -34,6 +34,9 @@ export interface Workspace {
     name: string;
     ownerId: string;
     createdAt: string;
+    plan: bulbiaPlan;
+    tokens: number;
+    nextResetDate?: string;
     memberCount?: number;
     userRole?: WorkspaceRole;
 }

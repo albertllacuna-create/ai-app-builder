@@ -90,6 +90,9 @@ class SupabaseDB {
                 name: m.workspaces.name,
                 ownerId: m.workspaces.owner_id,
                 createdAt: m.workspaces.created_at,
+                plan: m.workspaces.plan || 'Free',
+                tokens: m.workspaces.tokens ?? 100,
+                nextResetDate: m.workspaces.next_reset_date,
                 userRole: m.role
             }));
 
@@ -112,6 +115,9 @@ class SupabaseDB {
                     name: ws.name,
                     ownerId: ws.owner_id,
                     createdAt: ws.created_at,
+                    plan: ws.plan || 'Free',
+                    tokens: ws.tokens ?? 100,
+                    nextResetDate: ws.next_reset_date,
                     userRole: 'owner'
                 }];
             }
@@ -361,7 +367,12 @@ class SupabaseDB {
 
         const { data: ws, error: wsErr } = await supabase
             .from('workspaces')
-            .insert({ name, owner_id: this.profileId })
+            .insert({ 
+                name, 
+                owner_id: this.profileId,
+                plan: 'Free',
+                tokens: 100 
+            })
             .select().single();
         
         if (wsErr) throw wsErr;
@@ -377,6 +388,9 @@ class SupabaseDB {
             name: ws.name,
             ownerId: ws.owner_id,
             createdAt: ws.created_at,
+            plan: ws.plan || 'Free',
+            tokens: ws.tokens ?? 100,
+            nextResetDate: ws.next_reset_date,
             userRole: 'owner' as const
         };
 
