@@ -821,13 +821,14 @@ export function ProjectDashboard() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {projects.slice().reverse().map(project => (
                                     <div key={project.id} onClick={() => navigate(`/project/${project.id}`)} className="group relative bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all hover:-translate-y-0.5">
-                                        <div className="h-36 bg-gradient-to-br from-neutral-100 to-neutral-50 dark:from-neutral-800 dark:to-neutral-900 flex items-center justify-center border-b border-[var(--surface-border)]">
-                                            <div className="text-center">
-                                                <div className="w-10 h-10 mx-auto mb-2 rounded-xl bg-primary/10 flex items-center justify-center">
-                                                    <DynamicIcon name={project.logoUrl} size={20} className="text-primary" />
-                                                </div>
-                                                <span className="text-[10px] text-[var(--text-muted)]">Vista previa</span>
-                                            </div>
+                                        <div className="h-36 bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center border-b border-[var(--surface-border)] relative overflow-hidden">
+                                             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)]"></div>
+                                             <div className="text-center relative z-10">
+                                                 <div className="w-14 h-14 mx-auto mb-2 rounded-[20px] bg-white dark:bg-neutral-900 shadow-xl flex items-center justify-center border border-[var(--surface-border)] group-hover:scale-110 transition-transform duration-500">
+                                                     <DynamicIcon name={project.logoUrl} size={28} className="text-primary" />
+                                                 </div>
+                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] opacity-60">Vista previa</span>
+                                             </div>
                                         </div>
                                         <div className="p-3.5">
                                             <div className="flex items-start justify-between gap-2">

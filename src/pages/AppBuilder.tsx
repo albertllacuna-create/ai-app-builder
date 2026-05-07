@@ -221,20 +221,19 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
 
     // Initial load and session check
     useEffect(() => {
+        let isMounted = true;
         const init = async () => {
             if (!projectId) {
                 navigate('/dashboard');
                 return;
             }
 
-            // Verificar sesión si no está inicializado
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
                 navigate('/login');
                 return;
             }
 
-            // Asegurar que la DB esté inicializada desde Cloud
             if (!db.getUser()) {
                 db.login(session.user.email!);
                 await db.initFromSupabase({ id: session.user.id, email: session.user.email! });
@@ -242,16 +241,28 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
 
             const p = db.getProject(projectId);
             if (!p) {
-                // Si no existe localmente tras init, redirigir
-                console.error("Project not found after init:", projectId);
                 navigate('/dashboard');
                 return;
             }
-            setProject({ ...p });
+            if (isMounted) setProject({ ...p });
         };
 
         init();
-    }, [projectId, navigate]);
+
+        // Listen for metadata updates (name/logo) from other components
+        const checkMetadata = setInterval(() => {
+            if (!projectId) return;
+            const p = db.getProject(projectId);
+            if (p && (p.name !== project?.name || p.logoUrl !== project?.logoUrl)) {
+                setProject({ ...p });
+            }
+        }, 1500);
+
+        return () => {
+            isMounted = false;
+            clearInterval(checkMetadata);
+        };
+    }, [projectId, navigate, project?.name, project?.logoUrl]);
 
     // Role detection
     const activeWs = db.getActiveWorkspace();
@@ -356,12 +367,12 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                         <button onClick={() => navigate('/dashboard')} className="p-1.5 hover:bg-[var(--surface-hover)] rounded-md transition-colors mr-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]" title="Volver al Dashboard">
                             <ArrowLeft size={18} />
                         </button>
-                        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                            <DynamicIcon name={project.logoUrl} size={18} className="text-primary" />
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-indigo-500/20 flex items-center justify-center shrink-0 border border-primary/20 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                            <DynamicIcon name={project.logoUrl} size={22} className="text-primary" />
                         </div>
-                        <div className="flex flex-col">
-                            <span className="font-bold text-[14px] leading-tight text-[var(--text-primary)]">{project.name}</span>
-                            <span className="text-[10px] text-[var(--text-muted)] leading-tight">{db.getUser()?.email}</span>
+                        <div className="flex flex-col ml-1">
+                            <span className="font-bold text-[15px] leading-tight text-[var(--text-primary)] tracking-tight">{project.name}</span>
+                            <span className="text-[10px] text-[var(--text-muted)] leading-tight opacity-70">{db.getUser()?.email}</span>
                         </div>
                     </div>
                 </div>
