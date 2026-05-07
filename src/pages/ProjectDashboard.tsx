@@ -451,14 +451,29 @@ export function ProjectDashboard() {
                                 <div className="bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl shadow-sm p-8">
                                 {settingsTab === 'account' && (
                                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Email de Usuario</label>
-                                                <input type="email" value={user?.email || ''} disabled className="w-full px-4 py-2.5 bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-muted)] cursor-not-allowed font-medium" />
+                                        <div className="divide-y divide-[var(--surface-border)] border-t border-b border-[var(--surface-border)]">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-2">
+                                                <div>
+                                                    <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Email de Usuario</label>
+                                                    <p className="text-sm text-[var(--text-muted)] mt-0.5">La dirección vinculada a tu cuenta</p>
+                                                </div>
+                                                <div className="px-4 py-2 bg-[var(--surface-hover)] rounded-lg border border-[var(--surface-border)]">
+                                                    <span className="text-sm font-mono text-[var(--text-muted)]">{user?.email || ''}</span>
+                                                </div>
                                             </div>
-                                            <div className="space-y-2">
-                                                <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Nombre Completo</label>
-                                                <input type="text" defaultValue={user?.fullName || ''} onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} placeholder="Tu nombre" className="w-full px-4 py-2.5 bg-[var(--background)] border border-[var(--surface-border)] rounded-xl text-sm text-[var(--text-primary)] focus:border-primary/50 focus:bg-white dark:focus:bg-black/20 focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium" />
+                                            
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-4">
+                                                <div>
+                                                    <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Nombre Completo</label>
+                                                    <p className="text-sm text-[var(--text-muted)] mt-0.5">Como te verán otros miembros</p>
+                                                </div>
+                                                <input 
+                                                    type="text" 
+                                                    defaultValue={user?.fullName || ''} 
+                                                    onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} 
+                                                    placeholder="Escribe tu nombre..." 
+                                                    className="min-w-[280px] px-4 py-2 bg-transparent border-b-2 border-transparent focus:border-primary/30 outline-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right transition-all placeholder:text-[var(--text-muted)]" 
+                                                />
                                             </div>
                                         </div>
 
