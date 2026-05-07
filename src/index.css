@@ -18,9 +18,9 @@
   --surface-elevated: #ffffff;
   --danger: #ef4444;
   --success: #10b981;
-  --text-primary: #09090b;
-  --text-secondary: #27272a;
-  --text-muted: #52525b;
+  --text-primary: #000000;
+  --text-secondary: #18181b;
+  --text-muted: #3f3f46;
   --shadow-color: rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
   --code-bg: #f4f4f5;

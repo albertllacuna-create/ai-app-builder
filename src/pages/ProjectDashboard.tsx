@@ -303,7 +303,7 @@ export function ProjectDashboard() {
                 <div className="flex-1 overflow-y-auto px-2 pb-2">
                     {/* Favorites - always visible */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-60">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-80">
                             <Star size={11} /> Favoritos
                         </h3>
                         {projects.filter(p => p.favorite).length > 0 ? (
@@ -318,7 +318,7 @@ export function ProjectDashboard() {
                                 </div>
                             ))
                         ) : (
-                            <div className="px-3 py-2 text-[11px] text-[var(--text-muted)] opacity-80 italic">
+                            <div className="px-3 py-2 text-[11px] text-[var(--text-muted)] italic">
                                 Sin favoritos aún
                             </div>
                         )}
@@ -326,7 +326,7 @@ export function ProjectDashboard() {
 
                     {/* Recent */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-60">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-80">
                             <Clock size={11} /> Recientes
                         </h3>
                     {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
@@ -351,20 +351,20 @@ export function ProjectDashboard() {
                 {/* Footer */}
                 <div className="px-3 py-3 border-t border-[var(--surface-border)] mt-auto space-y-0.5">
                     <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-2.5 rounded-lg bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors text-left mb-1.5">
-                        <span className="text-[10px] font-medium text-[var(--text-muted)] mb-0.5">Plan {db.getUser()?.plan || 'Free'}</span>
+                        <span className="text-[10px] font-medium text-[var(--text-secondary)] mb-0.5">Plan {db.getUser()?.plan || 'Free'}</span>
                         <span className="text-[12px] font-bold text-[var(--text-primary)]">{db.getUser()?.tokens?.toLocaleString()} Tokens REST.</span>
                     </button>
                     <div className="flex items-center gap-2 px-2 py-2">
                         <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
                             <span className="text-[10px] font-bold text-primary uppercase">{user.email?.charAt(0) || '?'}</span>
                         </div>
-                        <span className="text-[11px] text-[var(--text-muted)] truncate">{user.email}</span>
+                        <span className="text-[11px] text-[var(--text-secondary)] truncate">{user.email}</span>
                     </div>
                     <button 
                         className={`w-full flex items-center gap-2 p-2 rounded-lg transition-colors text-left ${sidebarView === 'settings' ? 'bg-[var(--surface-hover)] text-primary' : 'hover:bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`} 
                         onClick={() => setSidebarView('settings')}
                     >
-                        <Settings size={14} className={sidebarView === 'settings' ? 'text-primary' : 'text-[var(--text-muted)]'} />
+                        <Settings size={14} className={sidebarView === 'settings' ? 'text-primary' : 'text-[var(--text-secondary)]'} />
                         <span className="text-[11px] font-medium">Ajustes</span>
                     </button>
                     <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left text-red-500/80 hover:text-red-500" onClick={handleLogout}>
