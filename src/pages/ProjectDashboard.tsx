@@ -448,7 +448,7 @@ export function ProjectDashboard() {
                                     </p>
                                 </div>
 
-                                <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+                                <div className="bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl shadow-sm p-8">
                                 {settingsTab === 'account' && (
                                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
