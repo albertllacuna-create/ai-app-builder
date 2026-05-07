@@ -120,6 +120,15 @@ class SupabaseDB {
                 this.state.activeWorkspaceId = this.state.workspaces[0].id;
             }
 
+            // Migrate orphan projects (projects created before workspaces)
+            if (this.state.activeWorkspaceId) {
+                await supabase
+                    .from('projects')
+                    .update({ workspace_id: this.state.activeWorkspaceId })
+                    .is('workspace_id', null)
+                    .eq('user_id', this.profileId);
+            }
+
             // 3. Load projects for current workspace
             if (this.state.activeWorkspaceId) {
                 const { data: projects, error: projError } = await supabase
