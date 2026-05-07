@@ -452,17 +452,17 @@ export function ProjectDashboard() {
                                 {settingsTab === 'account' && (
                                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
                                         <div className="divide-y divide-[var(--surface-border)] border-t border-b border-[var(--surface-border)]">
-                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-2">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-2">
                                                 <div>
                                                     <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Email de Usuario</label>
                                                     <p className="text-sm text-[var(--text-muted)] mt-0.5">La dirección vinculada a tu cuenta</p>
                                                 </div>
-                                                <div className="px-4 py-2 bg-[var(--surface-hover)] rounded-lg border border-[var(--surface-border)]">
-                                                    <span className="text-sm font-mono text-[var(--text-muted)]">{user?.email || ''}</span>
+                                                <div className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl border border-[var(--surface-border)] text-left sm:text-right">
+                                                    <span className="text-sm font-medium text-[var(--text-secondary)]">{user?.email || ''}</span>
                                                 </div>
                                             </div>
                                             
-                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-5 gap-4">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between py-6 gap-4">
                                                 <div>
                                                     <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Nombre Completo</label>
                                                     <p className="text-sm text-[var(--text-muted)] mt-0.5">Como te verán otros miembros</p>
@@ -472,7 +472,7 @@ export function ProjectDashboard() {
                                                     defaultValue={user?.fullName || ''} 
                                                     onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} 
                                                     placeholder="Escribe tu nombre..." 
-                                                    className="min-w-[280px] px-4 py-2 bg-transparent border-b-2 border-transparent focus:border-primary/30 outline-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right transition-all placeholder:text-[var(--text-muted)]" 
+                                                    className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-xl outline-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right transition-all placeholder:text-[var(--text-muted)] focus:border-primary/30 focus:bg-[var(--background)]" 
                                                 />
                                             </div>
                                         </div>
