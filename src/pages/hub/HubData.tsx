@@ -126,28 +126,28 @@ export function HubData() {
     };
 
     return (
-        <div className="p-8 max-w-6xl mx-auto flex gap-8">
+        <div className="p-8 max-w-6xl mx-auto flex gap-8 relative z-10">
             {/* Sidebar de Colecciones */}
             <div className="w-64 flex-shrink-0">
-                <div className="flex items-center gap-2 font-bold text-[15px] mb-4 text-[var(--text-primary)] uppercase tracking-wider">
-                    <Database className="text-primary" size={16} /> Colecciones
+                <div className="flex items-center gap-2 font-bold text-[15px] mb-6 text-[var(--text-primary)] uppercase tracking-wider">
+                    <Database className="text-primary" size={18} /> Colecciones
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-2">
                     {loading && collections.length === 0 ? (
-                        <p className="text-[var(--text-muted)] text-[12px] px-2">Buscando datos...</p>
+                        <p className="text-[var(--text-muted)] text-[12px] px-2 font-medium">Buscando datos...</p>
                     ) : collections.length === 0 ? (
-                        <p className="text-[var(--text-muted)] text-[12px] px-2">No hay datos guardados aún.</p>
+                        <p className="text-[var(--text-muted)] text-[12px] px-2 font-medium">No hay datos guardados aún.</p>
                     ) : (
                         collections.map((col: string) => (
                             <button
                                 key={col}
                                 onClick={() => setSelectedCollection(col)}
-                                className={`w-full text-left px-3 py-2 rounded-md flex items-center gap-2.5 transition-all text-[13px] ${selectedCollection === col
-                                    ? 'bg-primary/5 text-primary font-medium shadow-[inset_2px_0_0_0_var(--primary)]'
-                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-gray-50 dark:hover:bg-white/5'
+                                className={`w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 transition-all text-[14px] ${selectedCollection === col
+                                    ? 'bg-primary/10 text-primary font-bold shadow-inner border border-primary/20'
+                                    : 'text-[var(--text-secondary)] font-medium hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
                                     }`}
                             >
-                                <Layers size={14} className={selectedCollection === col ? 'text-primary' : 'text-[var(--text-muted)]'} />
+                                <Layers size={16} className={selectedCollection === col ? 'text-primary' : 'text-[var(--text-muted)]'} />
                                 <span className="truncate">{col}</span>
                             </button>
                         ))
@@ -159,151 +159,154 @@ export function HubData() {
             <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-start mb-8">
                     <div>
-                        <h1 className="text-2xl font-bold flex items-center gap-2 text-[var(--text-primary)] tracking-tight">
-                            <TableIcon className="text-primary" size={24} />
+                        <h1 className="text-3xl font-bold flex items-center gap-3 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-fuchsia-500">
+                            <TableIcon className="text-primary" size={28} />
                             {selectedCollection || 'Visor de Datos'}
                         </h1>
-                        <p className="text-[13px] text-[var(--text-muted)] mt-1">Explora y gestiona los registros de la base de datos.</p>
+                        <p className="text-[14px] text-[var(--text-muted)] mt-2 font-medium">Explora y gestiona los registros de la base de datos.</p>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                         {selectedCollection && columns.length > 0 && (
                             <button
                                 onClick={initNewRecord}
-                                className="flex items-center gap-1.5 bg-primary hover:bg-primary-hover text-white px-3 py-1.5 rounded-md text-[13px] font-medium transition-all shadow-sm"
+                                className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-[13px] font-bold transition-all shadow-[0_0_15px_rgba(139,92,246,0.3)] hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] hover:-translate-y-0.5"
                             >
-                                <Plus size={14} />
+                                <Plus size={16} />
                                 Nuevo registro
                             </button>
                         )}
                         <button
                             onClick={loadData}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-[13px] font-medium text-[var(--text-secondary)] shadow-sm"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 dark:border-white/10 bg-white/40 dark:bg-black/40 hover:bg-white/60 dark:hover:bg-white/10 backdrop-blur-sm transition-all text-[13px] font-bold text-[var(--text-secondary)] shadow-inner"
                             disabled={loading}
                         >
-                            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                            <RefreshCw size={14} className={loading ? "animate-spin text-primary" : ""} />
                             Actualizar
                         </button>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-[#0c0c0c] rounded-xl border border-gray-200 dark:border-white/5 overflow-x-auto shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none">
+                <div className="premium-glass rounded-2xl border border-white/20 dark:border-white/10 overflow-hidden shadow-lg backdrop-blur-xl">
                     {!selectedCollection ? (
-                        <div className="p-12 text-center text-[var(--text-muted)]">
-                            <Database size={48} className="mx-auto text-[var(--text-muted)] opacity-20 mb-4" />
-                            <p className="text-[14px]">Selecciona una colección en el menú lateral para ver sus datos.</p>
+                        <div className="p-16 text-center text-[var(--text-muted)]">
+                            <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                                <Database size={40} className="text-primary opacity-50" />
+                            </div>
+                            <p className="text-[15px] font-medium">Selecciona una colección en el menú lateral para ver sus datos.</p>
                         </div>
                     ) : (
-                        <table className="w-full text-left border-collapse min-w-max">
-                            <thead>
-                                <tr className="bg-[#fcfcfc] dark:bg-[#111111] border-b border-gray-200 dark:border-white/5 text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                                    <th className="p-4 w-16">ID</th>
-                                    {columns.map((col: string) => (
-                                        <th key={col} className="p-4 capitalize">{col}</th>
-                                    ))}
-                                    <th className="p-4 text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-[13px]">
-                                {/* New record row */}
-                                {showNewForm && (
-                                    <tr className="border-b border-primary/20 bg-primary/5">
-                                        <td className="p-4 text-[11px] font-mono text-[var(--text-muted)]">nuevo</td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-max">
+                                <thead>
+                                    <tr className="bg-black/5 dark:bg-white/5 border-b border-white/20 dark:border-white/10 text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em]">
+                                        <th className="p-5 w-20">ID</th>
                                         {columns.map((col: string) => (
-                                            <td key={col} className="p-2">
-                                                <input
-                                                    type="text"
-                                                    value={newRecord[col] || ''}
-                                                    onChange={(e) => setNewRecord({ ...newRecord, [col]: e.target.value })}
-                                                    placeholder={col}
-                                                    className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-md px-2 py-1.5 text-[13px] text-[var(--text-primary)] focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[var(--text-muted)]"
-                                                />
-                                            </td>
+                                            <th key={col} className="p-5 capitalize">{col}</th>
                                         ))}
-                                        <td className="p-4 text-right flex items-center justify-end gap-1.5">
-                                            <button
-                                                onClick={handleCreateRecord}
-                                                className="p-1.5 rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm"
-                                                title="Guardar"
-                                            >
-                                                <Check size={14} />
-                                            </button>
-                                            <button
-                                                onClick={() => { setShowNewForm(false); setNewRecord({}); }}
-                                                className="p-1.5 rounded-md bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 transition-colors shadow-sm"
-                                                title="Cancelar"
-                                            >
-                                                <X size={14} />
-                                            </button>
-                                        </td>
+                                        <th className="p-5 text-right">Acciones</th>
                                     </tr>
-                                )}
-
-                                {loading && records.length === 0 ? (
-                                    <tr><td colSpan={columns.length + 2} className="p-8 text-center text-[var(--text-muted)]">Cargando registros...</td></tr>
-                                ) : records.length === 0 ? (
-                                    <tr><td colSpan={columns.length + 2} className="p-8 text-center text-[var(--text-muted)]">Colección vacía.</td></tr>
-                                ) : (
-                                    records.map((record: any) => (
-                                        <tr key={record.id} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                            <td className="p-4 text-[11px] font-mono text-[var(--text-muted)] truncate max-w-[80px]" title={record.id}>
-                                                ...{record.id.substring(0, 5)}
+                                </thead>
+                                <tbody className="text-[14px]">
+                                    {/* New record row */}
+                                    {showNewForm && (
+                                        <tr className="border-b border-primary/20 bg-primary/10">
+                                            <td className="p-5 text-[12px] font-mono font-bold text-primary">nuevo</td>
+                                            {columns.map((col: string) => (
+                                                <td key={col} className="p-3">
+                                                    <input
+                                                        type="text"
+                                                        value={newRecord[col] || ''}
+                                                        onChange={(e) => setNewRecord({ ...newRecord, [col]: e.target.value })}
+                                                        placeholder={col}
+                                                        className="w-full bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-lg px-3 py-2 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-inner placeholder:text-[var(--text-muted)]"
+                                                    />
+                                                </td>
+                                            ))}
+                                            <td className="p-5 text-right flex items-center justify-end gap-2">
+                                                <button
+                                                    onClick={handleCreateRecord}
+                                                    className="p-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-[0_0_10px_rgba(16,185,129,0.4)]"
+                                                    title="Guardar"
+                                                >
+                                                    <Check size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => { setShowNewForm(false); setNewRecord({}); }}
+                                                    className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors shadow-inner"
+                                                    title="Cancelar"
+                                                >
+                                                    <X size={16} />
+                                                </button>
                                             </td>
+                                        </tr>
+                                    )}
+
+                                    {loading && records.length === 0 ? (
+                                        <tr><td colSpan={columns.length + 2} className="p-10 text-center text-[var(--text-muted)] font-medium">Cargando registros...</td></tr>
+                                    ) : records.length === 0 ? (
+                                        <tr><td colSpan={columns.length + 2} className="p-10 text-center text-[var(--text-muted)] font-medium">Colección vacía.</td></tr>
+                                    ) : (
+                                        records.map((record: any) => (
+                                            <tr key={record.id} className="border-b border-white/10 hover:bg-white/40 dark:hover:bg-white/5 transition-colors group">
+                                                <td className="p-5 text-[12px] font-mono text-[var(--text-muted)] truncate max-w-[80px]" title={record.id}>
+                                                    ...{record.id.substring(0, 5)}
+                                                </td>
                                             {columns.map((col: string) => {
                                                 const isEditing = editingId === record.id;
                                                 const val = record.data ? record.data[col] : null;
                                                 const displayVal = typeof val === 'object' ? JSON.stringify(val) : String(val ?? '');
 
                                                 return (
-                                                    <td key={col} className="p-2">
+                                                    <td key={col} className="p-3">
                                                         {isEditing ? (
                                                             <input
                                                                 type="text"
                                                                 value={editData[col] ?? ''}
                                                                 onChange={(e) => setEditData({ ...editData, [col]: e.target.value })}
-                                                                className="w-full bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-white/10 rounded-md px-2 py-1.5 text-[13px] text-[var(--text-primary)] focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder:text-[var(--text-muted)]"
+                                                                className="w-full bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-lg px-3 py-2 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-inner placeholder:text-[var(--text-muted)]"
                                                             />
                                                         ) : (
-                                                            <span className="text-[13px] text-[var(--text-secondary)] truncate block max-w-xs px-2" title={displayVal}>
+                                                            <span className="text-[14px] font-medium text-[var(--text-secondary)] truncate block max-w-xs px-2" title={displayVal}>
                                                                 {displayVal || '-'}
                                                             </span>
                                                         )}
                                                     </td>
                                                 );
                                             })}
-                                            <td className="p-4 text-right">
-                                                <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <td className="p-5 text-right">
+                                                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                     {editingId === record.id ? (
                                                         <>
                                                             <button
                                                                 onClick={handleSaveEdit}
-                                                                className="p-1.5 rounded-md bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-sm"
+                                                                className="p-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600 transition-colors shadow-[0_0_10px_rgba(16,185,129,0.4)]"
                                                                 title="Guardar"
                                                             >
-                                                                <Check size={14} />
+                                                                <Check size={16} />
                                                             </button>
                                                             <button
                                                                 onClick={handleCancelEdit}
-                                                                className="p-1.5 rounded-md bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 transition-colors shadow-sm"
+                                                                className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors shadow-inner"
                                                                 title="Cancelar"
                                                             >
-                                                                <X size={14} />
+                                                                <X size={16} />
                                                             </button>
                                                         </>
                                                     ) : (
                                                         <>
                                                             <button
                                                                 onClick={() => handleStartEdit(record)}
-                                                                className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-gray-100 dark:hover:bg-white/10 hover:text-[var(--text-primary)] transition-colors"
+                                                                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-white/50 dark:hover:bg-white/10 hover:text-primary transition-all backdrop-blur-sm"
                                                                 title="Editar"
                                                             >
-                                                                <Pencil size={14} />
+                                                                <Pencil size={16} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDeleteRecord(record.id)}
-                                                                className="p-1.5 rounded-md text-[var(--text-muted)] hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 transition-colors"
+                                                                className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-red-500/10 hover:text-red-500 transition-all backdrop-blur-sm"
                                                                 title="Eliminar"
                                                             >
-                                                                <Trash2 size={14} />
+                                                                <Trash2 size={16} />
                                                             </button>
                                                         </>
                                                     )}

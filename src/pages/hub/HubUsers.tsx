@@ -42,78 +42,80 @@ export function HubUsers() {
     };
 
     return (
-        <div className="p-8 max-w-6xl mx-auto">
-            <div className="flex justify-between items-start mb-8">
+        <div className="p-8 max-w-6xl mx-auto relative z-10">
+            <div className="flex justify-between items-start mb-10">
                 <div>
-                    <h1 className="text-2xl font-bold flex items-center gap-2 text-[var(--text-primary)] tracking-tight">
-                        <User className="text-primary" size={24} /> Gestión de Usuarios
+                    <h1 className="text-3xl font-bold flex items-center gap-3 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-fuchsia-500">
+                        <User className="text-primary" size={28} /> Gestión de Usuarios
                     </h1>
-                    <p className="text-[13px] text-[var(--text-muted)] mt-1">Controla quién tiene acceso a los recursos de tu app Bulbia.</p>
+                    <p className="text-[14px] text-[var(--text-muted)] mt-2 font-medium">Controla quién tiene acceso a los recursos de tu app Bulbia.</p>
                 </div>
                 <button
                     onClick={loadUsers}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-[13px] font-medium text-[var(--text-secondary)] shadow-sm"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/20 dark:border-white/10 bg-white/40 dark:bg-black/40 hover:bg-white/60 dark:hover:bg-white/10 backdrop-blur-sm transition-all text-[13px] font-bold text-[var(--text-secondary)] shadow-inner"
                     disabled={loading}
                 >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                    <RefreshCw size={16} className={loading ? "animate-spin text-primary" : ""} />
                     Actualizar
                 </button>
             </div>
 
-            <div className="bg-white dark:bg-[#0c0c0c] rounded-xl border border-gray-200 dark:border-white/5 overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-none">
+            <div className="premium-glass rounded-2xl border border-white/20 dark:border-white/10 overflow-hidden shadow-lg backdrop-blur-xl">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="bg-[#fcfcfc] dark:bg-[#111111] border-b border-gray-200 dark:border-white/5 text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                            <th className="p-4 w-1/3">Usuario</th>
-                            <th className="p-4 w-1/6">Rol</th>
-                            <th className="p-4 w-1/4">Fecha de Registro</th>
-                            <th className="p-4 text-right">Acciones</th>
+                        <tr className="bg-black/5 dark:bg-white/5 border-b border-white/20 dark:border-white/10 text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em]">
+                            <th className="p-5 w-1/3">Usuario</th>
+                            <th className="p-5 w-1/6">Rol</th>
+                            <th className="p-5 w-1/4">Fecha de Registro</th>
+                            <th className="p-5 text-right">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody className="text-[13px]">
+                    <tbody className="text-[14px]">
                         {loading ? (
                             <tr>
-                                <td colSpan={4} className="p-8 text-center text-[var(--text-muted)]">Cargando directorio...</td>
+                                <td colSpan={4} className="p-10 text-center text-[var(--text-muted)] font-medium">Cargando directorio...</td>
                             </tr>
                         ) : users.length === 0 ? (
                             <tr>
-                                <td colSpan={4} className="p-12 text-center">
+                                <td colSpan={4} className="p-16 text-center">
                                     <div className="flex flex-col items-center justify-center text-[var(--text-muted)]">
-                                        <User size={32} className="mb-3 opacity-20" />
-                                        <p className="font-medium text-[14px]">Aún no hay usuarios registrados</p>
-                                        <span className="text-[12px] mt-1">Cuando los usuarios se registren en la aplicación generada, aparecerán aquí.</span>
+                                        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                                            <User size={40} className="text-primary opacity-50" />
+                                        </div>
+                                        <p className="font-medium text-[15px] text-[var(--text-secondary)]">Aún no hay usuarios registrados</p>
+                                        <span className="text-[13px] mt-2 font-medium text-[var(--text-muted)]">Cuando los usuarios se registren en la aplicación generada, aparecerán aquí.</span>
                                     </div>
                                 </td>
                             </tr>
                         ) : (
                             users.map((u) => (
-                                <tr key={u.id} className="border-b border-gray-100 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group">
-                                    <td className="p-4 flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold shadow-sm">
+                                <tr key={u.id} className="border-b border-white/10 hover:bg-white/40 dark:hover:bg-white/5 transition-colors group">
+                                    <td className="p-5 flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold shadow-inner text-[15px]">
                                             {u.data.email?.charAt(0).toUpperCase() || '?'}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="font-medium text-[var(--text-primary)]">{u.data.email || 'Email oculto'}</span>
-                                            <span className="text-[11px] text-[var(--text-muted)] flex items-center gap-1 mt-0.5"><Mail size={10} /> Registrado vía Auth</span>
+                                            <span className="font-bold text-[var(--text-primary)]">{u.data.email || 'Email oculto'}</span>
+                                            <span className="text-[12px] font-medium text-[var(--text-muted)] flex items-center gap-1.5 mt-1"><Mail size={12} /> Registrado vía Auth</span>
                                         </div>
                                     </td>
-                                    <td className="p-4">
-                                        <span className="px-2 py-1 rounded-md bg-[#fcfcfc] dark:bg-[#111111] text-[11px] font-medium text-[var(--text-secondary)] border border-gray-200 dark:border-white/10 flex items-center w-fit gap-1.5 shadow-sm">
-                                            <Shield size={12} /> {u.data.role || 'user'}
+                                    <td className="p-5">
+                                        <span className="px-3 py-1.5 rounded-lg bg-white/50 dark:bg-black/50 text-[12px] font-bold text-[var(--text-secondary)] border border-white/20 dark:border-white/10 flex items-center w-fit gap-2 shadow-inner backdrop-blur-sm">
+                                            <Shield size={14} className="text-primary" /> {u.data.role || 'user'}
                                         </span>
                                     </td>
-                                    <td className="p-4 text-[var(--text-muted)]">
-                                        <div className="flex items-center gap-1.5">
-                                            <Calendar size={14} /> {new Date(u.created_at).toLocaleDateString()}
+                                    <td className="p-5 font-medium text-[var(--text-muted)]">
+                                        <div className="flex items-center gap-2">
+                                            <Calendar size={16} /> {new Date(u.created_at).toLocaleDateString()}
                                         </div>
                                     </td>
-                                    <td className="p-4 text-right">
+                                    <td className="p-5 text-right">
                                         <button
                                             onClick={() => handleDeleteUser(u.id)}
-                                            className="text-[var(--text-muted)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 p-1.5 rounded-md transition-colors opacity-0 group-hover:opacity-100"
+                                            className="text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 backdrop-blur-sm"
                                             title="Eliminar perfil"
                                         >
-                                            <Trash2 size={16} />
+                                            <Trash2 size={18} />
                                         </button>
                                     </td>
                                 </tr>
