@@ -729,9 +729,11 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                     {viewMode === 'panel' ? (
                         <div className="flex w-full h-full bg-[var(--background)]">
                             {/* Panel Sidebar */}
-                            <aside className="w-[260px] flex flex-col bg-[var(--surface)] border-r border-[var(--surface-border)] relative z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
-                                <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
-                                    <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-3 mb-3">Panel de Control</div>
+                            <aside className="w-56 flex flex-col border-r border-[var(--surface-border)] bg-[var(--background)] shrink-0">
+                                <div className="px-5 pt-6 pb-2">
+                                    <h2 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em]">Panel de Control</h2>
+                                </div>
+                                <nav className="flex-1 px-3 space-y-0.5 overflow-y-auto">
                                     {navItems.map((item) => {
                                         const Icon = item.icon;
                                         const isActive = location.pathname.startsWith(item.path);
@@ -739,15 +741,13 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                             <Link
                                                 key={item.path}
                                                 to={item.path}
-                                                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group ${isActive
-                                                    ? 'bg-primary/10 text-primary shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1)]'
-                                                    : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'
+                                                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group ${isActive
+                                                    ? 'bg-primary/5 text-primary font-medium shadow-[inset_2px_0_0_0_var(--primary)]'
+                                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
                                                     }`}
                                             >
-                                                <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-primary/20' : 'bg-transparent group-hover:bg-[var(--surface)] border border-transparent group-hover:border-[var(--surface-border)] shadow-sm'}`}>
-                                                    <Icon size={16} className={isActive ? 'text-primary' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'} />
-                                                </div>
-                                                <span className={`text-[13px] ${isActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
+                                                <Icon size={16} className={isActive ? 'text-primary' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'} />
+                                                <span className="text-[13px]">{item.name}</span>
                                             </Link>
                                         );
                                     })}

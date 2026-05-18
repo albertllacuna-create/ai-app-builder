@@ -362,17 +362,17 @@ export function ProjectDashboard() {
             {/* Animated Background */}
             <div className={`mesh-gradient transition-opacity duration-500 ${sidebarView === 'settings' ? 'opacity-0' : 'opacity-100'}`} />
 
-            {/* Sidebar - Modern Bento Style */}
-            <aside className="w-64 border-r border-[var(--surface-border)] flex flex-col bg-[var(--surface)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
+            {/* Sidebar - Base44 Style */}
+            <aside className="w-64 border-r border-[var(--surface-border)] flex flex-col bg-[var(--background)] flex-shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]">
                 {/* Logo & Workspace Selector */}
-                <div className="relative px-4 py-4">
+                <div className="relative px-3 py-3 border-b border-[var(--surface-border)]">
                     <button 
                         onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
-                        className="w-full flex items-center justify-between p-2.5 rounded-2xl bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-primary/30 transition-all group shadow-sm"
+                        className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-[var(--surface-hover)] transition-all group"
                     >
-                        <div className="flex items-center gap-3 min-w-0">
-                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-                                <img src={logo} alt="bulbia logo" className="w-5 h-5 brightness-0 invert" />
+                        <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <img src={logo} alt="bulbia logo" className="w-5 h-5" />
                             </div>
                             <div className="flex flex-col items-start min-w-0">
                                 <span className="font-bold text-[13px] text-[var(--text-primary)] truncate">
@@ -389,7 +389,7 @@ export function ProjectDashboard() {
                     {isWorkspaceMenuOpen && (
                         <>
                             <div className="fixed inset-0 z-40" onClick={() => setIsWorkspaceMenuOpen(false)} />
-                            <div className="absolute left-4 right-4 top-[calc(100%-0.5rem)] mt-1 bg-white dark:bg-[#121214] border border-[var(--surface-border)] rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200">
+                            <div className="absolute left-3 right-3 top-full mt-1 bg-white dark:bg-neutral-900 border border-[var(--surface-border)] rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200">
                                 <div className="p-1.5 space-y-0.5">
                                     <div className="px-3 py-2 text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Tus Espacios</div>
                                     {workspaces.map(ws => (
@@ -418,124 +418,101 @@ export function ProjectDashboard() {
                     )}
                 </div>
                 
-                {/* Navigation (Bento Block) */}
-                <nav className="px-4 pb-2 space-y-1">
-                    <div className="bg-[var(--background)] rounded-2xl p-1.5 border border-[var(--surface-border)] shadow-sm">
-                        <button 
-                            onClick={() => {
-                                setSidebarView('home');
-                                setPrompt('');
-                                document.getElementById('hero-prompt-input')?.focus();
-                            }}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-bold transition-all ${sidebarView === 'home' ? 'bg-primary text-white shadow-md shadow-primary/20' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'}`}
-                        >
-                            <Sparkles size={16} /> Crear App
-                        </button>
-                        <button 
-                            onClick={() => setSidebarView('all')}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all mt-1 ${sidebarView === 'all' ? 'bg-[var(--surface-elevated)] text-[var(--text-primary)] shadow-sm border border-[var(--surface-border)]' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
-                        >
-                            <Layers size={16} /> Todas las Apps
-                        </button>
-                    </div>
+                {/* Navigation */}
+                <nav className="px-2 pt-3 pb-1 space-y-0.5">
+                    <button 
+                        onClick={() => {
+                            setSidebarView('home');
+                            setPrompt('');
+                            document.getElementById('hero-prompt-input')?.focus();
+                        }}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-semibold transition-colors ${sidebarView === 'home' ? 'bg-[var(--surface-hover)] text-primary' : 'text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'}`}
+                    >
+                        <Plus size={15} /> Crear App
+                    </button>
+                    <button 
+                        onClick={() => setSidebarView('all')}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors ${sidebarView === 'all' ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)]'}`}
+                    >
+                        <Layers size={15} /> Todas las Apps
+                    </button>
                 </nav>
 
                 {/* Scrollable sidebar content - Favorites + Recent */}
-                <div className="flex-1 overflow-y-auto px-4 pb-4">
-                    {/* Favorites */}
+                <div className="flex-1 overflow-y-auto px-2 pb-2">
+                    {/* Favorites - always visible */}
                     <div className="mt-6">
-                        <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-2 mb-2 flex items-center gap-1.5">
-                            <Star size={12} className="text-amber-400" /> Favoritos
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-80">
+                            <Star size={11} /> Favoritos
                         </h3>
-                        <div className="space-y-0.5">
-                            {projects.filter(p => p.favorite).length > 0 ? (
-                                projects.filter(p => p.favorite).map(project => (
-                                    <div 
-                                        key={project.id} 
-                                        className="group flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-[var(--surface-hover)] cursor-pointer transition-all hover:translate-x-1" 
-                                        onClick={() => navigate(`/project/${project.id}`)}
-                                    >
-                                        <div className="w-6 h-6 rounded-lg bg-[var(--surface-elevated)] border border-[var(--surface-border)] flex items-center justify-center shrink-0 shadow-sm">
-                                            <DynamicIcon name={project.logoUrl} size={12} className="text-primary" />
-                                        </div>
-                                        <span className="text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                        {projects.filter(p => p.favorite).length > 0 ? (
+                            projects.filter(p => p.favorite).map(project => (
+                                <div 
+                                    key={project.id} 
+                                    className="group flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
+                                    onClick={() => navigate(`/project/${project.id}`)}
+                                >
+                                    <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                        <DynamicIcon name={project.logoUrl} size={12} className="text-primary" />
                                     </div>
-                                ))
-                            ) : (
-                                <div className="px-2 py-2 text-[12px] text-[var(--text-muted)] italic">
-                                    Sin favoritos aún
+                                    <span className="text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
                                 </div>
-                            )}
-                        </div>
+                            ))
+                        ) : (
+                            <div className="px-3 py-2 text-[11px] text-[var(--text-muted)] italic">
+                                Sin favoritos aún
+                            </div>
+                        )}
                     </div>
 
                     {/* Recent */}
-                    <div className="mt-8">
-                        <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest px-2 mb-2 flex items-center gap-1.5">
-                            <Clock size={12} /> Recientes
+                    <div className="mt-6">
+                        <h3 className="text-[11px] font-bold text-[var(--text-primary)] uppercase tracking-wider px-3 mb-1.5 flex items-center gap-1.5 opacity-80">
+                            <Clock size={11} /> Recientes
                         </h3>
-                        <div className="space-y-0.5">
-                            {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
-                                <div key={project.id} className="flex items-center gap-3 px-2 py-2 rounded-xl hover:bg-[var(--surface-hover)] cursor-pointer transition-all hover:translate-x-1 group" 
-                                    onClick={() => navigate(`/project/${project.id}`)}
-                                >
-                                    <div className="w-6 h-6 rounded-lg bg-[var(--background)] border border-[var(--surface-border)] flex items-center justify-center shrink-0 shadow-sm group-hover:border-primary/30 transition-colors">
-                                        <DynamicIcon name={project.logoUrl} size={12} className="text-[var(--text-secondary)] group-hover:text-primary transition-colors" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <span className="block text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
-                                    </div>
-                                </div>
-                            ))}
-                            {projects.length === 0 && (
-                                <div className="px-2 py-4 text-center text-[var(--text-muted)] text-[12px]">
-                                    Aún no tienes proyectos.
-                                </div>
-                            )}
+                    {projects.slice().sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()).slice(0, 8).map(project => (
+                        <div key={project.id} className="flex items-center gap-2 px-3 py-2 mx-1 mb-0.5 rounded-lg hover:bg-[var(--surface-hover)] cursor-pointer transition-colors" 
+                            onClick={() => navigate(`/project/${project.id}`)}
+                        >
+                            <div className="w-5 h-5 rounded bg-primary/10 flex items-center justify-center shrink-0">
+                                <DynamicIcon name={project.logoUrl} size={12} className="text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <span className="block text-[13px] font-medium truncate text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors">{project.name}</span>
+                            </div>
                         </div>
+                    ))}
                     </div>
+                    {projects.length === 0 && (
+                        <div className="px-3 py-6 text-center text-[var(--text-muted)] text-[11px]">
+                            Aún no tienes proyectos.
+                        </div>
+                    )}
                 </div>
 
-                {/* Footer (Bento Style) */}
-                <div className="p-4 pt-2 mt-auto">
-                    {/* Tokens Card */}
-                    <button onClick={() => navigate('/pricing')} className="w-full relative overflow-hidden flex flex-col p-3 rounded-2xl bg-gradient-to-br from-[var(--surface-elevated)] to-[var(--background)] border border-[var(--surface-border)] hover:border-primary/40 transition-all text-left mb-3 shadow-sm group">
-                        <div className="absolute -right-6 -top-6 w-20 h-20 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors"></div>
-                        <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-1 flex items-center justify-between">
-                            Plan {db.getActiveWorkspace()?.plan || 'Free'}
-                            <Zap size={12} className="text-amber-400" />
-                        </span>
-                        <div className="flex items-end gap-1.5 mb-2">
-                            <span className="text-[16px] font-black text-[var(--text-primary)]">{(db.getActiveWorkspace()?.tokens ?? 0).toLocaleString()}</span>
-                            <span className="text-[11px] font-medium text-[var(--text-secondary)] mb-0.5">Tokens</span>
-                        </div>
-                        {/* Fake Progress Bar to look cool */}
-                        <div className="w-full h-1.5 bg-[var(--surface-border)] rounded-full overflow-hidden">
-                            <div className="h-full bg-primary w-[75%] rounded-full opacity-80"></div>
-                        </div>
+                {/* Footer */}
+                <div className="px-3 py-3 border-t border-[var(--surface-border)] mt-auto space-y-0.5">
+                    <button onClick={() => navigate('/pricing')} className="w-full flex flex-col p-2.5 rounded-lg bg-[var(--surface-hover)] border border-[var(--surface-border)] hover:border-[var(--text-muted)] transition-colors text-left mb-1.5">
+                        <span className="text-[10px] font-medium text-[var(--text-secondary)] mb-0.5">Plan {db.getActiveWorkspace()?.plan || 'Free'}</span>
+                        <span className="text-[12px] font-bold text-[var(--text-primary)]">{(db.getActiveWorkspace()?.tokens ?? 0).toLocaleString()} Tokens REST.</span>
                     </button>
-
-                    {/* User & Settings Block */}
-                    <div className="bg-[var(--background)] rounded-2xl p-1.5 border border-[var(--surface-border)] shadow-sm">
-                        <div className="flex items-center gap-3 px-2.5 py-2">
-                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shrink-0 shadow-inner">
-                                <span className="text-[11px] font-bold text-white uppercase">{user.email?.charAt(0) || '?'}</span>
-                            </div>
-                            <span className="text-[12px] font-medium text-[var(--text-secondary)] truncate flex-1">{user.email?.split('@')[0]}</span>
+                    <div className="flex items-center gap-2 px-2 py-2">
+                        <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-primary uppercase">{user.email?.charAt(0) || '?'}</span>
                         </div>
-                        <div className="h-[1px] bg-[var(--surface-border)] mx-2 my-0.5"></div>
-                        <div className="flex">
-                            <button 
-                                className={`flex-1 flex items-center justify-center gap-2 p-2 rounded-xl transition-colors ${sidebarView === 'settings' ? 'bg-[var(--surface-hover)] text-primary' : 'hover:bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`} 
-                                onClick={() => setSidebarView('settings')}
-                            >
-                                <Settings size={15} />
-                            </button>
-                            <button className="flex-1 flex items-center justify-center gap-2 p-2 rounded-xl hover:bg-red-500/10 transition-colors text-red-500/70 hover:text-red-500" onClick={handleLogout}>
-                                <LogOut size={15} />
-                            </button>
-                        </div>
+                        <span className="text-[11px] text-[var(--text-secondary)] truncate">{user.email}</span>
                     </div>
+                    <button 
+                        className={`w-full flex items-center gap-2 p-2 rounded-lg transition-colors text-left ${sidebarView === 'settings' ? 'bg-[var(--surface-hover)] text-primary' : 'hover:bg-[var(--surface-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'}`} 
+                        onClick={() => setSidebarView('settings')}
+                    >
+                        <Settings size={14} className={sidebarView === 'settings' ? 'text-primary' : 'text-[var(--text-secondary)]'} />
+                        <span className="text-[11px] font-medium">Ajustes</span>
+                    </button>
+                    <button className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-[var(--surface-hover)] transition-colors text-left text-red-500/80 hover:text-red-500" onClick={handleLogout}>
+                        <LogOut size={14} />
+                        <span className="text-[11px] font-medium">Cerrar Sesión</span>
+                    </button>
                 </div>
             </aside>
 
@@ -827,50 +804,45 @@ export function ProjectDashboard() {
                 </ErrorBoundary>
             ) : sidebarView === 'all' ? (
                     /* === ALL APPS GALLERY === */
-                    <div className="w-full max-w-6xl mx-auto animate-fade-in pb-10">
-                        <div className="flex items-end justify-between mb-8 mt-4 pb-4 border-b border-[var(--surface-border)]">
-                            <div>
-                                <h1 className="text-3xl font-black text-[var(--text-primary)] tracking-tight">Tus Aplicaciones</h1>
-                                <p className="text-[13px] text-[var(--text-muted)] mt-1 font-medium">Gestiona y administra todos tus proyectos creados con Bulbia.</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="text-[12px] font-bold text-[var(--text-primary)] bg-[var(--surface)] border border-[var(--surface-border)] px-3 py-1.5 rounded-full shadow-sm">{projects.length} proyecto{projects.length !== 1 ? 's' : ''}</span>
-                            </div>
+                    <div className="w-full max-w-5xl mx-auto animate-fade-in">
+                        <div className="flex items-center justify-between mb-6 mt-2">
+                            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Todas las Apps</h1>
+                            <span className="text-[12px] text-[var(--text-muted)]">{projects.length} proyecto{projects.length !== 1 ? 's' : ''}</span>
                         </div>
                         {projects.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-24 bg-[var(--surface-hover)] border border-dashed border-[var(--surface-border)] rounded-3xl">
+                            <div className="flex flex-col items-center justify-center py-20">
                                 <Layers size={48} className="text-[var(--text-muted)] mb-4 opacity-30" />
-                                <p className="text-[var(--text-muted)] text-sm font-medium">Aún no tienes proyectos creados en este espacio.</p>
-                                <button onClick={() => setSidebarView('home')} className="mt-5 px-5 py-2.5 bg-primary text-white rounded-xl text-[13px] font-bold hover:bg-primary-600 transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95">
-                                    <Plus size={16} className="inline mr-1.5 -translate-y-[1px]" /> Crear tu primera app
+                                <p className="text-[var(--text-muted)] text-sm">Aún no tienes proyectos.</p>
+                                <button onClick={() => setSidebarView('home')} className="mt-4 px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-lg text-[12px] font-semibold hover:opacity-90 transition-all">
+                                    <Plus size={14} className="inline mr-1" /> Crear tu primera app
                                 </button>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {projects.slice().reverse().map(project => (
-                                    <div key={project.id} onClick={() => navigate(`/project/${project.id}`)} className="group relative bg-[var(--surface)] border border-[var(--surface-border)] rounded-[1.25rem] overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 hover:-translate-y-1.5">
-                                        <div className="h-40 bg-gradient-to-br from-[var(--surface-hover)] to-[var(--background)] flex items-center justify-center border-b border-[var(--surface-border)] relative overflow-hidden group-hover:from-primary/5 group-hover:to-primary/10 transition-colors">
-                                             <div className="absolute inset-0 opacity-0 group-hover:opacity-20 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] transition-opacity duration-500"></div>
-                                             <div className="text-center relative z-10 transform group-hover:scale-110 transition-transform duration-500">
-                                                 <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-white dark:bg-[#1a1a1c] shadow-lg flex items-center justify-center border border-[var(--surface-border)]">
-                                                     <DynamicIcon name={project.logoUrl} size={32} className="text-primary" />
+                                    <div key={project.id} onClick={() => navigate(`/project/${project.id}`)} className="group relative bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all hover:-translate-y-0.5">
+                                        <div className="h-36 bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center border-b border-[var(--surface-border)] relative overflow-hidden">
+                                             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)]"></div>
+                                             <div className="text-center relative z-10">
+                                                 <div className="w-14 h-14 mx-auto mb-2 rounded-[20px] bg-white dark:bg-neutral-900 shadow-xl flex items-center justify-center border border-[var(--surface-border)] group-hover:scale-110 transition-transform duration-500">
+                                                     <DynamicIcon name={project.logoUrl} size={28} className="text-primary" />
                                                  </div>
-                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] opacity-0 group-hover:opacity-80 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">Abrir Editor</span>
+                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] opacity-60">Vista previa</span>
                                              </div>
                                         </div>
-                                        <div className="p-4 bg-[var(--surface)]">
-                                            <div className="flex items-start justify-between gap-3 mb-4">
+                                        <div className="p-3.5">
+                                            <div className="flex items-start justify-between gap-2">
                                                 <div className="min-w-0 flex-1">
-                                                    <h3 className="text-[15px] font-bold text-[var(--text-primary)] truncate group-hover:text-primary transition-colors">{project.name}</h3>
-                                                    <p className="text-[11px] text-[var(--text-muted)] mt-1 font-medium">Actualizado {new Date(project.updatedAt).toLocaleDateString()}</p>
+                                                    <h3 className="text-[13px] font-semibold text-[var(--text-primary)] truncate group-hover:text-primary transition-colors">{project.name}</h3>
+                                                    <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Editado {new Date(project.updatedAt).toLocaleDateString()}</p>
                                                 </div>
-                                                <button onClick={(e) => toggleFavorite(e, project.id)} className={`shrink-0 p-1.5 rounded-lg transition-colors ${project.favorite ? 'text-amber-400 bg-amber-400/10' : 'text-[var(--text-muted)] opacity-0 group-hover:opacity-100 hover:bg-amber-400/10 hover:text-amber-400'}`}><Star size={16} fill={project.favorite ? 'currentColor' : 'none'} /></button>
+                                                <button onClick={(e) => toggleFavorite(e, project.id)} className={`shrink-0 p-1 rounded-lg transition-colors ${project.favorite ? 'text-amber-400 hover:text-amber-500' : 'text-[var(--text-muted)] opacity-0 group-hover:opacity-100 hover:text-amber-400'}`}><Star size={14} fill={project.favorite ? 'currentColor' : 'none'} /></button>
                                             </div>
-                                            <div className="flex items-center justify-between pt-3 border-t border-[var(--surface-border)]/50">
-                                                <span className="text-[10px] font-bold px-2.5 py-1 rounded-md bg-[var(--surface-hover)] border border-[var(--surface-border)] text-[var(--text-secondary)]">{project.type || 'Web App'}</span>
-                                                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <button className="p-1.5 text-[var(--text-muted)] hover:text-indigo-500 hover:bg-indigo-500/10 rounded-lg transition-colors" title="Duplicar" onClick={(e) => { e.stopPropagation(); setProjectToClone(project); }}><Copy size={14} /></button>
-                                                    <button className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Eliminar" onClick={(e) => { e.stopPropagation(); setProjectToDelete(project); }}><Trash2 size={14} /></button>
+                                            <div className="flex items-center justify-between mt-3">
+                                                <span className="text-[9px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary">{project.type || 'Web App'}</span>
+                                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button className="p-1.5 text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] rounded-lg transition-colors" title="Duplicar" onClick={(e) => { e.stopPropagation(); setProjectToClone(project); }}><Copy size={13} /></button>
+                                                    <button className="p-1.5 text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors" title="Eliminar" onClick={(e) => { e.stopPropagation(); setProjectToDelete(project); }}><Trash2 size={13} /></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -881,76 +853,57 @@ export function ProjectDashboard() {
                     </div>
                 ) : (
                     /* === HERO PROMPT VIEW === */
-                    <div className="flex-1 flex flex-col items-center justify-center relative">
-                        {/* Background atmospheric glow */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-[radial-gradient(ellipse_at_center,var(--primary)_0%,transparent_70%)] opacity-[0.03] dark:opacity-[0.07] pointer-events-none rounded-full blur-3xl"></div>
-                        
-                        <div className="z-10 w-full max-w-3xl flex flex-col items-center animate-fade-in -mt-20">
-                            <div className="flex items-center gap-2.5 mb-8 bg-white/60 dark:bg-black/40 backdrop-blur-xl border border-black/5 dark:border-white/10 px-5 py-2 rounded-full shadow-lg shadow-black/5 hover:scale-105 transition-transform cursor-default">
-                                <Sparkles size={16} className="text-primary animate-pulse" />
-                                <span className="text-[13px] font-bold tracking-wide text-[var(--text-primary)]">Bulbia Intelligence</span>
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                        <div className="z-10 w-full max-w-2xl flex flex-col items-center animate-fade-in -mt-20">
+                            <div className="flex items-center gap-2 mb-8 bg-white/50 dark:bg-black/20 backdrop-blur-md border border-white/40 dark:border-white/10 px-4 py-1.5 rounded-full shadow-lg shadow-black/5">
+                                <Sparkles size={14} className="text-primary animate-pulse" />
+                                <span className="text-xs font-semibold text-[var(--text-secondary)]">Bulbia Intelligence</span>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black text-[var(--text-primary)] text-center mb-8 tracking-tight leading-tight">¿Qué vamos a crear hoy?</h1>
-                            
-                            <div className="w-full bg-white/80 dark:bg-[#121214]/80 backdrop-blur-2xl rounded-[2rem] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-[var(--surface-border)] transition-all hover:shadow-[0_8px_40px_rgba(var(--primary-rgb),0.1)] hover:border-primary/30 relative group">
-                                <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-white/40 to-transparent dark:from-white/5 pointer-events-none"></div>
-                                <form onSubmit={handleCreateProjectFromPrompt} className="relative z-10">
-                                    <div className={`absolute top-6 left-7 pointer-events-none flex items-center gap-1.5 transition-opacity duration-300 ${prompt.length > 0 ? 'opacity-0' : 'opacity-100'}`}>
-                                        <span className="text-lg text-[var(--text-muted)] font-medium">Pregunta a Bulbia para</span>
-                                        <span className="text-lg text-primary font-bold">{displayText}</span>
-                                        <span className="w-[2px] h-6 bg-primary animate-pulse ml-0.5 rounded-full"></span>
+                            <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] text-center mb-6 tracking-tight leading-tight">¿Qué vamos a crear hoy?</h1>
+                            <div className="w-full premium-glass rounded-3xl p-1.5 shadow-2xl shadow-primary/5 transition-all hover:shadow-primary/15">
+                                <form onSubmit={handleCreateProjectFromPrompt} className="relative">
+                                    <div className={`absolute top-5 left-6 pointer-events-none flex items-center gap-1 transition-opacity duration-200 ${prompt.length > 0 ? 'opacity-0' : 'opacity-100'}`}>
+                                        <span className="text-base text-[var(--text-muted)]">Pregunta a Bulbia para</span>
+                                        <span className="text-base text-primary font-medium">{displayText}</span>
+                                        <span className="w-[1.5px] h-5 bg-primary animate-pulse ml-0.5"></span>
                                     </div>
-                                    <textarea id="hero-prompt-input" className="w-full bg-transparent border-none rounded-[1.5rem] px-7 py-6 text-lg text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all font-medium leading-relaxed" style={{ minHeight: '140px' }} value={prompt} onChange={(e) => setPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (prompt.trim()) handleCreateProjectFromPrompt(e as any); }}} autoFocus />
-                                    
+                                    <textarea id="hero-prompt-input" className="w-full bg-transparent border-none rounded-2xl px-6 py-5 text-base text-[var(--text-primary)] placeholder-transparent focus:outline-none resize-none transition-all" style={{ minHeight: '130px' }} value={prompt} onChange={(e) => setPrompt(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (prompt.trim()) handleCreateProjectFromPrompt(e as any); }}} autoFocus />
                                     {attachments.length > 0 && (
-                                        <div className="flex flex-wrap gap-2 px-7 pb-4">
+                                        <div className="flex flex-wrap gap-2 px-6 pb-3">
                                             {attachments.map((file, i) => (
-                                                <div key={i} className="flex items-center gap-2 bg-[var(--surface-hover)] border border-[var(--surface-border)] px-3 py-1.5 rounded-xl text-sm animate-in zoom-in duration-200 shadow-sm">
-                                                    {file.type.startsWith('image/') ? <ImageIcon size={16} className="text-primary" /> : <FileText size={16} className="text-primary" />}
-                                                    <span className="truncate max-w-[150px] text-[var(--text-primary)] font-semibold">{file.name}</span>
-                                                    <button type="button" onClick={() => removeAttachment(i)} className="text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-full p-1 transition-colors ml-1"><X size={14} /></button>
+                                                <div key={i} className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 px-2.5 py-1.5 rounded-lg text-xs animate-in zoom-in duration-200">
+                                                    {file.type.startsWith('image/') ? <ImageIcon size={14} className="text-primary" /> : <FileText size={14} className="text-primary" />}
+                                                    <span className="truncate max-w-[150px] text-[var(--text-secondary)] font-medium">{file.name}</span>
+                                                    <button type="button" onClick={() => removeAttachment(i)} className="text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-full p-0.5 transition-colors ml-1"><X size={12} /></button>
                                                 </div>
                                             ))}
                                         </div>
                                     )}
-                                    
-                                    <div className="flex justify-between items-center px-5 pb-3">
-                                        <div className="flex gap-2 items-center bg-[var(--surface-hover)] rounded-xl p-1 border border-[var(--surface-border)]">
-                                            <div className="p-2 rounded-lg hover:bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer relative flex items-center justify-center shadow-sm" title="Adjuntar archivos">
+                                    <div className="flex justify-between items-center px-4 pb-3">
+                                        <div className="flex gap-1.5">
+                                            <div className="p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[var(--text-muted)] transition-colors group relative cursor-pointer m-0 flex items-center justify-center" title="Adjuntar archivos">
                                                 <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" multiple onChange={handleFileSelect} title="" />
-                                                <Plus size={18} className="relative z-10 pointer-events-none" />
+                                                <Plus size={18} className="group-hover:text-primary transition-colors relative z-10 pointer-events-none" />
                                             </div>
-                                            <div className="h-5 w-[1px] bg-[var(--surface-border)] mx-0.5"></div>
+                                            <div className="h-6 w-[1px] bg-black/10 dark:bg-white/10 mx-1"></div>
                                             <div className="relative">
-                                                <button type="button" onClick={() => setIsModeMenuOpen(!isModeMenuOpen)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-bold transition-all ${interactionMode === 'plan' ? 'text-indigo-500 bg-indigo-500/10' : 'text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)]'}`}>
+                                                <button type="button" onClick={() => setIsModeMenuOpen(!isModeMenuOpen)} className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[13px] font-medium transition-all hover:bg-black/5 dark:hover:bg-white/5 ${interactionMode === 'plan' ? 'text-indigo-500' : 'text-[var(--text-secondary)]'}`}>
                                                     {interactionMode === 'build' ? 'Build' : 'Plan'}
                                                     <ChevronDown size={14} className={`transition-transform duration-200 opacity-60 ${isModeMenuOpen ? 'rotate-180' : ''}`} />
                                                 </button>
-                                                {isModeMenuOpen && (<><div className="fixed inset-0 z-40" onClick={() => setIsModeMenuOpen(false)} /><div className="absolute bottom-full left-0 mb-3 w-64 bg-white dark:bg-[#121214] border border-[var(--surface-border)] rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200"><div className="p-1.5"><button type="button" onClick={() => { setInteractionMode('build'); setIsModeMenuOpen(false); }} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-colors ${interactionMode === 'build' ? 'bg-primary/5' : 'hover:bg-[var(--surface-hover)]'}`}><div><div className="font-bold text-[13px] text-[var(--text-primary)]">Build</div><div className="text-[11px] text-[var(--text-muted)] mt-0.5 font-medium">Aplica cambios directamente</div></div>{interactionMode === 'build' && <Check size={16} className="text-primary shrink-0" />}</button><button type="button" onClick={() => { setInteractionMode('plan'); setIsModeMenuOpen(false); }} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-left transition-colors mt-0.5 ${interactionMode === 'plan' ? 'bg-indigo-500/10' : 'hover:bg-[var(--surface-hover)]'}`}><div><div className="font-bold text-[13px] text-[var(--text-primary)]">Plan</div><div className="text-[11px] text-[var(--text-muted)] mt-0.5 font-medium">Discutir antes de construir</div></div>{interactionMode === 'plan' && <Check size={16} className="text-indigo-500 shrink-0" />}</button></div></div></>)}
+                                                {isModeMenuOpen && (<><div className="fixed inset-0 z-40" onClick={() => setIsModeMenuOpen(false)} /><div className="absolute bottom-full left-0 mb-2 w-64 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200"><div className="p-1.5"><button type="button" onClick={() => { setInteractionMode('build'); setIsModeMenuOpen(false); }} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${interactionMode === 'build' ? 'bg-neutral-100 dark:bg-white/10' : 'hover:bg-neutral-50 dark:hover:bg-white/5'}`}><div><div className="font-semibold text-[13px] text-[var(--text-primary)]">Build</div><div className="text-[11px] text-[var(--text-muted)] mt-0.5">Aplica cambios directamente</div></div>{interactionMode === 'build' && <Check size={16} className="text-[var(--text-primary)] shrink-0" />}</button><button type="button" onClick={() => { setInteractionMode('plan'); setIsModeMenuOpen(false); }} className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors mt-0.5 ${interactionMode === 'plan' ? 'bg-neutral-100 dark:bg-white/10' : 'hover:bg-neutral-50 dark:hover:bg-white/5'}`}><div><div className="font-semibold text-[13px] text-[var(--text-primary)]">Plan</div><div className="text-[11px] text-[var(--text-muted)] mt-0.5">Discutir antes de construir</div></div>{interactionMode === 'plan' && <Check size={16} className="text-[var(--text-primary)] shrink-0" />}</button></div><div className="border-t border-neutral-200 dark:border-neutral-700 px-3 py-2 flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">Cambiar con <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-[9px] font-mono font-medium border border-neutral-200 dark:border-neutral-600">Alt</kbd> <kbd className="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded text-[9px] font-mono font-medium border border-neutral-200 dark:border-neutral-600">P</kbd></div></div></>)}
                                             </div>
                                         </div>
-                                        <button type="submit" disabled={!prompt.trim()} className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-[14px] transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 group"><Send size={16} className="-rotate-45 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /> Generar App</button>
+                                        <button type="submit" disabled={!prompt.trim()} className="p-2.5 rounded-full bg-primary hover:bg-primary-600 text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-110 active:scale-90"><Send size={18} className="-rotate-45 -translate-y-0.5 translate-x-0.5" /></button>
                                     </div>
                                 </form>
                             </div>
-                            
-                            {/* Suggestion Pills */}
-                            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 max-w-2xl opacity-80 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-both">
-                                {[
-                                    { text: "Dashboard de analítica", icon: "ChartBar" },
-                                    { text: "CRM Inmobiliario", icon: "Building" },
-                                    { text: "Tienda online deportiva", icon: "ShoppingCart" },
-                                    { text: "App gestión de reservas", icon: "Calendar" }
-                                ].map((pill, i) => (
-                                    <button 
-                                        key={i}
-                                        onClick={() => setPrompt(`Crea un ${pill.text.toLowerCase()}`)}
-                                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--surface-border)] hover:border-primary/40 hover:bg-primary/5 text-[13px] font-medium text-[var(--text-secondary)] hover:text-primary transition-all shadow-sm hover:shadow-md"
-                                    >
-                                        <DynamicIcon name={pill.icon} size={14} className="opacity-70" />
-                                        {pill.text}
-                                    </button>
-                                ))}
+                            <div className="w-full mt-8">
+                                <div className="flex flex-wrap justify-center gap-2">
+                                    {["CRM de Ventas", "App de Productividad", "Dashboard de Finanzas", "Gestor de Tareas", "Portal de Empleados"].map(s => (
+                                        <button key={s} type="button" onClick={() => setPrompt(`Crea una aplicación de tipo: ${s}. Que sea elegante, moderna y completamente funcional.`)} className="px-4 py-2 rounded-xl bg-white/50 dark:bg-white/5 backdrop-blur-md border border-white/40 dark:border-white/10 hover:bg-white/70 dark:hover:bg-white/10 transition-all text-xs font-medium text-[var(--text-secondary)] shadow-sm hover:shadow-md hover:-translate-y-0.5">{s}</button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
