@@ -317,6 +317,7 @@ export function HubData() {
                                 )}
                             </tbody>
                         </table>
+                        </div>
                     )}
                 </div>
             </div>
