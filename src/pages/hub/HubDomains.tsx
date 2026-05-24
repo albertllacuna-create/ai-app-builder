@@ -93,8 +93,7 @@ export function HubDomains() {
                 Despliega tu aplicación en los servidores de Bulbia y configúrala con tu propio dominio corporativo.
             </p>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
+            <div className="flex flex-col gap-8 max-w-3xl">
                 {/* 1. Estado de Producción */}
                 <div className="space-y-8">
                     <div className="premium-glass p-7 rounded-2xl relative overflow-hidden group transition-all hover:border-primary/30">
@@ -125,30 +124,30 @@ export function HubDomains() {
                             </div>
                         )}
 
-                        <div className="bg-white/30 dark:bg-black/20 rounded-xl border border-white/20 dark:border-white/10 p-5 mb-8 relative z-10 backdrop-blur-md shadow-inner">
-                            <label className="block text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-[0.1em] mb-3">
+                        <div className="bg-white/40 dark:bg-black/40 rounded-xl border border-white/20 dark:border-white/10 p-6 mb-8 relative z-10 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-none">
+                            <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-4">
                                 Subdominio Bulbia
                             </label>
-                            <div className="flex items-center gap-2 mb-4">
-                                <div className="flex-1 flex items-center bg-white/50 dark:bg-black/40 border border-white/20 dark:border-white/10 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all shadow-inner">
-                                    <div className="pl-3 text-[var(--text-muted)]">
-                                        <Globe size={16} />
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-2">
+                                <div className="flex-1 flex items-center bg-white/60 dark:bg-black/60 border border-white/30 dark:border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all shadow-inner h-12">
+                                    <div className="pl-4 text-[var(--text-muted)]">
+                                        <Globe size={18} />
                                     </div>
                                     <input
                                         type="text"
-                                        className="flex-1 bg-transparent px-3 py-2.5 text-[14px] text-[var(--text-primary)] font-medium focus:outline-none placeholder:text-[var(--text-muted)]"
+                                        className="flex-1 bg-transparent px-3 py-2 text-[15px] text-[var(--text-primary)] font-medium focus:outline-none placeholder:text-[var(--text-muted)]"
                                         value={customDomain}
                                         onChange={(e) => setCustomDomain(e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase())}
                                         placeholder="mi-proyecto"
                                     />
-                                    <div className="pr-4 py-2.5 bg-black/5 dark:bg-white/5 border-l border-white/20 dark:border-white/10 text-[13px] text-[var(--text-muted)] font-mono font-medium select-none">
+                                    <div className="pr-5 py-2 text-[14px] text-[var(--text-muted)] font-medium select-none flex items-center bg-black/5 dark:bg-white/5 h-full border-l border-white/20 dark:border-white/10">
                                         .bulbia.app
                                     </div>
                                 </div>
                                 <button
                                     onClick={handleSaveDomain}
                                     disabled={isSavingDomain || customDomain === project.customDomain}
-                                    className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black text-[13px] font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 shadow-md"
+                                    className="h-12 px-6 bg-black dark:bg-white text-white dark:text-black text-[14px] font-bold rounded-xl hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100 shadow-md"
                                 >
                                     Guardar
                                 </button>
@@ -204,7 +203,7 @@ export function HubDomains() {
                                     <input
                                         type="text"
                                         disabled={!isPublished}
-                                        className="flex-1 bg-white/40 dark:bg-black/40 border border-white/20 dark:border-white/10 rounded-xl px-4 py-2.5 text-[14px] text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-50 transition-all backdrop-blur-md shadow-inner placeholder:text-[var(--text-muted)]"
+                                        className="flex-1 bg-white/60 dark:bg-black/60 border border-white/30 dark:border-white/10 rounded-xl px-5 py-3 text-[15px] text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-50 transition-all shadow-inner placeholder:text-[var(--text-muted)]"
                                         value={customDomain}
                                         onChange={(e) => setCustomDomain(e.target.value)}
                                         placeholder="ej: miempresa.com"
@@ -212,7 +211,7 @@ export function HubDomains() {
                                     <button
                                         disabled={!isPublished || isSavingDomain}
                                         onClick={handleSaveDomain}
-                                        className="px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black text-[13px] font-bold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 shadow-md"
+                                        className="px-6 py-3 bg-black dark:bg-white text-white dark:text-black text-[14px] font-bold rounded-xl hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100 shadow-md"
                                     >
                                         Añadir
                                     </button>
