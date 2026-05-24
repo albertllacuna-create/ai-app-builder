@@ -532,7 +532,7 @@ export function ProjectDashboard() {
                 {sidebarView === 'settings' ? (
                     /* === SETTINGS VIEW INTEGRATED - BASE44 STYLE === */
                     <ErrorBoundary>
-                    <div className="w-full h-full flex flex-col animate-fade-in">
+                    <div className="w-full h-full flex flex-col animate-fade-in bg-gray-50/50 dark:bg-black/20">
                         {/* Settings Top Bar */}
                         <div className="px-8 py-4 border-b border-gray-200 bg-white flex items-center gap-4 flex-shrink-0">
                             <button 
@@ -545,9 +545,9 @@ export function ProjectDashboard() {
                             <h2 className="text-[14px] font-semibold text-[var(--text-primary)]">Configuración</h2>
                         </div>
 
-                        <div className="flex-1 flex flex-col lg:flex-row p-8 max-w-7xl mx-auto w-full overflow-y-auto">
+                        <div className="flex-1 flex flex-col lg:flex-row p-8 max-w-7xl mx-auto w-full overflow-y-auto gap-12">
                             {/* Settings Navigation */}
-                            <div className="w-full lg:w-72 space-y-8 flex-shrink-0 bg-[var(--surface)] border border-[var(--surface-border)] rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-none h-fit">
+                            <div className="w-full lg:w-64 space-y-8 flex-shrink-0 h-fit">
                                 <div>
                                     <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 px-2">Espacio de Trabajo</h3>
                                     <div className="space-y-1">
@@ -560,7 +560,7 @@ export function ProjectDashboard() {
                                             <button
                                                 key={tab.id}
                                                 onClick={() => setSettingsTab(tab.id as any)}
-                                                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${settingsTab === tab.id ? 'bg-[var(--surface-hover)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'}`}
+                                                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-medium transition-all ${settingsTab === tab.id ? 'bg-white dark:bg-white/10 text-primary shadow-sm ring-1 ring-black/5 dark:ring-white/10 font-bold' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5'}`}
                                             >
                                                 {tab.name}
                                             </button>
@@ -593,7 +593,9 @@ export function ProjectDashboard() {
                                     </p>
                                 </div>
 
-                                <div className="bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl shadow-sm p-8">
+                                <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-xl shadow-black/5 p-10 relative z-10 overflow-hidden">
+                                    {/* Subtly colored top border for the card */}
+                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
                                 {settingsTab === 'account' && (
                                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-400">
                                         <div className="divide-y divide-[var(--surface-border)] border-t border-b border-[var(--surface-border)]">
