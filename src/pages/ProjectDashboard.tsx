@@ -545,9 +545,9 @@ export function ProjectDashboard() {
                             <h2 className="text-[14px] font-semibold text-[var(--text-primary)]">Configuración</h2>
                         </div>
 
-                        <div className="flex-1 flex flex-col lg:flex-row p-8 gap-10 max-w-7xl mx-auto w-full overflow-y-auto">
+                        <div className="flex-1 flex flex-col lg:flex-row p-8 max-w-7xl mx-auto w-full overflow-y-auto">
                             {/* Settings Navigation */}
-                            <div className="w-full lg:w-64 space-y-8 flex-shrink-0">
+                            <div className="w-full lg:w-64 space-y-8 flex-shrink-0 lg:border-r border-[var(--surface-border)] lg:pr-8 lg:mr-8">
                                 <div>
                                     <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 px-2">Espacio de Trabajo</h3>
                                     <div className="space-y-1">
@@ -602,7 +602,7 @@ export function ProjectDashboard() {
                                                     <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Email de Usuario</label>
                                                     <p className="text-sm text-[var(--text-muted)] mt-0.5">La dirección vinculada a tu cuenta</p>
                                                 </div>
-                                                <div className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl border border-[var(--surface-border)] text-left sm:text-right">
+                                                <div className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl text-left sm:text-right">
                                                     <span className="text-sm font-medium text-[var(--text-secondary)]">{user?.email || ''}</span>
                                                 </div>
                                             </div>
@@ -617,7 +617,7 @@ export function ProjectDashboard() {
                                                     defaultValue={user?.fullName || ''} 
                                                     onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} 
                                                     placeholder="Escribe tu nombre..." 
-                                                    className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] border border-[var(--surface-border)] rounded-xl outline-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right transition-all placeholder:text-[var(--text-muted)] focus:border-primary/30 focus:bg-[var(--background)]" 
+                                                    className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl outline-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right transition-all placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-primary/20" 
                                                 />
                                             </div>
                                         </div>
@@ -712,27 +712,52 @@ export function ProjectDashboard() {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-6">
-                                            <div className="flex justify-between items-end">
+                                        <div className="space-y-6 pt-6 border-t border-[var(--surface-border)]">
+                                            <div className="flex justify-between items-end mb-6">
                                                 <div>
-                                                    <h4 className="text-lg font-bold">Consumo del Ciclo</h4>
-                                                    <p className="text-sm text-[var(--text-muted)]">Estimación basada en las peticiones enviadas a Bulbia</p>
+                                                    <h4 className="text-lg font-bold text-[var(--text-primary)]">Historial de Consumo</h4>
+                                                    <p className="text-sm text-[var(--text-muted)]">Análisis de uso de créditos a lo largo del tiempo</p>
                                                 </div>
-                                                <span className="text-2xl font-black text-primary">40%</span>
+                                                <div className="flex gap-2 bg-[var(--surface-hover)] p-1 rounded-lg">
+                                                    <button className="px-3 py-1.5 text-[12px] font-bold bg-[var(--background)] rounded-md shadow-sm text-[var(--text-primary)]">Semana</button>
+                                                    <button className="px-3 py-1.5 text-[12px] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">Mes</button>
+                                                    <button className="px-3 py-1.5 text-[12px] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">Año</button>
+                                                </div>
                                             </div>
-                                            <div className="h-4 w-full bg-[var(--background)] border border-[var(--surface-border)] rounded-full overflow-hidden p-1">
-                                                <div className="h-full bg-gradient-to-r from-primary to-indigo-500 rounded-full w-[40%] shadow-lg shadow-primary/20"></div>
-                                            </div>
-                                        </div>
+                                            
+                                            <div className="h-56 flex items-end gap-3 w-full border-b border-[var(--surface-border)] pb-2 relative mt-4">
+                                                {/* Y Axis */}
+                                                <div className="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-[10px] text-[var(--text-muted)] font-medium pb-6 pt-2">
+                                                    <span>1.5k</span>
+                                                    <span>1.0k</span>
+                                                    <span>500</span>
+                                                    <span>0</span>
+                                                </div>
+                                                
+                                                {/* Horizontal Grid Lines */}
+                                                <div className="absolute left-8 right-0 top-0 bottom-8 flex flex-col justify-between pointer-events-none">
+                                                    <div className="w-full border-t border-[var(--surface-border)] opacity-50"></div>
+                                                    <div className="w-full border-t border-[var(--surface-border)] opacity-50"></div>
+                                                    <div className="w-full border-t border-[var(--surface-border)] opacity-50"></div>
+                                                    <div className="w-full border-t border-[var(--surface-border)] opacity-50"></div>
+                                                </div>
 
-                                        <div className="p-6 bg-primary/5 border border-primary/10 rounded-3xl">
-                                            <div className="flex gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                                                    <Sparkles size={20} className="text-primary" />
-                                                </div>
-                                                <div>
-                                                    <h5 className="font-bold text-[var(--text-primary)] mb-1">Optimización de Créditos</h5>
-                                                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">Estamos trabajando para reducir el consumo de tokens en peticiones repetitivas. Tu plan actual permite hasta 10,000 peticiones de IA mensuales.</p>
+                                                {/* Bars */}
+                                                <div className="flex-1 flex items-end justify-between gap-4 pl-10 h-full pb-6 z-10 relative">
+                                                    {[30, 65, 45, 80, 55, 90, 70].map((h, i) => (
+                                                        <div key={i} className="w-full flex flex-col items-center justify-end h-full group relative">
+                                                            <div className="w-full max-w-[40px] bg-primary/10 rounded-t-md relative flex flex-col justify-end overflow-hidden transition-all duration-500 hover:bg-primary/20" style={{ height: '100%' }}>
+                                                                <div className="w-full bg-gradient-to-t from-primary/80 to-indigo-400 rounded-t-md group-hover:to-indigo-300 transition-colors" style={{ height: `${h}%` }}></div>
+                                                            </div>
+                                                            {/* Tooltip on hover */}
+                                                            <div className="absolute -top-8 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                                                {(h * 15).toFixed(0)}
+                                                            </div>
+                                                            <span className="text-[11px] text-[var(--text-muted)] font-medium absolute -bottom-6">
+                                                                {['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'][i]}
+                                                            </span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                         </div>
