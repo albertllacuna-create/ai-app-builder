@@ -547,7 +547,7 @@ export function ProjectDashboard() {
 
                         <div className="flex-1 flex flex-col lg:flex-row p-8 max-w-7xl mx-auto w-full overflow-y-auto">
                             {/* Settings Navigation */}
-                            <div className="w-full lg:w-64 space-y-8 flex-shrink-0 lg:border-r border-[var(--surface-border)] lg:pr-8 lg:mr-8">
+                            <div className="w-full lg:w-72 space-y-8 flex-shrink-0 bg-[var(--surface)] border border-[var(--surface-border)] rounded-3xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-none h-fit">
                                 <div>
                                     <h3 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4 px-2">Espacio de Trabajo</h3>
                                     <div className="space-y-1">
@@ -602,8 +602,8 @@ export function ProjectDashboard() {
                                                     <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Email de Usuario</label>
                                                     <p className="text-sm text-[var(--text-muted)] mt-0.5">La dirección vinculada a tu cuenta</p>
                                                 </div>
-                                                <div className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl text-left sm:text-right">
-                                                    <span className="text-sm font-medium text-[var(--text-secondary)]">{user?.email || ''}</span>
+                                                <div className="min-w-[280px] flex items-center px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl text-left sm:text-right border border-transparent">
+                                                    <span className="w-full text-sm font-medium text-[var(--text-secondary)] block">{user?.email || ''}</span>
                                                 </div>
                                             </div>
                                             
@@ -612,13 +612,15 @@ export function ProjectDashboard() {
                                                     <label className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest">Nombre Completo</label>
                                                     <p className="text-sm text-[var(--text-muted)] mt-0.5">Como te verán otros miembros</p>
                                                 </div>
-                                                <input 
-                                                    type="text" 
-                                                    defaultValue={user?.fullName || ''} 
-                                                    onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} 
-                                                    placeholder="Escribe tu nombre..." 
-                                                    className="min-w-[280px] px-4 py-2.5 bg-[var(--surface-hover)] rounded-xl outline-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right transition-all placeholder:text-[var(--text-muted)] focus:ring-2 focus:ring-primary/20" 
-                                                />
+                                                <div className="min-w-[280px] flex items-center bg-[var(--surface-hover)] rounded-xl px-4 border border-transparent focus-within:border-primary/30 focus-within:bg-[var(--background)] transition-all">
+                                                    <input 
+                                                        type="text" 
+                                                        defaultValue={user?.fullName || ''} 
+                                                        onBlur={(e) => db.updateUserProfile({ fullName: e.target.value })} 
+                                                        placeholder="Escribe tu nombre..." 
+                                                        className="w-full py-2.5 bg-transparent outline-none border-none text-sm text-[var(--text-primary)] font-medium text-left sm:text-right placeholder:text-[var(--text-muted)]" 
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 
