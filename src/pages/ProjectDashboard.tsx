@@ -850,14 +850,51 @@ export function ProjectDashboard() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {projects.slice().reverse().map(project => (
                                     <div key={project.id} onClick={() => navigate(`/project/${project.id}`)} className="group relative bg-[var(--surface)] border border-[var(--surface-border)] rounded-2xl overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all hover:-translate-y-0.5">
-                                        <div className="h-36 bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center border-b border-[var(--surface-border)] relative overflow-hidden">
-                                             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)]"></div>
-                                             <div className="text-center relative z-10">
-                                                 <div className="w-14 h-14 mx-auto mb-2 rounded-[20px] bg-white dark:bg-neutral-900 shadow-xl flex items-center justify-center border border-[var(--surface-border)] group-hover:scale-110 transition-transform duration-500">
-                                                     <DynamicIcon name={project.logoUrl} size={28} className="text-primary" />
-                                                 </div>
-                                                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)] opacity-60">Vista previa</span>
-                                             </div>
+                                        <div className="h-36 bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 flex items-center justify-center border-b border-[var(--surface-border)] relative overflow-hidden group-hover:border-primary/20 transition-colors">
+                                            {project.publishedUrl ? (
+                                                <div className="absolute inset-0 overflow-hidden bg-white dark:bg-black">
+                                                    {/* Fallback overlay in case iframe is slow */}
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-neutral-800 animate-pulse">
+                                                        <Globe className="text-gray-400 opacity-50" size={24} />
+                                                    </div>
+                                                    <iframe 
+                                                        src={project.publishedUrl} 
+                                                        className="absolute top-0 left-0 w-[400%] h-[400%] border-none pointer-events-none origin-top-left z-10 transition-opacity duration-700"
+                                                        style={{ transform: 'scale(0.25)' }}
+                                                        sandbox="allow-same-origin allow-scripts"
+                                                        tabIndex={-1}
+                                                        title={`Preview of ${project.name}`}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)]"></div>
+                                                    
+                                                    {/* Abstract Wireframe for unpublished apps */}
+                                                    <div className="absolute inset-x-6 bottom-0 top-6 bg-white dark:bg-neutral-800 rounded-t-xl shadow-lg border border-b-0 border-[var(--surface-border)] overflow-hidden flex flex-col opacity-80 group-hover:opacity-100 group-hover:translate-y-[-2px] transition-all duration-500">
+                                                        <div className="h-4 bg-gray-100 dark:bg-neutral-700/50 border-b border-[var(--surface-border)] flex items-center px-2 gap-1.5 shrink-0">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-red-400"></div>
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                                                        </div>
+                                                        <div className="flex-1 p-2.5 flex flex-col gap-2.5 relative">
+                                                             <div className="w-1/3 h-2 bg-gray-200 dark:bg-neutral-600 rounded-full"></div>
+                                                             <div className="w-full h-8 bg-primary/10 rounded-md"></div>
+                                                             <div className="flex gap-2">
+                                                                 <div className="w-1/2 h-16 bg-gray-100 dark:bg-neutral-700/50 rounded-md"></div>
+                                                                 <div className="w-1/2 h-16 bg-gray-100 dark:bg-neutral-700/50 rounded-md"></div>
+                                                             </div>
+                                                             
+                                                             {/* Floating Icon */}
+                                                             <div className="absolute inset-0 flex items-center justify-center">
+                                                                <div className="w-14 h-14 rounded-2xl bg-white/80 dark:bg-neutral-900/80 backdrop-blur-md shadow-xl flex items-center justify-center border border-[var(--surface-border)] group-hover:scale-110 transition-transform duration-500">
+                                                                    <DynamicIcon name={project.logoUrl} size={28} className="text-primary drop-shadow-sm" />
+                                                                </div>
+                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                         <div className="p-3.5">
                                             <div className="flex items-start justify-between gap-2">
