@@ -43,13 +43,13 @@ export function ProjectHubLayout() {
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${isActive
-                                    ? 'bg-primary text-white'
-                                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+                                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all no-underline ${isActive
+                                    ? 'bg-white/10 text-white shadow-sm ring-1 ring-white/10 font-semibold'
+                                    : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50 hover:no-underline'
                                     }`}
                             >
                                 <Icon size={18} />
-                                <span className="text-sm font-medium">{item.name}</span>
+                                <span>{item.name}</span>
                             </Link>
                         );
                     })}

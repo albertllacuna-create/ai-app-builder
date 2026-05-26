@@ -96,12 +96,14 @@ export function HubDomains() {
             <div className="flex flex-col gap-8 max-w-3xl">
                 {/* 1. Estado de Producción */}
                 <div className="space-y-8">
-                    <div className="premium-glass p-7 rounded-2xl relative overflow-hidden group transition-all hover:border-primary/30">
+                    <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-xl shadow-black/5 p-10 relative overflow-hidden group transition-all">
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
+                        
                         {/* Background subtle glow */}
                         <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-primary/10 blur-[60px] group-hover:bg-primary/20 transition-colors duration-500 rounded-full z-0" />
 
                         {/* Status Bubble */}
-                        <div className="absolute top-7 right-7 flex items-center gap-2 z-10">
+                        <div className="absolute top-10 right-10 flex items-center gap-2 z-10">
                             {isPublished ? (
                                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-inner">
                                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" /> Live
@@ -124,23 +126,23 @@ export function HubDomains() {
                             </div>
                         )}
 
-                        <div className="bg-white/40 dark:bg-black/40 rounded-xl border border-white/20 dark:border-white/10 p-6 mb-8 relative z-10 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-none">
-                            <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-4">
+                        <div className="bg-[var(--surface)] dark:bg-black/20 rounded-[1.5rem] border border-[var(--surface-border)] p-6 mb-8 relative z-10 backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.02)] dark:shadow-none">
+                            <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
                                 Subdominio Bulbia
                             </label>
                             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-2">
-                                <div className="flex-1 flex items-center bg-white/60 dark:bg-black/60 border border-white/30 dark:border-white/10 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 focus-within:border-primary transition-all shadow-inner h-12">
+                                <div className="flex-1 flex items-center bg-[var(--surface-hover)] border border-transparent focus-within:border-primary/30 focus-within:bg-[var(--background)] rounded-xl overflow-hidden transition-all shadow-inner h-12">
                                     <div className="pl-4 text-[var(--text-muted)]">
                                         <Globe size={18} />
                                     </div>
                                     <input
                                         type="text"
-                                        className="flex-1 bg-transparent px-3 py-2 text-[15px] text-[var(--text-primary)] font-medium focus:outline-none placeholder:text-[var(--text-muted)]"
+                                        className="flex-1 bg-transparent px-3 py-2 text-sm text-[var(--text-primary)] font-medium focus:outline-none placeholder:text-[var(--text-muted)]"
                                         value={customDomain}
                                         onChange={(e) => setCustomDomain(e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase())}
                                         placeholder="mi-proyecto"
                                     />
-                                    <div className="pr-5 py-2 text-[14px] text-[var(--text-muted)] font-medium select-none flex items-center bg-black/5 dark:bg-white/5 h-full border-l border-white/20 dark:border-white/10">
+                                    <div className="pr-5 py-2 text-sm text-[var(--text-muted)] font-medium select-none flex items-center bg-black/5 dark:bg-white/5 h-full border-l border-[var(--surface-border)]">
                                         .bulbia.app
                                     </div>
                                 </div>
@@ -186,9 +188,10 @@ export function HubDomains() {
                     </div>
                 </div>
 
-                {/* 2. Dominios Personalizados */}
                 <div className="space-y-8">
-                    <div className={`premium-glass p-7 rounded-2xl transition-all duration-300 group hover:border-primary/30 ${!isPublished && 'opacity-60 grayscale'}`}>
+                    <div className={`bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-xl shadow-black/5 p-10 relative overflow-hidden group transition-all duration-300 ${!isPublished && 'opacity-60 grayscale'}`}>
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
+                        
                         <h3 className="text-[16px] font-bold mb-2 flex items-center gap-2 text-[var(--text-primary)] group-hover:text-primary transition-colors">
                             <Link2 size={18} className="text-primary" /> Dominio Personalizado
                         </h3>
@@ -198,12 +201,12 @@ export function HubDomains() {
 
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-[13px] font-semibold text-[var(--text-secondary)] mb-2">Tu Dominio</label>
+                                <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">Tu Dominio</label>
                                 <div className="flex gap-3">
                                     <input
                                         type="text"
                                         disabled={!isPublished}
-                                        className="flex-1 bg-white/60 dark:bg-black/60 border border-white/30 dark:border-white/10 rounded-xl px-5 py-3 text-[15px] text-[var(--text-primary)] font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-50 transition-all shadow-inner placeholder:text-[var(--text-muted)]"
+                                        className="flex-1 bg-[var(--surface-hover)] focus:bg-[var(--background)] border border-transparent focus:border-primary/30 focus:outline-none rounded-xl px-5 py-3 text-sm text-[var(--text-primary)] font-medium disabled:opacity-50 transition-all placeholder:text-[var(--text-muted)]"
                                         value={customDomain}
                                         onChange={(e) => setCustomDomain(e.target.value)}
                                         placeholder="ej: miempresa.com"

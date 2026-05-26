@@ -741,13 +741,13 @@ Construye ahora la aplicación completa basándote en el plan que acabamos de ac
                                             <Link
                                                 key={item.path}
                                                 to={item.path}
-                                                className={`flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-200 group ${isActive
-                                                    ? 'bg-primary/5 text-primary font-medium shadow-[inset_2px_0_0_0_var(--primary)]'
-                                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
+                                                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all no-underline ${isActive
+                                                    ? 'bg-white dark:bg-white/10 text-primary shadow-sm ring-1 ring-black/5 dark:ring-white/10 font-bold hover:no-underline'
+                                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 hover:no-underline'
                                                     }`}
                                             >
                                                 <Icon size={16} className={isActive ? 'text-primary' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'} />
-                                                <span className="text-[13px]">{item.name}</span>
+                                                <span>{item.name}</span>
                                             </Link>
                                         );
                                     })}

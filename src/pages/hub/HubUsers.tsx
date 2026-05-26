@@ -60,7 +60,8 @@ export function HubUsers() {
                 </button>
             </div>
 
-            <div className="premium-glass rounded-2xl border border-white/20 dark:border-white/10 overflow-hidden shadow-lg backdrop-blur-xl">
+            <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-xl shadow-black/5 overflow-hidden relative z-10">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-black/5 dark:bg-white/5 border-b border-white/20 dark:border-white/10 text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em]">

@@ -124,7 +124,8 @@ export function HubPayments() {
             </p>
 
             {/* 1. Estado de Conexión Stripe */}
-            <div className={`premium-glass p-7 rounded-2xl mb-10 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-300 ${isConnected ? 'border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : 'hover:border-primary/30'}`}>
+            <div className={`bg-white dark:bg-neutral-900 border rounded-[2rem] shadow-xl shadow-black/5 p-10 relative overflow-hidden mb-10 flex flex-col sm:flex-row items-center justify-between gap-6 transition-all duration-300 ${isConnected ? 'border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_30px_rgba(16,185,129,0.1)]' : 'border-gray-200 dark:border-white/10'}`}>
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
                 <div className="flex items-center gap-5">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner ${isConnected ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-black/5 dark:bg-white/5 text-[var(--text-muted)] border border-white/10'}`}>
                         <CreditCard size={28} />
@@ -173,7 +174,7 @@ export function HubPayments() {
                 </div>
 
                 {plans.length === 0 ? (
-                    <div className="premium-glass border-dashed rounded-2xl p-16 text-center group">
+                    <div className="bg-white dark:bg-neutral-900 border-2 border-dashed border-gray-300 dark:border-neutral-700 rounded-[2rem] shadow-xl shadow-black/5 p-16 text-center group">
                         <div className="w-24 h-24 bg-black/5 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner group-hover:scale-110 transition-transform duration-500">
                             <CreditCard size={40} className="text-[var(--text-muted)]" />
                         </div>
@@ -185,7 +186,8 @@ export function HubPayments() {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {plans.map((plan) => (
-                            <div key={plan.id} className="premium-glass rounded-2xl p-7 flex flex-col relative group hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(139,92,246,0.15)] transition-all duration-300 overflow-hidden">
+                            <div key={plan.id} className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-xl shadow-black/5 p-8 flex flex-col relative group hover:border-primary/40 hover:shadow-[0_10px_30px_rgba(139,92,246,0.15)] transition-all duration-300 overflow-hidden">
+                                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
                                 {/* Glow hover effect */}
                                 <div className="absolute -inset-10 bg-gradient-to-br from-primary/10 via-transparent to-fuchsia-500/10 opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500 pointer-events-none z-0" />
 
@@ -221,28 +223,28 @@ export function HubPayments() {
             {/* Modal de Creación/Edición */}
             {showPlanModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md p-4">
-                    <div className="premium-glass rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 relative">
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
                         <div className="px-7 py-5 border-b border-white/20 dark:border-white/10 flex justify-between items-center bg-white/40 dark:bg-black/40 backdrop-blur-xl">
                             <h3 className="text-[16px] font-bold text-[var(--text-primary)] tracking-tight">{editingPlan ? 'Editar Plan' : 'Crear Nuevo Plan'}</h3>
                             <button onClick={() => setShowPlanModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
-
                         <div className="p-7 space-y-6">
                             <div>
-                                <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-3">Nombre del Plan</label>
-                                <input type="text" className="w-full bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:opacity-50 outline-none transition-all shadow-inner placeholder:text-[var(--text-muted)]" placeholder="Ej: Premium Mensual" value={planForm.name} onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })} />
+                                <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">Nombre del Plan</label>
+                                <input type="text" className="w-full bg-[var(--surface-hover)] focus:bg-[var(--background)] border border-transparent focus:border-primary/30 outline-none rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium disabled:opacity-50 transition-all placeholder:text-[var(--text-muted)]" placeholder="Ej: Premium Mensual" value={planForm.name} onChange={(e) => setPlanForm({ ...planForm, name: e.target.value })} />
                             </div>
 
                             <div className="grid grid-cols-2 gap-5">
                                 <div>
-                                    <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-3">Precio ($)</label>
-                                    <input type="number" step="0.01" className="w-full bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-inner" value={planForm.price} onChange={(e) => setPlanForm({ ...planForm, price: parseFloat(e.target.value) })} />
+                                    <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">Precio ($)</label>
+                                    <input type="number" step="0.01" className="w-full bg-[var(--surface-hover)] focus:bg-[var(--background)] border border-transparent focus:border-primary/30 outline-none rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium transition-all" value={planForm.price} onChange={(e) => setPlanForm({ ...planForm, price: parseFloat(e.target.value) })} />
                                 </div>
                                 <div>
-                                    <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-3">Facturación</label>
-                                    <select className="w-full bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-inner appearance-none" value={planForm.interval} onChange={(e) => setPlanForm({ ...planForm, interval: e.target.value as any })}>
+                                    <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">Facturación</label>
+                                    <select className="w-full bg-[var(--surface-hover)] focus:bg-[var(--background)] border border-transparent focus:border-primary/30 outline-none rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium transition-all appearance-none" value={planForm.interval} onChange={(e) => setPlanForm({ ...planForm, interval: e.target.value as any })}>
                                         <option value="month">Mensual</option>
                                         <option value="year">Anual</option>
                                         <option value="one-time">Único (Lifetime)</option>
@@ -251,14 +253,14 @@ export function HubPayments() {
                             </div>
 
                             <div>
-                                <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-3">Descripción Corta</label>
-                                <input type="text" className="w-full bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-inner placeholder:text-[var(--text-muted)]" placeholder="Ej: Acceso completo a las funciones base." value={planForm.description} onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })} />
+                                <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">Descripción Corta</label>
+                                <input type="text" className="w-full bg-[var(--surface-hover)] focus:bg-[var(--background)] border border-transparent focus:border-primary/30 outline-none rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium transition-all placeholder:text-[var(--text-muted)]" placeholder="Ej: Acceso completo a las funciones base." value={planForm.description} onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })} />
                             </div>
 
                             <div>
-                                <label className="block text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-[0.1em] mb-3">Características (Features)</label>
+                                <label className="block text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-2">Características (Features)</label>
                                 <div className="flex gap-3 mb-4">
-                                    <input type="text" className="flex-1 bg-white/50 dark:bg-black/50 border border-white/20 dark:border-white/10 rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all shadow-inner placeholder:text-[var(--text-muted)]" placeholder="Añadir una ventaja..." value={newFeature} onChange={(e) => setNewFeature(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddFeature()} />
+                                    <input type="text" className="flex-1 bg-[var(--surface-hover)] focus:bg-[var(--background)] border border-transparent focus:border-primary/30 outline-none rounded-xl px-4 py-3 text-[14px] text-[var(--text-primary)] font-medium transition-all placeholder:text-[var(--text-muted)]" placeholder="Añadir una ventaja..." value={newFeature} onChange={(e) => setNewFeature(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleAddFeature()} />
                                     <button onClick={handleAddFeature} className="px-4 py-3 bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] rounded-xl hover:bg-black/10 dark:hover:bg-white/10 transition-colors border border-white/20 dark:border-white/10 shadow-sm"><Plus size={20} /></button>
                                 </div>
 

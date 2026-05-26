@@ -142,9 +142,9 @@ export function HubData() {
                             <button
                                 key={col}
                                 onClick={() => setSelectedCollection(col)}
-                                className={`w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 transition-all text-[14px] ${selectedCollection === col
-                                    ? 'bg-primary/10 text-primary font-bold shadow-inner border border-primary/20'
-                                    : 'text-[var(--text-secondary)] font-medium hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
+                                className={`w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-3 transition-all text-[13px] font-medium ${selectedCollection === col
+                                    ? 'bg-white dark:bg-white/10 text-primary shadow-sm ring-1 ring-black/5 dark:ring-white/10 font-bold'
+                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5 dark:hover:bg-white/5 border border-transparent'
                                     }`}
                             >
                                 <Layers size={16} className={selectedCollection === col ? 'text-primary' : 'text-[var(--text-muted)]'} />
@@ -186,7 +186,8 @@ export function HubData() {
                     </div>
                 </div>
 
-                <div className="premium-glass rounded-2xl border border-white/20 dark:border-white/10 overflow-hidden shadow-lg backdrop-blur-xl">
+                <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-white/10 rounded-[2rem] shadow-xl shadow-black/5 overflow-hidden relative z-10">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-fuchsia-500 opacity-50"></div>
                     {!selectedCollection ? (
                         <div className="p-16 text-center text-[var(--text-muted)]">
                             <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
